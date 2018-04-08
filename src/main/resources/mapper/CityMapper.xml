@@ -1,35 +1,41 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.jiangzuoyoupin.mapper.TestUserMapper" >
-  <resultMap id="BaseResultMap" type="com.jiangzuoyoupin.domain.TestUser" >
+<mapper namespace="com.jiangzuoyoupin.mapper.CityMapper" >
+  <resultMap id="BaseResultMap" type="com.jiangzuoyoupin.domain.City" >
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="province_id" property="provinceId" jdbcType="BIGINT" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, name
+    id, name, province_id
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from t_test_user
+    from t_city
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from t_test_user
+    delete from t_city
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.jiangzuoyoupin.domain.TestUser" >
-    insert into t_test_user (id, name)
-    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR})
+  <insert id="insert" parameterType="com.jiangzuoyoupin.domain.City" >
+    insert into t_city (id, name, province_id
+      )
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{provinceId,jdbcType=BIGINT}
+      )
   </insert>
-  <insert id="insertSelective" parameterType="com.jiangzuoyoupin.domain.TestUser" >
-    insert into t_test_user
+  <insert id="insertSelective" parameterType="com.jiangzuoyoupin.domain.City" >
+    insert into t_city
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         id,
       </if>
       <if test="name != null" >
         name,
+      </if>
+      <if test="provinceId != null" >
+        province_id,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -39,20 +45,27 @@
       <if test="name != null" >
         #{name,jdbcType=VARCHAR},
       </if>
+      <if test="provinceId != null" >
+        #{provinceId,jdbcType=BIGINT},
+      </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.jiangzuoyoupin.domain.TestUser" >
-    update t_test_user
+  <update id="updateByPrimaryKeySelective" parameterType="com.jiangzuoyoupin.domain.City" >
+    update t_city
     <set >
       <if test="name != null" >
         name = #{name,jdbcType=VARCHAR},
       </if>
+      <if test="provinceId != null" >
+        province_id = #{provinceId,jdbcType=BIGINT},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.jiangzuoyoupin.domain.TestUser" >
-    update t_test_user
-    set name = #{name,jdbcType=VARCHAR}
+  <update id="updateByPrimaryKey" parameterType="com.jiangzuoyoupin.domain.City" >
+    update t_city
+    set name = #{name,jdbcType=VARCHAR},
+      province_id = #{provinceId,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

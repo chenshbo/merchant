@@ -1,9 +1,11 @@
 package com.jiangzuoyoupin.domain;
 
-public class TestUser {
+public class City {
     private Long id;
 
     private String name;
+
+    private Long provinceId;
 
     public Long getId() {
         return id;
@@ -19,5 +21,13 @@ public class TestUser {
 
     public void setName(String name) {
         this.name = name == null ? null : name.trim();
+    }
+
+    public Long getProvinceId() {
+        return provinceId;
+    }
+
+    public void setProvinceId(Long provinceId) {
+        this.provinceId = provinceId;
     }
 }

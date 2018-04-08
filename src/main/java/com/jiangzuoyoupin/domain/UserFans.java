@@ -2,16 +2,12 @@ package com.jiangzuoyoupin.domain;
 
 import java.util.Date;
 
-public class User {
+public class UserFans {
     private Long id;
 
-    private String name;
-
-    private String password;
+    private Long wechatUserId;
 
     private Long mobile;
-
-    private Byte type;
 
     private Date gmtCreate;
 
@@ -25,20 +21,12 @@ public class User {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public Long getWechatUserId() {
+        return wechatUserId;
     }
 
-    public void setName(String name) {
-        this.name = name == null ? null : name.trim();
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password == null ? null : password.trim();
+    public void setWechatUserId(Long wechatUserId) {
+        this.wechatUserId = wechatUserId;
     }
 
     public Long getMobile() {
@@ -47,14 +35,6 @@ public class User {
 
     public void setMobile(Long mobile) {
         this.mobile = mobile;
-    }
-
-    public Byte getType() {
-        return type;
-    }
-
-    public void setType(Byte type) {
-        this.type = type;
     }
 
     public Date getGmtCreate() {
