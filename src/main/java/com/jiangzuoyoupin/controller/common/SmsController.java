@@ -1,24 +1,19 @@
 package com.jiangzuoyoupin.controller.common;
 
-import com.bcloud.msg.http.HttpSender;
+import com.alibaba.fastjson.JSON;
 import com.jiangzuoyoupin.base.WebResult;
-import com.jiangzuoyoupin.domain.City;
-import com.jiangzuoyoupin.service.UserService;
+import com.jiangzuoyoupin.domain.SmsResult;
+import com.jiangzuoyoupin.utils.HttpUtil;
 import com.jiangzuoyoupin.utils.NumberUtil;
 import com.jiangzuoyoupin.utils.WebResultUtil;
-import com.jiangzuoyoupin.vo.SelectVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import sun.security.provider.MD5;
-
-import java.util.List;
 
 /**
  * 功能描述: 短信模块
@@ -31,17 +26,10 @@ import java.util.List;
 @RequestMapping("common/sms")
 public class SmsController {
 
-    @Value("${sms.host}")
-    private String smsHost;
-    //示远账号
-    @Value("${sms.account}")
-    private String account;
-    //示远密码
-    @Value("${sms.password}")
-    private String password;
+    @Value("${sms.send.url}")
+    private String smsSendUrl;
     //短信内容，注意内容中的逗号请使用中文状态下的逗号
     private String content = "验证码%s，您正在进行注册操作，验证码有效期10分钟。";
-
 
     /**
      * 功能描述: 发送短信验证码
@@ -54,24 +42,15 @@ public class SmsController {
      */
     @ApiOperation(value = "发送短信验证码", notes = "发送短信验证码到手机")
     @GetMapping(value = "/sendVerifyCode/{mobileNo}")
-    public WebResult<Boolean> sendVerifyCode(@ApiParam(name = "mobileNo", value = "手机号码", required = true) @PathVariable String mobileNo) {
-        //是否需要状态报告，需要true，不需要false
-        boolean needStatus = true;
-        try {
-//            {
-//                "ts": "20110725160412",
-//                "result": 0,
-//                "msgid": "1234567890100"
-//            }
-            String msgContent = String.format(content, NumberUtil.getVerifyCode());
-            String returnString = HttpSender.send(smsHost, account, password, mobileNo, msgContent, needStatus, "", "");
-            System.out.println(returnString);
-            //TODO 处理返回值,参见HTTP协议文档
-        } catch (Exception e) {
-            //TODO 处理异常
-            e.printStackTrace();
+    public WebResult sendVerifyCode(@ApiParam(name = "mobileNo", value = "手机号码", required = true) @PathVariable String mobileNo) {
+        String msgContent = String.format(content, NumberUtil.getVerifyCode());
+        String sendUrl = String.format(smsSendUrl, mobileNo, msgContent);
+        String jsonRes = HttpUtil.doGet(sendUrl);
+        SmsResult smsResult = JSON.parseObject(jsonRes, SmsResult.class);
+        if (smsResult == null || smsResult.getResult() != 0) {
+            return WebResultUtil.returnErrMsgResult("发送短信验证码失败");
         }
-        return WebResultUtil.returnResult(true);
+        return WebResultUtil.returnResult();
     }
 
 
