@@ -1,6 +1,7 @@
 package com.jiangzuoyoupin.controller.common;
 
 import com.jiangzuoyoupin.base.WebResult;
+import com.jiangzuoyoupin.domain.City;
 import com.jiangzuoyoupin.domain.Province;
 import com.jiangzuoyoupin.req.IdReq;
 import com.jiangzuoyoupin.req.NameReq;
@@ -10,12 +11,10 @@ import com.jiangzuoyoupin.vo.SelectVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -33,6 +32,15 @@ public class DictController extends BaseController{
     @Autowired
     private DictService dictService;
 
+    /**
+     * 功能描述: 身份列表接口
+     *
+     * @param req
+     * @return: WebResult<List<SelectVO>>
+     * @since: 1.0.0
+     * @author: chenshangbo
+     * @date: 2018/4/9 14:33
+     */
     @ApiOperation(value = "省份列表接口", notes = "条件查询省份列表")
     @ApiImplicitParam(name = "req", value = "name请求对象", dataType = "NameReq")
     @PostMapping(value = "/selectProvinceList")
@@ -44,6 +52,22 @@ public class DictController extends BaseController{
     }
 
 
-
+    /**
+     * 功能描述: 城市列表接口
+     *
+     * @param provinceId
+     * @return: com.jiangzuoyoupin.base.WebResult<java.util.List<com.jiangzuoyoupin.vo.SelectVO>>
+     * @since: 1.0.0
+     * @author: chenshangbo
+     * @date: 2018/4/9 14:53
+     */
+    @ApiOperation(value = "城市列表接口", notes = "条件查询城市列表")
+    @GetMapping(value = "/selectCityList/{provinceId}")
+    public WebResult<List<SelectVO>> selectCityList(@ApiParam(name = "省份id", value = "provinceId", required = true) @PathVariable Long provinceId) {
+        City city = new City();
+        city.setProvinceId(provinceId);
+        List<City> cityList = dictService.selectCityList(city);
+        return WebResultUtil.returnResult(poList2voList(cityList, SelectVO.class));
+    }
 
 }

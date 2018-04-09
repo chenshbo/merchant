@@ -1,5 +1,6 @@
 package com.jiangzuoyoupin.utils;
 
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -8,6 +9,15 @@ public class NumberUtil {
     // 整数四舍五入
     public static int round(int width) {
         return Math.round(((float) width) / 10) * 10;
+    }
+
+    /**
+     * 产生随机的六位数
+     * @return
+     */
+    public static String getVerifyCode(){
+        Random rad = new Random();
+        return rad.nextInt(1000000)+"";
     }
 
 
@@ -71,7 +81,8 @@ public class NumberUtil {
 
 
     public static void main(String[] args) throws Exception {
-        System.out.println(versionCompare("1.1.24", "1.1.24.1"));
+        System.out.println(getVerifyCode());
+//        System.out.println(versionCompare("1.1.24", "1.1.24.1"));
     }
 
 

@@ -99,6 +99,13 @@
 			<artifactId>httpclient</artifactId>
 			<version>4.1.2</version>
 		</dependency>
+		<dependency>
+			<groupId>com.bcloud</groupId>
+			<artifactId>http-sms</artifactId>
+			<scope>system</scope>
+			<version>1.0</version>
+			<systemPath>${project.basedir}/src/lib/http-sms.jar</systemPath>
+		</dependency>
 	</dependencies>
 
 	<build>

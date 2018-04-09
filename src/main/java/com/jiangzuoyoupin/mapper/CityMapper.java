@@ -2,6 +2,8 @@ package com.jiangzuoyoupin.mapper;
 
 import com.jiangzuoyoupin.domain.City;
 
+import java.util.List;
+
 public interface CityMapper {
     int deleteByPrimaryKey(Long id);
 
@@ -14,4 +16,6 @@ public interface CityMapper {
     int updateByPrimaryKeySelective(City record);
 
     int updateByPrimaryKey(City record);
+
+    List<City> selectListByParams(City city);
 }
