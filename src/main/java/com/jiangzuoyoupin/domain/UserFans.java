@@ -7,7 +7,7 @@ public class UserFans {
 
     private Long wechatUserId;
 
-    private Long mobile;
+    private String mobileNo;
 
     private Date gmtCreate;
 
@@ -29,12 +29,12 @@ public class UserFans {
         this.wechatUserId = wechatUserId;
     }
 
-    public Long getMobile() {
-        return mobile;
+    public String getMobileNo() {
+        return mobileNo;
     }
 
-    public void setMobile(Long mobile) {
-        this.mobile = mobile;
+    public void setMobileNo(String mobileNo) {
+        this.mobileNo = mobileNo == null ? null : mobileNo.trim();
     }
 
     public Date getGmtCreate() {

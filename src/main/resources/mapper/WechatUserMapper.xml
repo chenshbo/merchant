@@ -3,6 +3,7 @@
 <mapper namespace="com.jiangzuoyoupin.mapper.WechatUserMapper" >
   <resultMap id="BaseResultMap" type="com.jiangzuoyoupin.domain.WechatUser" >
     <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="open_id" property="openId" jdbcType="VARCHAR" />
     <result column="union_id" property="unionId" jdbcType="VARCHAR" />
     <result column="nick_name" property="nickName" jdbcType="VARCHAR" />
     <result column="head_img_url" property="headImgUrl" jdbcType="VARCHAR" />
@@ -10,7 +11,7 @@
     <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, union_id, nick_name, head_img_url, gmt_create, gmt_modified
+    id, open_id, union_id, nick_name, head_img_url, gmt_create, gmt_modified
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -22,12 +23,12 @@
     delete from t_wechat_user
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.jiangzuoyoupin.domain.WechatUser" >
-    insert into t_wechat_user (id, union_id, nick_name, 
+  <insert id="insert" parameterType="com.jiangzuoyoupin.domain.WechatUser" useGeneratedKeys="true" keyProperty="id">
+    insert into t_wechat_user (open_id, union_id, nick_name,
       head_img_url, gmt_create, gmt_modified
       )
-    values (#{id,jdbcType=BIGINT}, #{unionId,jdbcType=VARCHAR}, #{nickName,jdbcType=VARCHAR}, 
-      #{headImgUrl,jdbcType=VARCHAR}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}
+    values (#{openId,jdbcType=VARCHAR}, #{unionId,jdbcType=VARCHAR}, #{nickName,jdbcType=VARCHAR},
+      #{headImgUrl,jdbcType=VARCHAR}, now(), now()
       )
   </insert>
   <insert id="insertSelective" parameterType="com.jiangzuoyoupin.domain.WechatUser" >
@@ -96,11 +97,11 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.jiangzuoyoupin.domain.WechatUser" >
     update t_wechat_user
-    set union_id = #{unionId,jdbcType=VARCHAR},
+    set open_id = #{openId,jdbcType=VARCHAR},
+      union_id = #{unionId,jdbcType=VARCHAR},
       nick_name = #{nickName,jdbcType=VARCHAR},
       head_img_url = #{headImgUrl,jdbcType=VARCHAR},
-      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
-      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
+      gmt_modified = now()
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

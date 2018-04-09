@@ -7,13 +7,13 @@ public class UserSupplier {
 
     private Long wechatUserId;
 
-    private Long mobile;
+    private String mobileNo;
 
     private String businessLicenseName;
 
     private String businessLicenseImage;
 
-    private Byte status;
+    private Integer status;
 
     private String loginName;
 
@@ -39,12 +39,12 @@ public class UserSupplier {
         this.wechatUserId = wechatUserId;
     }
 
-    public Long getMobile() {
-        return mobile;
+    public String getMobileNo() {
+        return mobileNo;
     }
 
-    public void setMobile(Long mobile) {
-        this.mobile = mobile;
+    public void setMobileNo(String mobileNo) {
+        this.mobileNo = mobileNo == null ? null : mobileNo.trim();
     }
 
     public String getBusinessLicenseName() {
@@ -63,11 +63,11 @@ public class UserSupplier {
         this.businessLicenseImage = businessLicenseImage == null ? null : businessLicenseImage.trim();
     }
 
-    public Byte getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(Byte status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 

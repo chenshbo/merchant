@@ -1,146 +1,146 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.jiangzuoyoupin.mapper.UserSupplierMapper" >
-  <resultMap id="BaseResultMap" type="com.jiangzuoyoupin.domain.UserSupplier" >
-    <id column="id" property="id" jdbcType="BIGINT" />
-    <result column="wechat_user_id" property="wechatUserId" jdbcType="BIGINT" />
-    <result column="mobile" property="mobile" jdbcType="BIGINT" />
-    <result column="business_license_name" property="businessLicenseName" jdbcType="VARCHAR" />
-    <result column="business_license_image" property="businessLicenseImage" jdbcType="VARCHAR" />
-    <result column="status" property="status" jdbcType="TINYINT" />
-    <result column="login_name" property="loginName" jdbcType="VARCHAR" />
-    <result column="login_pwd" property="loginPwd" jdbcType="VARCHAR" />
-    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
-    <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiangzuoyoupin.mapper.UserSupplierMapper">
+  <resultMap id="BaseResultMap" type="com.jiangzuoyoupin.domain.UserSupplier">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="wechat_user_id" jdbcType="BIGINT" property="wechatUserId" />
+    <result column="mobile_no" jdbcType="VARCHAR" property="mobileNo" />
+    <result column="business_license_name" jdbcType="VARCHAR" property="businessLicenseName" />
+    <result column="business_license_image" jdbcType="VARCHAR" property="businessLicenseImage" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="login_name" jdbcType="VARCHAR" property="loginName" />
+    <result column="login_pwd" jdbcType="VARCHAR" property="loginPwd" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
   </resultMap>
-  <sql id="Base_Column_List" >
-    id, wechat_user_id, mobile, business_license_name, business_license_image, status, 
+  <sql id="Base_Column_List">
+    id, wechat_user_id, mobile_no, business_license_name, business_license_image, status, 
     login_name, login_pwd, gmt_create, gmt_modified
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_user_supplier
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from t_user_supplier
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.jiangzuoyoupin.domain.UserSupplier" >
-    insert into t_user_supplier (id, wechat_user_id, mobile, 
+  <insert id="insert" parameterType="com.jiangzuoyoupin.domain.UserSupplier">
+    insert into t_user_supplier (id, wechat_user_id, mobile_no, 
       business_license_name, business_license_image, 
       status, login_name, login_pwd, 
       gmt_create, gmt_modified)
-    values (#{id,jdbcType=BIGINT}, #{wechatUserId,jdbcType=BIGINT}, #{mobile,jdbcType=BIGINT}, 
+    values (#{id,jdbcType=BIGINT}, #{wechatUserId,jdbcType=BIGINT}, #{mobileNo,jdbcType=VARCHAR}, 
       #{businessLicenseName,jdbcType=VARCHAR}, #{businessLicenseImage,jdbcType=VARCHAR}, 
       #{status,jdbcType=TINYINT}, #{loginName,jdbcType=VARCHAR}, #{loginPwd,jdbcType=VARCHAR}, 
       #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.jiangzuoyoupin.domain.UserSupplier" >
+  <insert id="insertSelective" parameterType="com.jiangzuoyoupin.domain.UserSupplier">
     insert into t_user_supplier
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
         id,
       </if>
-      <if test="wechatUserId != null" >
+      <if test="wechatUserId != null">
         wechat_user_id,
       </if>
-      <if test="mobile != null" >
-        mobile,
+      <if test="mobileNo != null">
+        mobile_no,
       </if>
-      <if test="businessLicenseName != null" >
+      <if test="businessLicenseName != null">
         business_license_name,
       </if>
-      <if test="businessLicenseImage != null" >
+      <if test="businessLicenseImage != null">
         business_license_image,
       </if>
-      <if test="status != null" >
+      <if test="status != null">
         status,
       </if>
-      <if test="loginName != null" >
+      <if test="loginName != null">
         login_name,
       </if>
-      <if test="loginPwd != null" >
+      <if test="loginPwd != null">
         login_pwd,
       </if>
-      <if test="gmtCreate != null" >
+      <if test="gmtCreate != null">
         gmt_create,
       </if>
-      <if test="gmtModified != null" >
+      <if test="gmtModified != null">
         gmt_modified,
       </if>
     </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
         #{id,jdbcType=BIGINT},
       </if>
-      <if test="wechatUserId != null" >
+      <if test="wechatUserId != null">
         #{wechatUserId,jdbcType=BIGINT},
       </if>
-      <if test="mobile != null" >
-        #{mobile,jdbcType=BIGINT},
+      <if test="mobileNo != null">
+        #{mobileNo,jdbcType=VARCHAR},
       </if>
-      <if test="businessLicenseName != null" >
+      <if test="businessLicenseName != null">
         #{businessLicenseName,jdbcType=VARCHAR},
       </if>
-      <if test="businessLicenseImage != null" >
+      <if test="businessLicenseImage != null">
         #{businessLicenseImage,jdbcType=VARCHAR},
       </if>
-      <if test="status != null" >
+      <if test="status != null">
         #{status,jdbcType=TINYINT},
       </if>
-      <if test="loginName != null" >
+      <if test="loginName != null">
         #{loginName,jdbcType=VARCHAR},
       </if>
-      <if test="loginPwd != null" >
+      <if test="loginPwd != null">
         #{loginPwd,jdbcType=VARCHAR},
       </if>
-      <if test="gmtCreate != null" >
+      <if test="gmtCreate != null">
         #{gmtCreate,jdbcType=TIMESTAMP},
       </if>
-      <if test="gmtModified != null" >
+      <if test="gmtModified != null">
         #{gmtModified,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.jiangzuoyoupin.domain.UserSupplier" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.jiangzuoyoupin.domain.UserSupplier">
     update t_user_supplier
-    <set >
-      <if test="wechatUserId != null" >
+    <set>
+      <if test="wechatUserId != null">
         wechat_user_id = #{wechatUserId,jdbcType=BIGINT},
       </if>
-      <if test="mobile != null" >
-        mobile = #{mobile,jdbcType=BIGINT},
+      <if test="mobileNo != null">
+        mobile_no = #{mobileNo,jdbcType=VARCHAR},
       </if>
-      <if test="businessLicenseName != null" >
+      <if test="businessLicenseName != null">
         business_license_name = #{businessLicenseName,jdbcType=VARCHAR},
       </if>
-      <if test="businessLicenseImage != null" >
+      <if test="businessLicenseImage != null">
         business_license_image = #{businessLicenseImage,jdbcType=VARCHAR},
       </if>
-      <if test="status != null" >
+      <if test="status != null">
         status = #{status,jdbcType=TINYINT},
       </if>
-      <if test="loginName != null" >
+      <if test="loginName != null">
         login_name = #{loginName,jdbcType=VARCHAR},
       </if>
-      <if test="loginPwd != null" >
+      <if test="loginPwd != null">
         login_pwd = #{loginPwd,jdbcType=VARCHAR},
       </if>
-      <if test="gmtCreate != null" >
+      <if test="gmtCreate != null">
         gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
       </if>
-      <if test="gmtModified != null" >
+      <if test="gmtModified != null">
         gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.jiangzuoyoupin.domain.UserSupplier" >
+  <update id="updateByPrimaryKey" parameterType="com.jiangzuoyoupin.domain.UserSupplier">
     update t_user_supplier
     set wechat_user_id = #{wechatUserId,jdbcType=BIGINT},
-      mobile = #{mobile,jdbcType=BIGINT},
+      mobile_no = #{mobileNo,jdbcType=VARCHAR},
       business_license_name = #{businessLicenseName,jdbcType=VARCHAR},
       business_license_image = #{businessLicenseImage,jdbcType=VARCHAR},
       status = #{status,jdbcType=TINYINT},

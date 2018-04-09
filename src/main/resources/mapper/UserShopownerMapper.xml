@@ -1,202 +1,202 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.jiangzuoyoupin.mapper.UserShopownerMapper" >
-  <resultMap id="BaseResultMap" type="com.jiangzuoyoupin.domain.UserShopowner" >
-    <id column="id" property="id" jdbcType="BIGINT" />
-    <result column="wechat_user_id" property="wechatUserId" jdbcType="BIGINT" />
-    <result column="mobile" property="mobile" jdbcType="BIGINT" />
-    <result column="provice_id" property="proviceId" jdbcType="BIGINT" />
-    <result column="city_id" property="cityId" jdbcType="BIGINT" />
-    <result column="id_card_front_image" property="idCardFrontImage" jdbcType="VARCHAR" />
-    <result column="id_card_obverse_image" property="idCardObverseImage" jdbcType="VARCHAR" />
-    <result column="company_account_id" property="companyAccountId" jdbcType="BIGINT" />
-    <result column="register_amount" property="registerAmount" jdbcType="DOUBLE" />
-    <result column="remittance_certificate_image" property="remittanceCertificateImage" jdbcType="VARCHAR" />
-    <result column="login_name" property="loginName" jdbcType="VARCHAR" />
-    <result column="login_pwd" property="loginPwd" jdbcType="VARCHAR" />
-    <result column="status" property="status" jdbcType="TINYINT" />
-    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
-    <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiangzuoyoupin.mapper.UserShopownerMapper">
+  <resultMap id="BaseResultMap" type="com.jiangzuoyoupin.domain.UserShopowner">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="wechat_user_id" jdbcType="BIGINT" property="wechatUserId" />
+    <result column="mobile_no" jdbcType="VARCHAR" property="mobileNo" />
+    <result column="province_id" jdbcType="BIGINT" property="provinceId" />
+    <result column="city_id" jdbcType="BIGINT" property="cityId" />
+    <result column="id_card_front_image" jdbcType="VARCHAR" property="idCardFrontImage" />
+    <result column="id_card_obverse_image" jdbcType="VARCHAR" property="idCardObverseImage" />
+    <result column="company_account_id" jdbcType="BIGINT" property="companyAccountId" />
+    <result column="register_amount" jdbcType="DOUBLE" property="registerAmount" />
+    <result column="remittance_certificate_image" jdbcType="VARCHAR" property="remittanceCertificateImage" />
+    <result column="login_name" jdbcType="VARCHAR" property="loginName" />
+    <result column="login_pwd" jdbcType="VARCHAR" property="loginPwd" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
   </resultMap>
-  <sql id="Base_Column_List" >
-    id, wechat_user_id, mobile, provice_id, city_id, id_card_front_image, id_card_obverse_image, 
+  <sql id="Base_Column_List">
+    id, wechat_user_id, mobile_no, province_id, city_id, id_card_front_image, id_card_obverse_image, 
     company_account_id, register_amount, remittance_certificate_image, login_name, login_pwd, 
     status, gmt_create, gmt_modified
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_user_shopowner
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from t_user_shopowner
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.jiangzuoyoupin.domain.UserShopowner" >
-    insert into t_user_shopowner (id, wechat_user_id, mobile, 
-      provice_id, city_id, id_card_front_image, 
+  <insert id="insert" parameterType="com.jiangzuoyoupin.domain.UserShopowner">
+    insert into t_user_shopowner (id, wechat_user_id, mobile_no, 
+      province_id, city_id, id_card_front_image, 
       id_card_obverse_image, company_account_id, register_amount, 
       remittance_certificate_image, login_name, 
       login_pwd, status, gmt_create, 
       gmt_modified)
-    values (#{id,jdbcType=BIGINT}, #{wechatUserId,jdbcType=BIGINT}, #{mobile,jdbcType=BIGINT}, 
-      #{proviceId,jdbcType=BIGINT}, #{cityId,jdbcType=BIGINT}, #{idCardFrontImage,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=BIGINT}, #{wechatUserId,jdbcType=BIGINT}, #{mobileNo,jdbcType=VARCHAR}, 
+      #{provinceId,jdbcType=BIGINT}, #{cityId,jdbcType=BIGINT}, #{idCardFrontImage,jdbcType=VARCHAR}, 
       #{idCardObverseImage,jdbcType=VARCHAR}, #{companyAccountId,jdbcType=BIGINT}, #{registerAmount,jdbcType=DOUBLE}, 
       #{remittanceCertificateImage,jdbcType=VARCHAR}, #{loginName,jdbcType=VARCHAR}, 
       #{loginPwd,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, #{gmtCreate,jdbcType=TIMESTAMP}, 
       #{gmtModified,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.jiangzuoyoupin.domain.UserShopowner" >
+  <insert id="insertSelective" parameterType="com.jiangzuoyoupin.domain.UserShopowner">
     insert into t_user_shopowner
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
         id,
       </if>
-      <if test="wechatUserId != null" >
+      <if test="wechatUserId != null">
         wechat_user_id,
       </if>
-      <if test="mobile != null" >
-        mobile,
+      <if test="mobileNo != null">
+        mobile_no,
       </if>
-      <if test="proviceId != null" >
-        provice_id,
+      <if test="provinceId != null">
+        province_id,
       </if>
-      <if test="cityId != null" >
+      <if test="cityId != null">
         city_id,
       </if>
-      <if test="idCardFrontImage != null" >
+      <if test="idCardFrontImage != null">
         id_card_front_image,
       </if>
-      <if test="idCardObverseImage != null" >
+      <if test="idCardObverseImage != null">
         id_card_obverse_image,
       </if>
-      <if test="companyAccountId != null" >
+      <if test="companyAccountId != null">
         company_account_id,
       </if>
-      <if test="registerAmount != null" >
+      <if test="registerAmount != null">
         register_amount,
       </if>
-      <if test="remittanceCertificateImage != null" >
+      <if test="remittanceCertificateImage != null">
         remittance_certificate_image,
       </if>
-      <if test="loginName != null" >
+      <if test="loginName != null">
         login_name,
       </if>
-      <if test="loginPwd != null" >
+      <if test="loginPwd != null">
         login_pwd,
       </if>
-      <if test="status != null" >
+      <if test="status != null">
         status,
       </if>
-      <if test="gmtCreate != null" >
+      <if test="gmtCreate != null">
         gmt_create,
       </if>
-      <if test="gmtModified != null" >
+      <if test="gmtModified != null">
         gmt_modified,
       </if>
     </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
         #{id,jdbcType=BIGINT},
       </if>
-      <if test="wechatUserId != null" >
+      <if test="wechatUserId != null">
         #{wechatUserId,jdbcType=BIGINT},
       </if>
-      <if test="mobile != null" >
-        #{mobile,jdbcType=BIGINT},
+      <if test="mobileNo != null">
+        #{mobileNo,jdbcType=VARCHAR},
       </if>
-      <if test="proviceId != null" >
-        #{proviceId,jdbcType=BIGINT},
+      <if test="provinceId != null">
+        #{provinceId,jdbcType=BIGINT},
       </if>
-      <if test="cityId != null" >
+      <if test="cityId != null">
         #{cityId,jdbcType=BIGINT},
       </if>
-      <if test="idCardFrontImage != null" >
+      <if test="idCardFrontImage != null">
         #{idCardFrontImage,jdbcType=VARCHAR},
       </if>
-      <if test="idCardObverseImage != null" >
+      <if test="idCardObverseImage != null">
         #{idCardObverseImage,jdbcType=VARCHAR},
       </if>
-      <if test="companyAccountId != null" >
+      <if test="companyAccountId != null">
         #{companyAccountId,jdbcType=BIGINT},
       </if>
-      <if test="registerAmount != null" >
+      <if test="registerAmount != null">
         #{registerAmount,jdbcType=DOUBLE},
       </if>
-      <if test="remittanceCertificateImage != null" >
+      <if test="remittanceCertificateImage != null">
         #{remittanceCertificateImage,jdbcType=VARCHAR},
       </if>
-      <if test="loginName != null" >
+      <if test="loginName != null">
         #{loginName,jdbcType=VARCHAR},
       </if>
-      <if test="loginPwd != null" >
+      <if test="loginPwd != null">
         #{loginPwd,jdbcType=VARCHAR},
       </if>
-      <if test="status != null" >
+      <if test="status != null">
         #{status,jdbcType=TINYINT},
       </if>
-      <if test="gmtCreate != null" >
+      <if test="gmtCreate != null">
         #{gmtCreate,jdbcType=TIMESTAMP},
       </if>
-      <if test="gmtModified != null" >
+      <if test="gmtModified != null">
         #{gmtModified,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.jiangzuoyoupin.domain.UserShopowner" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.jiangzuoyoupin.domain.UserShopowner">
     update t_user_shopowner
-    <set >
-      <if test="wechatUserId != null" >
+    <set>
+      <if test="wechatUserId != null">
         wechat_user_id = #{wechatUserId,jdbcType=BIGINT},
       </if>
-      <if test="mobile != null" >
-        mobile = #{mobile,jdbcType=BIGINT},
+      <if test="mobileNo != null">
+        mobile_no = #{mobileNo,jdbcType=VARCHAR},
       </if>
-      <if test="proviceId != null" >
-        provice_id = #{proviceId,jdbcType=BIGINT},
+      <if test="provinceId != null">
+        province_id = #{provinceId,jdbcType=BIGINT},
       </if>
-      <if test="cityId != null" >
+      <if test="cityId != null">
         city_id = #{cityId,jdbcType=BIGINT},
       </if>
-      <if test="idCardFrontImage != null" >
+      <if test="idCardFrontImage != null">
         id_card_front_image = #{idCardFrontImage,jdbcType=VARCHAR},
       </if>
-      <if test="idCardObverseImage != null" >
+      <if test="idCardObverseImage != null">
         id_card_obverse_image = #{idCardObverseImage,jdbcType=VARCHAR},
       </if>
-      <if test="companyAccountId != null" >
+      <if test="companyAccountId != null">
         company_account_id = #{companyAccountId,jdbcType=BIGINT},
       </if>
-      <if test="registerAmount != null" >
+      <if test="registerAmount != null">
         register_amount = #{registerAmount,jdbcType=DOUBLE},
       </if>
-      <if test="remittanceCertificateImage != null" >
+      <if test="remittanceCertificateImage != null">
         remittance_certificate_image = #{remittanceCertificateImage,jdbcType=VARCHAR},
       </if>
-      <if test="loginName != null" >
+      <if test="loginName != null">
         login_name = #{loginName,jdbcType=VARCHAR},
       </if>
-      <if test="loginPwd != null" >
+      <if test="loginPwd != null">
         login_pwd = #{loginPwd,jdbcType=VARCHAR},
       </if>
-      <if test="status != null" >
+      <if test="status != null">
         status = #{status,jdbcType=TINYINT},
       </if>
-      <if test="gmtCreate != null" >
+      <if test="gmtCreate != null">
         gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
       </if>
-      <if test="gmtModified != null" >
+      <if test="gmtModified != null">
         gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.jiangzuoyoupin.domain.UserShopowner" >
+  <update id="updateByPrimaryKey" parameterType="com.jiangzuoyoupin.domain.UserShopowner">
     update t_user_shopowner
     set wechat_user_id = #{wechatUserId,jdbcType=BIGINT},
-      mobile = #{mobile,jdbcType=BIGINT},
-      provice_id = #{proviceId,jdbcType=BIGINT},
+      mobile_no = #{mobileNo,jdbcType=VARCHAR},
+      province_id = #{provinceId,jdbcType=BIGINT},
       city_id = #{cityId,jdbcType=BIGINT},
       id_card_front_image = #{idCardFrontImage,jdbcType=VARCHAR},
       id_card_obverse_image = #{idCardObverseImage,jdbcType=VARCHAR},

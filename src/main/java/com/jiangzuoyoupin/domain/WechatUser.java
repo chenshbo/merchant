@@ -5,6 +5,8 @@ import java.util.Date;
 public class WechatUser {
     private Long id;
 
+    private String openId;
+
     private String unionId;
 
     private String nickName;
@@ -61,5 +63,13 @@ public class WechatUser {
 
     public void setGmtModified(Date gmtModified) {
         this.gmtModified = gmtModified;
+    }
+
+    public String getOpenId() {
+        return openId;
+    }
+
+    public void setOpenId(String openId) {
+        this.openId = openId;
     }
 }

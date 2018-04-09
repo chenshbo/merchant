@@ -7,9 +7,9 @@ public class UserShopowner {
 
     private Long wechatUserId;
 
-    private Long mobile;
+    private String mobileNo;
 
-    private Long proviceId;
+    private Long provinceId;
 
     private Long cityId;
 
@@ -27,7 +27,7 @@ public class UserShopowner {
 
     private String loginPwd;
 
-    private Byte status;
+    private Integer status;
 
     private Date gmtCreate;
 
@@ -49,20 +49,20 @@ public class UserShopowner {
         this.wechatUserId = wechatUserId;
     }
 
-    public Long getMobile() {
-        return mobile;
+    public String getMobileNo() {
+        return mobileNo;
     }
 
-    public void setMobile(Long mobile) {
-        this.mobile = mobile;
+    public void setMobileNo(String mobileNo) {
+        this.mobileNo = mobileNo == null ? null : mobileNo.trim();
     }
 
-    public Long getProviceId() {
-        return proviceId;
+    public Long getProvinceId() {
+        return provinceId;
     }
 
-    public void setProviceId(Long proviceId) {
-        this.proviceId = proviceId;
+    public void setProvinceId(Long provinceId) {
+        this.provinceId = provinceId;
     }
 
     public Long getCityId() {
@@ -129,11 +129,11 @@ public class UserShopowner {
         this.loginPwd = loginPwd == null ? null : loginPwd.trim();
     }
 
-    public Byte getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(Byte status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 
