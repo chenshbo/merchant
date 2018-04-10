@@ -1,5 +1,6 @@
 package com.jiangzuoyoupin.service;
 
+import com.jiangzuoyoupin.domain.Area;
 import com.jiangzuoyoupin.domain.City;
 import com.jiangzuoyoupin.domain.Province;
 import com.jiangzuoyoupin.mapper.AreaMapper;
@@ -48,5 +49,9 @@ public class DictService {
      */
     public List<City> selectCityList(City city) {
         return cityMapper.selectListByParams(city);
+    }
+
+    public List<Area> selectAreaList(Area area) {
+        return areaMapper.selectListByParams(area);
     }
 }

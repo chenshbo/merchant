@@ -1,6 +1,7 @@
 package com.jiangzuoyoupin.controller.common;
 
 import com.jiangzuoyoupin.base.WebResult;
+import com.jiangzuoyoupin.domain.Area;
 import com.jiangzuoyoupin.domain.City;
 import com.jiangzuoyoupin.domain.Province;
 import com.jiangzuoyoupin.req.IdReq;
@@ -68,6 +69,24 @@ public class DictController extends BaseController{
         city.setProvinceId(provinceId);
         List<City> cityList = dictService.selectCityList(city);
         return WebResultUtil.returnResult(poList2voList(cityList, SelectVO.class));
+    }
+
+    /**
+     * 功能描述: 区县列表接口
+     *
+     * @param cityId
+     * @return: com.jiangzuoyoupin.base.WebResult<java.util.List<com.jiangzuoyoupin.vo.SelectVO>>
+     * @since: 1.0.0
+     * @author: chenshangbo
+     * @date: 2018-04-10 19-49-45
+     */
+    @ApiOperation(value = "城市列表接口", notes = "根据cityId查询区县列表")
+    @GetMapping(value = "/selectAreaList/{cityId}")
+    public WebResult<List<SelectVO>> selectAreaList(@ApiParam(name = "城市id", value = "cityId", required = true) @PathVariable Long cityId) {
+        Area area = new Area();
+        area.setCityId(cityId);
+        List<Area> areaList = dictService.selectAreaList(area);
+        return WebResultUtil.returnResult(poList2voList(areaList, SelectVO.class));
     }
 
 }

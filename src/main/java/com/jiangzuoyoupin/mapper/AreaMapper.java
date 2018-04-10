@@ -2,6 +2,8 @@ package com.jiangzuoyoupin.mapper;
 
 import com.jiangzuoyoupin.domain.Area;
 
+import java.util.List;
+
 public interface AreaMapper {
     int deleteByPrimaryKey(Long id);
 
@@ -14,4 +16,6 @@ public interface AreaMapper {
     int updateByPrimaryKeySelective(Area record);
 
     int updateByPrimaryKey(Area record);
+
+    List<Area> selectListByParams(Area area);
 }
