@@ -8,6 +8,7 @@ import com.jiangzuoyoupin.req.IdReq;
 import com.jiangzuoyoupin.req.NameReq;
 import com.jiangzuoyoupin.service.DictService;
 import com.jiangzuoyoupin.utils.WebResultUtil;
+import com.jiangzuoyoupin.vo.AreaTreeVO;
 import com.jiangzuoyoupin.vo.SelectVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -62,9 +63,9 @@ public class DictController extends BaseController{
      * @author: chenshangbo
      * @date: 2018/4/9 14:53
      */
-    @ApiOperation(value = "城市列表接口", notes = "条件查询城市列表")
+    @ApiOperation(value = "城市列表接口", notes = "根据provinceId查询城市列表")
     @GetMapping(value = "/selectCityList/{provinceId}")
-    public WebResult<List<SelectVO>> selectCityList(@ApiParam(name = "省份id", value = "provinceId", required = true) @PathVariable Long provinceId) {
+    public WebResult<List<SelectVO>> selectCityList(@ApiParam(name = "provinceId", value = "省份id", required = true) @PathVariable Long provinceId) {
         City city = new City();
         city.setProvinceId(provinceId);
         List<City> cityList = dictService.selectCityList(city);
@@ -80,13 +81,27 @@ public class DictController extends BaseController{
      * @author: chenshangbo
      * @date: 2018-04-10 19-49-45
      */
-    @ApiOperation(value = "城市列表接口", notes = "根据cityId查询区县列表")
+    @ApiOperation(value = "区县列表接口", notes = "根据cityId查询区县列表")
     @GetMapping(value = "/selectAreaList/{cityId}")
-    public WebResult<List<SelectVO>> selectAreaList(@ApiParam(name = "城市id", value = "cityId", required = true) @PathVariable Long cityId) {
+    public WebResult<List<SelectVO>> selectAreaList(@ApiParam(name = "cityId", value = "城市id", required = true) @PathVariable Long cityId) {
         Area area = new Area();
         area.setCityId(cityId);
         List<Area> areaList = dictService.selectAreaList(area);
         return WebResultUtil.returnResult(poList2voList(areaList, SelectVO.class));
+    }
+
+    /**
+     * 功能模块: 省市区树接口
+     *
+     * @param
+     * @return com.jiangzuoyoupin.base.WebResult<java.util.List<com.jiangzuoyoupin.vo.AreaTreeVO>>
+     * @author chenshangbo
+     * @date 2018-04-10 22:43:44
+     */
+    @ApiOperation(value = "省市区树接口", notes = "省市区树接口")
+    @GetMapping(value = "/selectAreaTree")
+    public WebResult<List<AreaTreeVO>> selectAreaTree() {
+        return WebResultUtil.returnResult(dictService.selectAreaTree());
     }
 
 }

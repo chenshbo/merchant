@@ -9,10 +9,6 @@ public class Province {
 
     private Integer sort;
 
-    private Date gmtCreate;
-
-    private Date gmtModified;
-
     public Long getId() {
         return id;
     }
@@ -37,19 +33,4 @@ public class Province {
         this.sort = sort;
     }
 
-    public Date getGmtCreate() {
-        return gmtCreate;
-    }
-
-    public void setGmtCreate(Date gmtCreate) {
-        this.gmtCreate = gmtCreate;
-    }
-
-    public Date getGmtModified() {
-        return gmtModified;
-    }
-
-    public void setGmtModified(Date gmtModified) {
-        this.gmtModified = gmtModified;
-    }
 }

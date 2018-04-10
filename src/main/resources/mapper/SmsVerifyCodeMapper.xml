@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jiangzuoyoupin.mapper.SmsVerifyCodeMapper" >
+  <resultMap id="BaseResultMap" type="com.jiangzuoyoupin.domain.SmsVerifyCode" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="wechat_user_id" property="wechatUserId" jdbcType="BIGINT" />
+    <result column="mobile_no" property="mobileNo" jdbcType="VARCHAR" />
+    <result column="verify_code" property="verifyCode" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="TINYINT" />
+    <result column="expire_in_date" property="expireInDate" jdbcType="TIMESTAMP" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, wechat_user_id, mobile_no, verify_code, type, expire_in_date, gmt_create, gmt_modified
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_sms_verify_code
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_sms_verify_code
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.jiangzuoyoupin.domain.SmsVerifyCode" keyProperty="id" useGeneratedKeys="true">
+    insert into t_sms_verify_code (wechat_user_id, mobile_no,
+      verify_code, type, expire_in_date, 
+      gmt_create, gmt_modified)
+    values (#{wechatUserId,jdbcType=BIGINT}, #{mobileNo,jdbcType=VARCHAR},
+      #{verifyCode,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, #{expireInDate,jdbcType=TIMESTAMP}, 
+      #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtCreate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.jiangzuoyoupin.domain.SmsVerifyCode" >
+    insert into t_sms_verify_code
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="wechatUserId != null" >
+        wechat_user_id,
+      </if>
+      <if test="mobileNo != null" >
+        mobile_no,
+      </if>
+      <if test="verifyCode != null" >
+        verify_code,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="expireInDate != null" >
+        expire_in_date,
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create,
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="wechatUserId != null" >
+        #{wechatUserId,jdbcType=BIGINT},
+      </if>
+      <if test="mobileNo != null" >
+        #{mobileNo,jdbcType=VARCHAR},
+      </if>
+      <if test="verifyCode != null" >
+        #{verifyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=TINYINT},
+      </if>
+      <if test="expireInDate != null" >
+        #{expireInDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtCreate != null" >
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.jiangzuoyoupin.domain.SmsVerifyCode" >
+    update t_sms_verify_code
+    <set >
+      <if test="wechatUserId != null" >
+        wechat_user_id = #{wechatUserId,jdbcType=BIGINT},
+      </if>
+      <if test="mobileNo != null" >
+        mobile_no = #{mobileNo,jdbcType=VARCHAR},
+      </if>
+      <if test="verifyCode != null" >
+        verify_code = #{verifyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=TINYINT},
+      </if>
+      <if test="expireInDate != null" >
+        expire_in_date = #{expireInDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.jiangzuoyoupin.domain.SmsVerifyCode" >
+    update t_sms_verify_code
+    set wechat_user_id = #{wechatUserId,jdbcType=BIGINT},
+      mobile_no = #{mobileNo,jdbcType=VARCHAR},
+      verify_code = #{verifyCode,jdbcType=VARCHAR},
+      type = #{type,jdbcType=TINYINT},
+      expire_in_date = #{expireInDate,jdbcType=TIMESTAMP},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="getByParams" resultMap="BaseResultMap" parameterType="com.jiangzuoyoupin.domain.SmsVerifyCode" >
+    select
+    <include refid="Base_Column_List" />
+    from t_sms_verify_code
+    where 1=1
+    <if test="mobileNo != null" >
+      and mobile_no = #{mobileNo,jdbcType=VARCHAR}
+    </if>
+    <if test="verifyCode != null" >
+      and verify_code = #{verifyCode,jdbcType=VARCHAR}
+    </if>
+    order by gmt_create desc
+  </select>
+
+  <select id="checkSendVerifyCodeCount" resultType="int" parameterType="com.jiangzuoyoupin.domain.SmsVerifyCode" >
+    select count(1) cnt
+    from t_sms_verify_code
+    where 1 = 1 and DATEDIFF(gmt_create,NOW()) = 0
+    <if test="mobileNo != null" >
+      and mobile_no = #{mobileNo,jdbcType=VARCHAR}
+    </if>
+  </select>
+
+</mapper>
