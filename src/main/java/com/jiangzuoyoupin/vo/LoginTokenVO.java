@@ -39,4 +39,12 @@ public class LoginTokenVO implements Serializable{
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
     }
+
+    public Date getAccessTokenExpires() {
+        return accessTokenExpires;
+    }
+
+    public void setAccessTokenExpires(Date accessTokenExpires) {
+        this.accessTokenExpires = accessTokenExpires;
+    }
 }
