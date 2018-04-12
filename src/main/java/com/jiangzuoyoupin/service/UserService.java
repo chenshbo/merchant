@@ -1,11 +1,17 @@
 package com.jiangzuoyoupin.service;
 
+import com.jiangzuoyoupin.domain.LoginToken;
 import com.jiangzuoyoupin.domain.UserFans;
-import com.jiangzuoyoupin.domain.WechatUser;
+import com.jiangzuoyoupin.domain.WeChatUser;
+import com.jiangzuoyoupin.mapper.LoginTokenMapper;
 import com.jiangzuoyoupin.mapper.UserFansMapper;
-import com.jiangzuoyoupin.mapper.WechatUserMapper;
+import com.jiangzuoyoupin.mapper.WeChatUserMapper;
+import com.jiangzuoyoupin.utils.TokenUtil;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 
 /**
  * 功能模块: 用户service
@@ -16,22 +22,41 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService {
 
+    // token过期天数
+    private final static Integer ACCESS_TOKEN_EXPIRE_DAY = 30;
+
     @Autowired
-    private WechatUserMapper wechatUserMapper;
+    private WeChatUserMapper weChatUserMapper;
 
     @Autowired
     private UserFansMapper userFansMapper;
 
+    @Autowired
+    private LoginTokenMapper loginTokenMapper;
+
     /**
-     * 功能模块: 保存微信用户信息
+     * 功能模块: 保存微信用户信息并生成token
      *
      * @param wechat
-     * @return int
+     * @return LoginToken
      * @author chenshangbo
      * @date 2018-04-09 21:14:34
      */
-    public int saveWxUserInfo(WechatUser wechat) {
-        return wechatUserMapper.insert(wechat);
+    public LoginToken saveWxUserInfoAndGenerateToken(WeChatUser wechat) {
+        LoginToken loginToken = null;
+        int result = weChatUserMapper.insert(wechat);
+        if (result > 0) {
+            // 生成登录信息
+            loginToken = new LoginToken();
+            loginToken.setWechatUserId(wechat.getId());
+            loginToken.setAccessToken(TokenUtil.generateToken());
+            Date date = new Date();
+            loginToken.setGmtCreate(date);
+            loginToken.setGmtModified(date);
+            loginToken.setAccessTokenExpires(DateUtils.addDays(date, ACCESS_TOKEN_EXPIRE_DAY));
+            loginTokenMapper.insert(loginToken);
+        }
+        return loginToken;
     }
 
     /**

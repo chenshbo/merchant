@@ -1,11 +1,33 @@
-package com.jiangzuoyoupin.controller.common;
+package com.jiangzuoyoupin.utils;
 
 import org.springframework.beans.BeanUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class BaseController {
+public class ConvertUtils {
+
+    /**
+     * 功能模块: vo转换
+     *
+     * @param fromObj
+     * @param clazz
+     * @return T
+     * @author chenshangbo
+     * @date 2018-04-12 23:37:41
+     */
+    public static <T> T convert2vo(Object fromObj,Class<T> clazz){
+        T vo = null;
+        try {
+            vo = clazz.newInstance();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        BeanUtils.copyProperties(fromObj, vo);
+        return vo;
+    }
 
     /**
      * Description: poList转化voList方法

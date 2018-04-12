@@ -2,16 +2,16 @@ package com.jiangzuoyoupin.domain;
 
 import java.util.Date;
 
-public class WechatUser {
+public class WeChatUser {
     private Long id;
 
     private String openId;
 
-    private String unionId;
-
     private String nickName;
 
-    private String headImgUrl;
+    private String avatarUrl;
+
+    private Byte gender;
 
     private Date gmtCreate;
 
@@ -25,12 +25,12 @@ public class WechatUser {
         this.id = id;
     }
 
-    public String getUnionId() {
-        return unionId;
+    public String getOpenId() {
+        return openId;
     }
 
-    public void setUnionId(String unionId) {
-        this.unionId = unionId == null ? null : unionId.trim();
+    public void setOpenId(String openId) {
+        this.openId = openId == null ? null : openId.trim();
     }
 
     public String getNickName() {
@@ -41,12 +41,20 @@ public class WechatUser {
         this.nickName = nickName == null ? null : nickName.trim();
     }
 
-    public String getHeadImgUrl() {
-        return headImgUrl;
+    public String getAvatarUrl() {
+        return avatarUrl;
     }
 
-    public void setHeadImgUrl(String headImgUrl) {
-        this.headImgUrl = headImgUrl == null ? null : headImgUrl.trim();
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl == null ? null : avatarUrl.trim();
+    }
+
+    public Byte getGender() {
+        return gender;
+    }
+
+    public void setGender(Byte gender) {
+        this.gender = gender;
     }
 
     public Date getGmtCreate() {
@@ -63,13 +71,5 @@ public class WechatUser {
 
     public void setGmtModified(Date gmtModified) {
         this.gmtModified = gmtModified;
-    }
-
-    public String getOpenId() {
-        return openId;
-    }
-
-    public void setOpenId(String openId) {
-        this.openId = openId;
     }
 }

@@ -1,17 +1,10 @@
 package com.jiangzuoyoupin.controller.mina;
 
-import com.alibaba.fastjson.JSON;
 import com.jiangzuoyoupin.base.WebResult;
-import com.jiangzuoyoupin.domain.SmsResult;
-import com.jiangzuoyoupin.domain.SmsVerifyCode;
 import com.jiangzuoyoupin.domain.UserFans;
-import com.jiangzuoyoupin.req.SendVerifyCodeReq;
 import com.jiangzuoyoupin.req.UserFansRegReq;
 import com.jiangzuoyoupin.service.SmsService;
 import com.jiangzuoyoupin.service.UserService;
-import com.jiangzuoyoupin.utils.DateUtil;
-import com.jiangzuoyoupin.utils.HttpUtil;
-import com.jiangzuoyoupin.utils.NumberUtil;
 import com.jiangzuoyoupin.utils.WebResultUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -19,9 +12,10 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Date;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Description: 用户controller

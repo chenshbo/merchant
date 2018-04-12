@@ -4,9 +4,9 @@ import com.jiangzuoyoupin.base.WebResult;
 import com.jiangzuoyoupin.domain.Area;
 import com.jiangzuoyoupin.domain.City;
 import com.jiangzuoyoupin.domain.Province;
-import com.jiangzuoyoupin.req.IdReq;
 import com.jiangzuoyoupin.req.NameReq;
 import com.jiangzuoyoupin.service.DictService;
+import com.jiangzuoyoupin.utils.ConvertUtils;
 import com.jiangzuoyoupin.utils.WebResultUtil;
 import com.jiangzuoyoupin.vo.AreaTreeVO;
 import com.jiangzuoyoupin.vo.SelectVO;
@@ -29,7 +29,7 @@ import java.util.List;
 @Api("数据字典模块")
 @RestController
 @RequestMapping("common/dict")
-public class DictController extends BaseController{
+public class DictController{
 
     @Autowired
     private DictService dictService;
@@ -50,7 +50,7 @@ public class DictController extends BaseController{
         Province province = new Province();
         BeanUtils.copyProperties(req, province);
         List<Province> provinceList = dictService.selectProvinceList(province);
-        return WebResultUtil.returnResult(poList2voList(provinceList, SelectVO.class));
+        return WebResultUtil.returnResult(ConvertUtils.poList2voList(provinceList, SelectVO.class));
     }
 
 
@@ -69,7 +69,7 @@ public class DictController extends BaseController{
         City city = new City();
         city.setProvinceId(provinceId);
         List<City> cityList = dictService.selectCityList(city);
-        return WebResultUtil.returnResult(poList2voList(cityList, SelectVO.class));
+        return WebResultUtil.returnResult(ConvertUtils.poList2voList(cityList, SelectVO.class));
     }
 
     /**
@@ -87,7 +87,7 @@ public class DictController extends BaseController{
         Area area = new Area();
         area.setCityId(cityId);
         List<Area> areaList = dictService.selectAreaList(area);
-        return WebResultUtil.returnResult(poList2voList(areaList, SelectVO.class));
+        return WebResultUtil.returnResult(ConvertUtils.poList2voList(areaList, SelectVO.class));
     }
 
     /**
