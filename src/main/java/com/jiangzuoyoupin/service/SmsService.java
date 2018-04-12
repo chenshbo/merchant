@@ -1,9 +1,7 @@
 package com.jiangzuoyoupin.service;
 
 import com.jiangzuoyoupin.domain.SmsVerifyCode;
-import com.jiangzuoyoupin.domain.WechatUser;
 import com.jiangzuoyoupin.mapper.SmsVerifyCodeMapper;
-import com.jiangzuoyoupin.mapper.WechatUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
