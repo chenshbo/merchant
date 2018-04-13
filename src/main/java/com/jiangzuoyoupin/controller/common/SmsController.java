@@ -28,7 +28,7 @@ import java.util.Date;
  * @author: chenshangbo
  * @date: 2018-4-9 21:21:39
  */
-@Api("短信模块")
+@Api("公共-短信模块")
 @RestController
 @RequestMapping("common/sms")
 public class SmsController {

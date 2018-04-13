@@ -6,7 +6,7 @@
     <result column="open_id" jdbcType="VARCHAR" property="openId" />
     <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
     <result column="avatar_url" jdbcType="VARCHAR" property="avatarUrl" />
-    <result column="gender" jdbcType="TINYINT" property="gender" />
+    <result column="gender" jdbcType="BIGINT" property="gender" />
     <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
   </resultMap>
@@ -19,31 +19,56 @@
     from t_wechat_user
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <!-- 参数查询 -->
+  <select id="getByParams" parameterType="com.jiangzuoyoupin.domain.WeChatUser" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_wechat_user
+    where 1=1
+    <if test="id != null">
+      AND id = #{id,jdbcType=BIGINT}
+    </if>
+    <if test="openId != null">
+      AND open_id = #{openId,jdbcType=VARCHAR}
+    </if>
+    <if test="nickName != null">
+      AND nick_name = #{nickName,jdbcType=VARCHAR}
+    </if>
+    <if test="gender != null">
+      AND gender = #{gender,jdbcType=BIGINT}
+    </if>
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from t_wechat_user
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" keyProperty="id" parameterType="com.jiangzuoyoupin.domain.WeChatUser" useGeneratedKeys="true">&gt;
-    insert into t_wechat_user (open_id, nick_name,
-      avatar_url, gender, gmt_create, 
-      gmt_modified)
-    values (#{openId,jdbcType=VARCHAR}, #{nickName,jdbcType=VARCHAR},
-      #{avatarUrl,jdbcType=VARCHAR}, #{gender,jdbcType=TINYINT}, now(),
-      now())
+  <insert id="insert" keyProperty="id" parameterType="com.jiangzuoyoupin.domain.WeChatUser" useGeneratedKeys="true">
+    insert into t_wechat_user (
+      open_id,
+      nick_name,
+      avatar_url,
+      gender,
+      gmt_create,
+      gmt_modified
+    )values (
+      #{openId,jdbcType=VARCHAR},
+      #{nickName,jdbcType=VARCHAR},
+      #{avatarUrl,jdbcType=VARCHAR},
+      #{gender,jdbcType=BIGINT},
+      now(),
+      now()
+    )
   </insert>
-  <insert id="insertSelective" parameterType="com.jiangzuoyoupin.domain.WeChatUser">
+  <insert id="insertSelective" parameterType="com.jiangzuoyoupin.domain.WeChatUser" keyProperty="id" useGeneratedKeys="true">
     insert into t_wechat_user
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="openId != null">
+      <if test="openId != null and openId != ''">
         open_id,
       </if>
-      <if test="nickName != null">
+      <if test="nickName != null and nickName != ''">
         nick_name,
       </if>
-      <if test="avatarUrl != null">
+      <if test="avatarUrl != null and avatarUrl != ''">
         avatar_url,
       </if>
       <if test="gender != null">
@@ -60,17 +85,17 @@
       <if test="id != null">
         #{id,jdbcType=BIGINT},
       </if>
-      <if test="openId != null">
+      <if test="openId != null and openId != ''">
         #{openId,jdbcType=VARCHAR},
       </if>
-      <if test="nickName != null">
+      <if test="nickName != null and nickName != ''">
         #{nickName,jdbcType=VARCHAR},
       </if>
-      <if test="avatarUrl != null">
+      <if test="avatarUrl != null and avatarUrl != ''">
         #{avatarUrl,jdbcType=VARCHAR},
       </if>
       <if test="gender != null">
-        #{gender,jdbcType=TINYINT},
+        #{gender,jdbcType=BIGINT},
       </if>
       <if test="gmtCreate != null">
         #{gmtCreate,jdbcType=TIMESTAMP},
@@ -83,21 +108,19 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.jiangzuoyoupin.domain.WeChatUser">
     update t_wechat_user
     <set>
-      <if test="openId != null">
+      <if test="openId != null and openId != ''">
         open_id = #{openId,jdbcType=VARCHAR},
       </if>
-      <if test="nickName != null">
+      <if test="nickName != null and nickName != ''">
         nick_name = #{nickName,jdbcType=VARCHAR},
       </if>
-      <if test="avatarUrl != null">
+      <if test="avatarUrl != null and avatarUrl != ''">
         avatar_url = #{avatarUrl,jdbcType=VARCHAR},
       </if>
       <if test="gender != null">
-        gender = #{gender,jdbcType=TINYINT},
+        gender = #{gender,jdbcType=BIGINT},
       </if>
-      <if test="gmtModified != null">
-        gmt_modified = now(),
-      </if>
+      gmt_modified = now()
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -106,7 +129,7 @@
     set open_id = #{openId,jdbcType=VARCHAR},
       nick_name = #{nickName,jdbcType=VARCHAR},
       avatar_url = #{avatarUrl,jdbcType=VARCHAR},
-      gender = #{gender,jdbcType=TINYINT},
+      gender = #{gender,jdbcType=BIGINT},
       gmt_modified = now()
     where id = #{id,jdbcType=BIGINT}
   </update>

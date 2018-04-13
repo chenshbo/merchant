@@ -26,7 +26,7 @@ import java.util.List;
  * @author chenshangbo
  * @date 2018-4-8 22:09:04
  */
-@Api("数据字典模块")
+@Api("公共-数据字典模块")
 @RestController
 @RequestMapping("common/dict")
 public class DictController{

@@ -13,22 +13,11 @@ public class UserFansRegReq implements Serializable{
 
     private static final long serialVersionUID = 7442951154430478738L;
     
-    @ApiModelProperty(value = "微信用户id",required = true)
-    private Long wechatUserId;
-
     @ApiModelProperty(value = "手机号码",required = true)
     private String mobileNo;
 
     @ApiModelProperty(value = "验证码",required = true)
     private String verifyCode;
-
-    public Long getWechatUserId() {
-        return wechatUserId;
-    }
-
-    public void setWechatUserId(Long wechatUserId) {
-        this.wechatUserId = wechatUserId;
-    }
 
     public String getMobileNo() {
         return mobileNo;

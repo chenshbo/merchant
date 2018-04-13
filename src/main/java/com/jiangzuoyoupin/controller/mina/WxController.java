@@ -15,7 +15,10 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 功能描述: 微信api controller
@@ -23,7 +26,7 @@ import org.springframework.web.bind.annotation.*;
  * @author: chenshangbo
  * @date: 2018/4/9 15:06
  */
-@Api("微信API模块")
+@Api("小程序-微信API模块")
 @RestController
 @RequestMapping("mina/wx")
 public class WxController {

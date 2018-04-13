@@ -11,6 +11,8 @@ public class LoginToken {
 
     private Date accessTokenExpires;
 
+    private Integer status;
+
     private Date gmtCreate;
 
     private Date gmtModified;
@@ -45,6 +47,14 @@ public class LoginToken {
 
     public void setAccessTokenExpires(Date accessTokenExpires) {
         this.accessTokenExpires = accessTokenExpires;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public Date getGmtCreate() {
