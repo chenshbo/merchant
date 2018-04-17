@@ -1,26 +1,28 @@
-package com.jiangzuoyoupin.domain;
+package com.jiangzuoyoupin.vo;
+
+import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
 
-public class UserSupplier{
+public class UserSupplierVO extends WeChatUserVO {
+
+    @ApiModelProperty(value = "主键id")
     private Long id;
-
-    private Long wechatUserId;
-
+    @ApiModelProperty(value = "手机号码")
     private String mobileNo;
-
+    @ApiModelProperty(value = "营业执照名称")
     private String businessLicenseName;
-
+    @ApiModelProperty(value = "营业执照图片")
     private String businessLicenseImage;
-
+    @ApiModelProperty(value = "审核状态，0-未审核1-审核通过2-审核驳回")
     private Integer status;
-
+    @ApiModelProperty(value = "供应商后台账号")
     private String loginName;
-
+    @ApiModelProperty(value = "供应商后台密码")
     private String loginPwd;
-
+    @ApiModelProperty(value = "申请时间")
     private Date gmtCreate;
-
+    @ApiModelProperty(value = "审核时间")
     private Date gmtModified;
 
     public Long getId() {
@@ -29,14 +31,6 @@ public class UserSupplier{
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Long getWechatUserId() {
-        return wechatUserId;
-    }
-
-    public void setWechatUserId(Long wechatUserId) {
-        this.wechatUserId = wechatUserId;
     }
 
     public String getMobileNo() {

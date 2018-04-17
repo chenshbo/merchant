@@ -1,8 +1,8 @@
-package com.jiangzuoyoupin.domain;
+package com.jiangzuoyoupin.dto;
 
 import java.util.Date;
 
-public class UserShopowner{
+public class UserShopownerDto extends WeChatUserDto {
     private Long id;
 
     private Long wechatUserId;

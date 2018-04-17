@@ -2,10 +2,12 @@ package com.jiangzuoyoupin.service;
 
 import com.jiangzuoyoupin.domain.LoginToken;
 import com.jiangzuoyoupin.domain.UserFans;
+import com.jiangzuoyoupin.domain.UserSupplier;
 import com.jiangzuoyoupin.domain.WeChatUser;
 import com.jiangzuoyoupin.mapper.LoginTokenMapper;
 import com.jiangzuoyoupin.mapper.UserFansMapper;
 import com.jiangzuoyoupin.mapper.WeChatUserMapper;
+import com.jiangzuoyoupin.req.SupplierQueryReq;
 import com.jiangzuoyoupin.utils.TokenUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 功能模块: 用户service

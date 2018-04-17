@@ -1,10 +1,11 @@
 package com.jiangzuoyoupin.req;
 
+import com.jiangzuoyoupin.base.PageReq;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
 
-public class SupplierQueryReq implements Serializable{
+public class SupplierQueryReq extends PageReq{
 
     private static final long serialVersionUID = -5736802827734888691L;
 

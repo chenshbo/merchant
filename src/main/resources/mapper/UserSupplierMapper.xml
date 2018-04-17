@@ -7,11 +7,27 @@
     <result column="mobile_no" jdbcType="VARCHAR" property="mobileNo" />
     <result column="business_license_name" jdbcType="VARCHAR" property="businessLicenseName" />
     <result column="business_license_image" jdbcType="VARCHAR" property="businessLicenseImage" />
-    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="status" jdbcType="BIGINT" property="status" />
     <result column="login_name" jdbcType="VARCHAR" property="loginName" />
     <result column="login_pwd" jdbcType="VARCHAR" property="loginPwd" />
     <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+  </resultMap>
+  <resultMap id="ListResultMap" type="com.jiangzuoyoupin.dto.UserSupplierDto">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="wechat_user_id" jdbcType="BIGINT" property="wechatUserId" />
+    <result column="mobile_no" jdbcType="VARCHAR" property="mobileNo" />
+    <result column="business_license_name" jdbcType="VARCHAR" property="businessLicenseName" />
+    <result column="business_license_image" jdbcType="VARCHAR" property="businessLicenseImage" />
+    <result column="status" jdbcType="BIGINT" property="status" />
+    <result column="login_name" jdbcType="VARCHAR" property="loginName" />
+    <result column="login_pwd" jdbcType="VARCHAR" property="loginPwd" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+    <result column="open_id" jdbcType="VARCHAR" property="openId" />
+    <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+    <result column="avatar_url" jdbcType="VARCHAR" property="avatarUrl" />
+    <result column="gender" jdbcType="BIGINT" property="gender" />
   </resultMap>
   <sql id="Base_Column_List">
     id, wechat_user_id, mobile_no, business_license_name, business_license_image, status, 
@@ -23,19 +39,44 @@
     from t_user_supplier
     where id = #{id,jdbcType=BIGINT}
   </select>
+
+  <select id="selectByParams" parameterType="com.jiangzuoyoupin.domain.UserSupplier" resultMap="ListResultMap">
+    SELECT
+      t_user_supplier.id,
+      t_user_supplier.mobile_no,
+      t_user_supplier.business_license_name,
+      t_user_supplier.business_license_image,
+      t_user_supplier.status,
+      t_user_supplier.login_name,
+      t_user_supplier.login_pwd,
+      t_user_supplier.gmt_create,
+      t_user_supplier.gmt_modified,
+      t_wechat_user.nick_name,
+      t_wechat_user.avatar_url,
+      t_wechat_user.gender
+    FROM t_user_supplier
+    LEFT JOIN t_wechat_user ON t_user_supplier.wechat_user_id = t_wechat_user.id
+    where 1=1
+    <if test="mobileNo != null and mobileNo != ''">
+      and t_user_supplier.mobile_no = #{mobileNo,jdbcType=VARCHAR}
+    </if>
+    <if test="status != null">
+      and t_user_supplier.status = #{status,jdbcType=BIGINT}
+    </if>
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from t_user_supplier
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.jiangzuoyoupin.domain.UserSupplier">
-    insert into t_user_supplier (id, wechat_user_id, mobile_no, 
+  <insert id="insert" parameterType="com.jiangzuoyoupin.domain.UserSupplier" keyProperty="id" useGeneratedKeys="true">
+    insert into t_user_supplier (wechat_user_id, mobile_no,
       business_license_name, business_license_image, 
       status, login_name, login_pwd, 
       gmt_create, gmt_modified)
-    values (#{id,jdbcType=BIGINT}, #{wechatUserId,jdbcType=BIGINT}, #{mobileNo,jdbcType=VARCHAR}, 
+    values (#{wechatUserId,jdbcType=BIGINT}, #{mobileNo,jdbcType=VARCHAR},
       #{businessLicenseName,jdbcType=VARCHAR}, #{businessLicenseImage,jdbcType=VARCHAR}, 
-      #{status,jdbcType=TINYINT}, #{loginName,jdbcType=VARCHAR}, #{loginPwd,jdbcType=VARCHAR}, 
-      #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP})
+      #{status,jdbcType=BIGINT}, #{loginName,jdbcType=VARCHAR}, #{loginPwd,jdbcType=VARCHAR}, 
+      now(),now())
   </insert>
   <insert id="insertSelective" parameterType="com.jiangzuoyoupin.domain.UserSupplier">
     insert into t_user_supplier
@@ -46,7 +87,7 @@
       <if test="wechatUserId != null">
         wechat_user_id,
       </if>
-      <if test="mobileNo != null">
+      <if test="mobileNo != null and mobileNo != ''">
         mobile_no,
       </if>
       <if test="businessLicenseName != null">
@@ -88,7 +129,7 @@
         #{businessLicenseImage,jdbcType=VARCHAR},
       </if>
       <if test="status != null">
-        #{status,jdbcType=TINYINT},
+        #{status,jdbcType=BIGINT},
       </if>
       <if test="loginName != null">
         #{loginName,jdbcType=VARCHAR},
@@ -104,35 +145,29 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.jiangzuoyoupin.domain.UserSupplier">
+  <update id="updateByParams" parameterType="com.jiangzuoyoupin.domain.UserSupplier">
     update t_user_supplier
     <set>
-      <if test="wechatUserId != null">
-        wechat_user_id = #{wechatUserId,jdbcType=BIGINT},
-      </if>
-      <if test="mobileNo != null">
+      <if test="mobileNo != null and mobileNo != ''">
         mobile_no = #{mobileNo,jdbcType=VARCHAR},
       </if>
-      <if test="businessLicenseName != null">
+      <if test="businessLicenseName != null and businessLicenseName != ''">
         business_license_name = #{businessLicenseName,jdbcType=VARCHAR},
       </if>
-      <if test="businessLicenseImage != null">
+      <if test="businessLicenseImage != null and businessLicenseImage != ''">
         business_license_image = #{businessLicenseImage,jdbcType=VARCHAR},
       </if>
       <if test="status != null">
-        status = #{status,jdbcType=TINYINT},
+        status = #{status,jdbcType=BIGINT},
       </if>
-      <if test="loginName != null">
+      <if test="loginName != null and loginName != ''">
         login_name = #{loginName,jdbcType=VARCHAR},
       </if>
-      <if test="loginPwd != null">
+      <if test="loginPwd != null and loginPwd != ''">
         login_pwd = #{loginPwd,jdbcType=VARCHAR},
       </if>
-      <if test="gmtCreate != null">
-        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="gmtModified != null">
-        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      <if test="remark != null and remark != ''">
+        remark = #{remark,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
@@ -143,7 +178,7 @@
       mobile_no = #{mobileNo,jdbcType=VARCHAR},
       business_license_name = #{businessLicenseName,jdbcType=VARCHAR},
       business_license_image = #{businessLicenseImage,jdbcType=VARCHAR},
-      status = #{status,jdbcType=TINYINT},
+      status = #{status,jdbcType=BIGINT},
       login_name = #{loginName,jdbcType=VARCHAR},
       login_pwd = #{loginPwd,jdbcType=VARCHAR},
       gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
