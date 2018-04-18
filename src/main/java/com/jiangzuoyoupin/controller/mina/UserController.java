@@ -3,8 +3,10 @@ package com.jiangzuoyoupin.controller.mina;
 import com.jiangzuoyoupin.annotation.Auth;
 import com.jiangzuoyoupin.base.WebResult;
 import com.jiangzuoyoupin.domain.UserFans;
+import com.jiangzuoyoupin.domain.UserSupplier;
 import com.jiangzuoyoupin.domain.WeChatUser;
 import com.jiangzuoyoupin.req.UserFansRegReq;
+import com.jiangzuoyoupin.req.UserSupplierReqReq;
 import com.jiangzuoyoupin.service.SmsService;
 import com.jiangzuoyoupin.service.UserService;
 import com.jiangzuoyoupin.utils.WebResultUtil;
@@ -15,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpRequest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,10 +32,16 @@ import javax.servlet.http.HttpServletRequest;
  * @date 2018/4/9
  */
 @Auth
-@Api("小程序-用户模块")
+@Api(value = "小程序-用户模块",tags = "123")
 @RestController
 @RequestMapping("mina/user")
 public class UserController {
+
+    @Value("${images.path}")
+    private String imagesPath;
+
+    @Value("${root.url}")
+    private String rootUrl;
 
     @Autowired
     private UserService userService;
@@ -53,18 +62,52 @@ public class UserController {
     @ApiImplicitParam(name = "req", value = "粉丝注册对象", dataType = "UserFansRegReq")
     @PostMapping(value = "/registerFans")
     public WebResult registerFans(@RequestBody UserFansRegReq req, HttpServletRequest request) {
+        WeChatUser weChatUser = getWeChatUserByToken(request);
+        if(weChatUser == null){
+            return WebResultUtil.returnErrMsgResult("登录信息失效，请重新登录");
+        }
         String errMsg = smsService.checkVerifyCode(req.getMobileNo(), req.getVerifyCode());
         if(StringUtils.isNotEmpty(errMsg)){
             return WebResultUtil.returnErrMsgResult(errMsg);
         }
         UserFans fans = new UserFans();
         BeanUtils.copyProperties(req, fans);
+        fans.setWechatUserId(weChatUser.getId());
+        int res = userService.registerFans(fans);
+        if(res == 0){
+            WebResultUtil.returnErrMsgResult("注册失败");
+        }
+        return WebResultUtil.returnResult();
+    }
+
+
+    /**
+     * 功能模块: 供应商注册
+     *
+     * @param req
+     * @param request
+     * @return com.jiangzuoyoupin.base.WebResult
+     * @author chenshangbo
+     * @date 2018-04-18 22:39:39
+     */
+    @ApiOperation(value = "供应商注册", notes = "供应商注册")
+    @ApiImplicitParam(name = "req", value = "供应商注册对象", dataType = "UserSupplierReqReq")
+    @PostMapping(value = "/registerSupplier")
+    public WebResult registerSupplier(@RequestBody UserSupplierReqReq req, HttpServletRequest request) {
         WeChatUser weChatUser = getWeChatUserByToken(request);
         if(weChatUser == null){
             return WebResultUtil.returnErrMsgResult("登录信息失效，请重新登录");
         }
-        fans.setWechatUserId(weChatUser.getId());
-        int res = userService.registerFans(fans);
+        String errMsg = smsService.checkVerifyCode(req.getMobileNo(), req.getVerifyCode());
+        if(StringUtils.isNotEmpty(errMsg)){
+            return WebResultUtil.returnErrMsgResult(errMsg);
+        }
+        UserSupplier supplier = new UserSupplier();
+        BeanUtils.copyProperties(req, supplier);
+        supplier.setStatus(0);
+        supplier.setBusinessLicenseImage(imagesPath + "/" + supplier.getBusinessLicenseImage());
+        supplier.setWechatUserId(weChatUser.getId());
+        int res = userService.registerSupplier(supplier);
         if(res == 0){
             WebResultUtil.returnErrMsgResult("注册失败");
         }

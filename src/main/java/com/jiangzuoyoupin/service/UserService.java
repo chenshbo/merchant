@@ -6,6 +6,7 @@ import com.jiangzuoyoupin.domain.UserSupplier;
 import com.jiangzuoyoupin.domain.WeChatUser;
 import com.jiangzuoyoupin.mapper.LoginTokenMapper;
 import com.jiangzuoyoupin.mapper.UserFansMapper;
+import com.jiangzuoyoupin.mapper.UserSupplierMapper;
 import com.jiangzuoyoupin.mapper.WeChatUserMapper;
 import com.jiangzuoyoupin.req.SupplierQueryReq;
 import com.jiangzuoyoupin.utils.TokenUtil;
@@ -34,6 +35,9 @@ public class UserService {
 
     @Autowired
     private UserFansMapper userFansMapper;
+
+    @Autowired
+    private UserSupplierMapper userSupplierMapper;
 
     @Autowired
     private LoginTokenMapper loginTokenMapper;
@@ -109,5 +113,9 @@ public class UserService {
 
     public WeChatUser getUserInfoByToken(String accessToken) {
         return loginTokenMapper.getUserInfoByToken(accessToken);
+    }
+
+    public int registerSupplier(UserSupplier supplier) {
+        return userSupplierMapper.insert(supplier);
     }
 }

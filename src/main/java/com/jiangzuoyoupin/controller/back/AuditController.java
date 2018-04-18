@@ -16,12 +16,14 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 功能描述: 后台用户审核controller
@@ -34,6 +36,9 @@ import java.util.List;
 @RestController
 @RequestMapping("back/audit")
 public class AuditController {
+
+    @Value("${root.url}")
+    private String rootUrl;
 
     @Autowired
     private SupplierService supplierService;
@@ -52,7 +57,13 @@ public class AuditController {
     @PostMapping(value = "/supplier/list")
     public WebPageResult<List<UserSupplierVO>> selectSupplierList(@RequestBody SupplierQueryReq req) {
         List<UserSupplierDto> supplierList = supplierService.selectSupplierList(req);
-        return WebResultUtil.returnPageResult(ConvertUtils.poList2voList(supplierList, UserSupplierVO.class), supplierList, req.getPagingRequired());
+        List<UserSupplierVO> voList = supplierList.stream().map(res -> {
+            UserSupplierVO vo = new UserSupplierVO();
+            BeanUtils.copyProperties(res, vo);
+            vo.setBusinessLicenseImage(rootUrl + vo.getBusinessLicenseImage());
+            return vo;
+        }).collect(Collectors.toList());
+        return WebResultUtil.returnPageResult(voList, supplierList, req.getPagingRequired());
     }
 
     /**

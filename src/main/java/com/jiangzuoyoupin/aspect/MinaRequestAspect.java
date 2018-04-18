@@ -61,7 +61,7 @@ public class MinaRequestAspect {
         }
 
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        String reqParams = JSONObject.toJSONString(call.getArgs());
+        String reqParams = JSONObject.toJSONString(call.getArgs()[0]);
         String api = request.getRequestURI();
 
         String reqId = getRandom(10);

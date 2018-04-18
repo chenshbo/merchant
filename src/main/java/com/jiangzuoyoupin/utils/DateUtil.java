@@ -100,6 +100,13 @@ public class DateUtil extends DateUtils {
 		return dateFormats.get().ymdhms.format(date);
 	}
 
+	public static String formatYMDHMSSS(Date date) {
+		if(date == null){
+			return null;
+		}
+		return dateFormats.get().ymdhmsss.format(date);
+	}
+
     public static String format(Date date, String format) {
         SimpleDateFormat _format = new SimpleDateFormat(format);
         return _format.format(date);
@@ -586,6 +593,7 @@ class DateFormats {
 	public final SimpleDateFormat ymdhms = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	public final SimpleDateFormat ymdChinese = new SimpleDateFormat("yyyy年MM月dd");
 	public final SimpleDateFormat ymdSlash = new SimpleDateFormat("yyyy/MM/dd");
+	public final SimpleDateFormat ymdhmsss = new SimpleDateFormat("yyyyMMddHHmmssSSS");
 }
 
 class DateTimeFormatters{

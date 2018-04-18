@@ -9,8 +9,6 @@ public class UserSupplier{
 
     private String mobileNo;
 
-    private String businessLicenseName;
-
     private String businessLicenseImage;
 
     private Integer status;
@@ -45,14 +43,6 @@ public class UserSupplier{
 
     public void setMobileNo(String mobileNo) {
         this.mobileNo = mobileNo == null ? null : mobileNo.trim();
-    }
-
-    public String getBusinessLicenseName() {
-        return businessLicenseName;
-    }
-
-    public void setBusinessLicenseName(String businessLicenseName) {
-        this.businessLicenseName = businessLicenseName == null ? null : businessLicenseName.trim();
     }
 
     public String getBusinessLicenseImage() {

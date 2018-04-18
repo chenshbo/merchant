@@ -10,8 +10,6 @@ public class UserSupplierVO extends WeChatUserVO {
     private Long id;
     @ApiModelProperty(value = "手机号码")
     private String mobileNo;
-    @ApiModelProperty(value = "营业执照名称")
-    private String businessLicenseName;
     @ApiModelProperty(value = "营业执照图片")
     private String businessLicenseImage;
     @ApiModelProperty(value = "审核状态，0-未审核1-审核通过2-审核驳回")
@@ -39,14 +37,6 @@ public class UserSupplierVO extends WeChatUserVO {
 
     public void setMobileNo(String mobileNo) {
         this.mobileNo = mobileNo == null ? null : mobileNo.trim();
-    }
-
-    public String getBusinessLicenseName() {
-        return businessLicenseName;
-    }
-
-    public void setBusinessLicenseName(String businessLicenseName) {
-        this.businessLicenseName = businessLicenseName == null ? null : businessLicenseName.trim();
     }
 
     public String getBusinessLicenseImage() {
