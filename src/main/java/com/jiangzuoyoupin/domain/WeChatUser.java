@@ -7,6 +7,8 @@ public class WeChatUser {
 
     private String openId;
 
+    private String mobileNo;
+
     private String nickName;
 
     private String avatarUrl;
@@ -31,6 +33,14 @@ public class WeChatUser {
 
     public void setOpenId(String openId) {
         this.openId = openId == null ? null : openId.trim();
+    }
+
+    public String getMobileNo() {
+        return mobileNo;
+    }
+
+    public void setMobileNo(String mobileNo) {
+        this.mobileNo = mobileNo;
     }
 
     public String getNickName() {
