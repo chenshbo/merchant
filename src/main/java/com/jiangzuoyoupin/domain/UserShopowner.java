@@ -2,7 +2,7 @@ package com.jiangzuoyoupin.domain;
 
 import java.util.Date;
 
-public class UserShopowner{
+public class UserShopowner {
     private Long id;
 
     private Long wechatUserId;
@@ -13,19 +13,9 @@ public class UserShopowner{
 
     private Long cityId;
 
-    private String idCardFrontImage;
+    private Long areaId;
 
-    private String idCardObverseImage;
-
-    private Long companyAccountId;
-
-    private Double registerAmount;
-
-    private String remittanceCertificateImage;
-
-    private String loginName;
-
-    private String loginPwd;
+    private String businessLicenseImage;
 
     private Integer status;
 
@@ -73,60 +63,20 @@ public class UserShopowner{
         this.cityId = cityId;
     }
 
-    public String getIdCardFrontImage() {
-        return idCardFrontImage;
+    public Long getAreaId() {
+        return areaId;
     }
 
-    public void setIdCardFrontImage(String idCardFrontImage) {
-        this.idCardFrontImage = idCardFrontImage == null ? null : idCardFrontImage.trim();
+    public void setAreaId(Long areaId) {
+        this.areaId = areaId;
     }
 
-    public String getIdCardObverseImage() {
-        return idCardObverseImage;
+    public String getBusinessLicenseImage() {
+        return businessLicenseImage;
     }
 
-    public void setIdCardObverseImage(String idCardObverseImage) {
-        this.idCardObverseImage = idCardObverseImage == null ? null : idCardObverseImage.trim();
-    }
-
-    public Long getCompanyAccountId() {
-        return companyAccountId;
-    }
-
-    public void setCompanyAccountId(Long companyAccountId) {
-        this.companyAccountId = companyAccountId;
-    }
-
-    public Double getRegisterAmount() {
-        return registerAmount;
-    }
-
-    public void setRegisterAmount(Double registerAmount) {
-        this.registerAmount = registerAmount;
-    }
-
-    public String getRemittanceCertificateImage() {
-        return remittanceCertificateImage;
-    }
-
-    public void setRemittanceCertificateImage(String remittanceCertificateImage) {
-        this.remittanceCertificateImage = remittanceCertificateImage == null ? null : remittanceCertificateImage.trim();
-    }
-
-    public String getLoginName() {
-        return loginName;
-    }
-
-    public void setLoginName(String loginName) {
-        this.loginName = loginName == null ? null : loginName.trim();
-    }
-
-    public String getLoginPwd() {
-        return loginPwd;
-    }
-
-    public void setLoginPwd(String loginPwd) {
-        this.loginPwd = loginPwd == null ? null : loginPwd.trim();
+    public void setBusinessLicenseImage(String businessLicenseImage) {
+        this.businessLicenseImage = businessLicenseImage == null ? null : businessLicenseImage.trim();
     }
 
     public Integer getStatus() {

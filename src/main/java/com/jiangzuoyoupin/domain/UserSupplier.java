@@ -3,6 +3,7 @@ package com.jiangzuoyoupin.domain;
 import java.util.Date;
 
 public class UserSupplier{
+
     private Long id;
 
     private Long wechatUserId;
@@ -10,6 +11,12 @@ public class UserSupplier{
     private String mobileNo;
 
     private String businessLicenseImage;
+
+    private Long provinceId;
+
+    private Long cityId;
+
+    private Long areaId;
 
     private Integer status;
 
@@ -51,6 +58,30 @@ public class UserSupplier{
 
     public void setBusinessLicenseImage(String businessLicenseImage) {
         this.businessLicenseImage = businessLicenseImage == null ? null : businessLicenseImage.trim();
+    }
+
+    public Long getProvinceId() {
+        return provinceId;
+    }
+
+    public void setProvinceId(Long provinceId) {
+        this.provinceId = provinceId;
+    }
+
+    public Long getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(Long cityId) {
+        this.cityId = cityId;
+    }
+
+    public Long getAreaId() {
+        return areaId;
+    }
+
+    public void setAreaId(Long areaId) {
+        this.areaId = areaId;
     }
 
     public Integer getStatus() {

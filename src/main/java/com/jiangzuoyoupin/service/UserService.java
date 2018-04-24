@@ -1,13 +1,7 @@
 package com.jiangzuoyoupin.service;
 
-import com.jiangzuoyoupin.domain.LoginToken;
-import com.jiangzuoyoupin.domain.UserFans;
-import com.jiangzuoyoupin.domain.UserSupplier;
-import com.jiangzuoyoupin.domain.WeChatUser;
-import com.jiangzuoyoupin.mapper.LoginTokenMapper;
-import com.jiangzuoyoupin.mapper.UserFansMapper;
-import com.jiangzuoyoupin.mapper.UserSupplierMapper;
-import com.jiangzuoyoupin.mapper.WeChatUserMapper;
+import com.jiangzuoyoupin.domain.*;
+import com.jiangzuoyoupin.mapper.*;
 import com.jiangzuoyoupin.req.SupplierQueryReq;
 import com.jiangzuoyoupin.utils.TokenUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -38,6 +32,9 @@ public class UserService {
 
     @Autowired
     private UserSupplierMapper userSupplierMapper;
+
+    @Autowired
+    private UserShopownerMapper userShopownerMapper;
 
     @Autowired
     private LoginTokenMapper loginTokenMapper;
@@ -108,14 +105,58 @@ public class UserService {
      * @date 2018-04-09 22:08:49
      */
     public int registerFans(UserFans fans) {
-        return userFansMapper.insert(fans);
+        int count = userFansMapper.insert(fans);
+        if(count > 0){
+            updateWeChatUserMobileNo(fans.getWechatUserId(), fans.getMobileNo());
+        }
+        return count;
     }
 
     public WeChatUser getUserInfoByToken(String accessToken) {
         return loginTokenMapper.getUserInfoByToken(accessToken);
     }
 
+    /**
+     * 功能模块: 注册供应商
+     *
+     * @param supplier
+     * @return int
+     * @author chenshangbo
+     * @date 2018-04-20 23:30:00
+     */
     public int registerSupplier(UserSupplier supplier) {
-        return userSupplierMapper.insert(supplier);
+        int count = userSupplierMapper.insert(supplier);
+        if(count > 0){
+            updateWeChatUserMobileNo(supplier.getWechatUserId(), supplier.getMobileNo());
+        }
+        return count;
+    }
+
+    /**
+     * 功能模块: 手机号为空更新手机号
+     *
+     * @param id
+     * @param mobileNo
+     * @return int
+     * @author chenshangbo
+     * @date 2018-04-20 23:22:58
+     */
+    public int updateWeChatUserMobileNo(Long id, String mobileNo) {
+        WeChatUser params = new WeChatUser();
+        params.setId(id);
+        params.setMobileNo(mobileNo);
+        return weChatUserMapper.updateMobileNo(params);
+    }
+
+    /**
+     * 功能模块: 保存店主信息
+     *
+     * @param shopowner
+     * @return int
+     * @author chenshangbo
+     * @date 2018-04-24 23:06:01
+     */
+    public int registerShopowner(UserShopowner shopowner) {
+        return userShopownerMapper.insert(shopowner);
     }
 }

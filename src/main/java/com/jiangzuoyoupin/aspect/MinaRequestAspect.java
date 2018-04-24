@@ -72,7 +72,7 @@ public class MinaRequestAspect {
         try {
             //1.登录检查
             if (checkHasAnnotation(call)) {
-                String accessToken = request.getHeader("access_token");
+                String accessToken = request.getHeader("Token");
                 if(StringUtils.isEmpty(accessToken) || !userService.checkLoginToken(accessToken)){
                     return WebResultUtil.returnErrMsgResult("登录信息失效，请重新登录");
                 }

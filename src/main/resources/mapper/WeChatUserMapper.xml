@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="com.jiangzuoyoupin.domain.WeChatUser">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="open_id" jdbcType="VARCHAR" property="openId" />
+    <result column="mobile_no" jdbcType="VARCHAR" property="mobileNo" />
     <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
     <result column="avatar_url" jdbcType="VARCHAR" property="avatarUrl" />
     <result column="gender" jdbcType="BIGINT" property="gender" />
@@ -11,7 +12,7 @@
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, open_id, nick_name, avatar_url, gender, gmt_create, gmt_modified
+    id, open_id, mobile_no, nick_name, avatar_url, gender, gmt_create, gmt_modified
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -31,6 +32,9 @@
     <if test="openId != null">
       AND open_id = #{openId,jdbcType=VARCHAR}
     </if>
+    <if test="mobileNo != null and mobileNo != ''">
+      AND mobile_no = #{mobileNo,jdbcType=VARCHAR}
+    </if>
     <if test="nickName != null">
       AND nick_name = #{nickName,jdbcType=VARCHAR}
     </if>
@@ -45,6 +49,7 @@
   <insert id="insert" keyProperty="id" parameterType="com.jiangzuoyoupin.domain.WeChatUser" useGeneratedKeys="true">
     insert into t_wechat_user (
       open_id,
+      mobile_no,
       nick_name,
       avatar_url,
       gender,
@@ -52,6 +57,7 @@
       gmt_modified
     )values (
       #{openId,jdbcType=VARCHAR},
+      #{mobileNo,jdbcType=VARCHAR},
       #{nickName,jdbcType=VARCHAR},
       #{avatarUrl,jdbcType=VARCHAR},
       #{gender,jdbcType=BIGINT},
@@ -64,6 +70,9 @@
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="openId != null and openId != ''">
         open_id,
+      </if>
+      <if test="mobileNo != null and mobileNo != ''">
+        mobile_no,
       </if>
       <if test="nickName != null and nickName != ''">
         nick_name,
@@ -88,6 +97,9 @@
       <if test="openId != null and openId != ''">
         #{openId,jdbcType=VARCHAR},
       </if>
+      <if test="mobileNo != null and mobileNo != ''">
+        #{mobileNo,jdbcType=VARCHAR},
+      </if>
       <if test="nickName != null and nickName != ''">
         #{nickName,jdbcType=VARCHAR},
       </if>
@@ -111,6 +123,9 @@
       <if test="openId != null and openId != ''">
         open_id = #{openId,jdbcType=VARCHAR},
       </if>
+      <if test="mobileNo != null and mobileNo != ''">
+        mobile_no = #{mobileNo,jdbcType=VARCHAR},
+      </if>
       <if test="nickName != null and nickName != ''">
         nick_name = #{nickName,jdbcType=VARCHAR},
       </if>
@@ -127,10 +142,20 @@
   <update id="updateByPrimaryKey" parameterType="com.jiangzuoyoupin.domain.WeChatUser">
     update t_wechat_user
     set open_id = #{openId,jdbcType=VARCHAR},
+      mobile_no = #{mobileNo,jdbcType=VARCHAR},
       nick_name = #{nickName,jdbcType=VARCHAR},
       avatar_url = #{avatarUrl,jdbcType=VARCHAR},
       gender = #{gender,jdbcType=BIGINT},
       gmt_modified = now()
     where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <!-- 手机号为空更新手机号 -->
+  <update id="updateMobileNo" parameterType="com.jiangzuoyoupin.domain.WeChatUser">
+    update t_wechat_user
+    set
+      mobile_no = #{mobileNo,jdbcType=VARCHAR},
+      gmt_modified = now()
+    where id = #{id,jdbcType=BIGINT} and mobile_no is null
   </update>
 </mapper>

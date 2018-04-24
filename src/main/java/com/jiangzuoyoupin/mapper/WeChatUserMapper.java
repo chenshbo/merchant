@@ -16,4 +16,6 @@ public interface WeChatUserMapper {
     int updateByPrimaryKey(WeChatUser record);
 
     WeChatUser getByParams(WeChatUser wechat);
+
+    int updateMobileNo(WeChatUser params);
 }

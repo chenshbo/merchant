@@ -4,7 +4,6 @@
   <resultMap id="BaseResultMap" type="com.jiangzuoyoupin.domain.LoginToken">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="wechat_user_id" jdbcType="BIGINT" property="wechatUserId" />
-    <result column="mobile_no" jdbcType="VARCHAR" property="mobileNo" />
     <result column="access_token" jdbcType="VARCHAR" property="accessToken" />
     <result column="access_token_expires" jdbcType="TIMESTAMP" property="accessTokenExpires" />
     <result column="status" jdbcType="BIGINT" property="status" />
@@ -12,7 +11,7 @@
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, wechat_user_id, mobile_no, access_token, access_token_expires, status, gmt_create, gmt_modified
+    id, wechat_user_id, access_token, access_token_expires, status, gmt_create, gmt_modified
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -34,9 +33,6 @@
     <if test="accessToken != null and accessToken != ''">
       AND access_token = #{accessToken,jdbcType=VARCHAR}
     </if>
-    <if test="mobileNo != null and mobileNo != ''">
-      AND mobile_no = #{mobileNo,jdbcType=VARCHAR}
-    </if>
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from t_login_token
@@ -45,7 +41,6 @@
   <insert id="insert" parameterType="com.jiangzuoyoupin.domain.LoginToken" keyProperty="id" useGeneratedKeys="true">
     insert into t_login_token (
       wechat_user_id,
-      mobile_no,
       access_token,
       access_token_expires,
       status,
@@ -53,7 +48,6 @@
       gmt_modified
     )values (
       #{wechatUserId,jdbcType=BIGINT},
-      #{mobileNo,jdbcType=VARCHAR},
       #{accessToken,jdbcType=VARCHAR},
       #{accessTokenExpires,jdbcType=TIMESTAMP},
       #{status,jdbcType=BIGINT},
@@ -69,9 +63,6 @@
       </if>
       <if test="wechatUserId != null">
         wechat_user_id,
-      </if>
-      <if test="mobileNo != null and mobileNo != ''">
-        mobile_no,
       </if>
       <if test="accessToken != null and accessToken != ''">
         access_token,
@@ -96,9 +87,6 @@
       <if test="wechatUserId != null">
         #{wechatUserId,jdbcType=BIGINT},
       </if>
-      <if test="mobileNo != null and mobileNo != ''">
-        #{mobileNo,jdbcType=VARCHAR},
-      </if>
       <if test="accessToken != null">
         #{accessToken,jdbcType=VARCHAR},
       </if>
@@ -122,9 +110,6 @@
       <if test="wechatUserId != null">
         wechat_user_id = #{wechatUserId,jdbcType=BIGINT},
       </if>
-      <if test="mobileNo != null and mobileNo != ''">
-        mobile_no = #{mobileNo,jdbcType=VARCHAR},
-      </if>
       <if test="accessToken != null">
         access_token = #{accessToken,jdbcType=VARCHAR},
       </if>
@@ -142,7 +127,6 @@
   <update id="updateByPrimaryKey" parameterType="com.jiangzuoyoupin.domain.LoginToken">
     update t_login_token
     set wechat_user_id = #{wechatUserId,jdbcType=BIGINT},
-      mobile_no = #{mobileNo,jdbcType=VARCHAR},
       access_token = #{accessToken,jdbcType=VARCHAR},
       access_token_expires = #{accessTokenExpires,jdbcType=TIMESTAMP},
       status = #{status,jdbcType=BIGINT},

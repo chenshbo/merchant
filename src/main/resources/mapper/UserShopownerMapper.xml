@@ -7,20 +7,14 @@
     <result column="mobile_no" jdbcType="VARCHAR" property="mobileNo" />
     <result column="province_id" jdbcType="BIGINT" property="provinceId" />
     <result column="city_id" jdbcType="BIGINT" property="cityId" />
-    <result column="id_card_front_image" jdbcType="VARCHAR" property="idCardFrontImage" />
-    <result column="id_card_obverse_image" jdbcType="VARCHAR" property="idCardObverseImage" />
-    <result column="company_account_id" jdbcType="BIGINT" property="companyAccountId" />
-    <result column="register_amount" jdbcType="DOUBLE" property="registerAmount" />
-    <result column="remittance_certificate_image" jdbcType="VARCHAR" property="remittanceCertificateImage" />
-    <result column="login_name" jdbcType="VARCHAR" property="loginName" />
-    <result column="login_pwd" jdbcType="VARCHAR" property="loginPwd" />
-    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="area_id" jdbcType="BIGINT" property="areaId" />
+    <result column="business_license_image" jdbcType="VARCHAR" property="businessLicenseImage" />
+    <result column="status" jdbcType="BIGINT" property="status" />
     <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, wechat_user_id, mobile_no, province_id, city_id, id_card_front_image, id_card_obverse_image, 
-    company_account_id, register_amount, remittance_certificate_image, login_name, login_pwd, 
+    id, wechat_user_id, mobile_no, province_id, city_id, area_id, business_license_image, 
     status, gmt_create, gmt_modified
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -33,18 +27,14 @@
     delete from t_user_shopowner
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.jiangzuoyoupin.domain.UserShopowner">
-    insert into t_user_shopowner (id, wechat_user_id, mobile_no, 
-      province_id, city_id, id_card_front_image, 
-      id_card_obverse_image, company_account_id, register_amount, 
-      remittance_certificate_image, login_name, 
-      login_pwd, status, gmt_create, 
+  <insert id="insert" parameterType="com.jiangzuoyoupin.domain.UserShopowner" useGeneratedKeys="true" keyProperty="id">
+    insert into t_user_shopowner (wechat_user_id, mobile_no,
+      province_id, city_id, area_id, 
+      business_license_image, status, gmt_create, 
       gmt_modified)
-    values (#{id,jdbcType=BIGINT}, #{wechatUserId,jdbcType=BIGINT}, #{mobileNo,jdbcType=VARCHAR}, 
-      #{provinceId,jdbcType=BIGINT}, #{cityId,jdbcType=BIGINT}, #{idCardFrontImage,jdbcType=VARCHAR}, 
-      #{idCardObverseImage,jdbcType=VARCHAR}, #{companyAccountId,jdbcType=BIGINT}, #{registerAmount,jdbcType=DOUBLE}, 
-      #{remittanceCertificateImage,jdbcType=VARCHAR}, #{loginName,jdbcType=VARCHAR}, 
-      #{loginPwd,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, #{gmtCreate,jdbcType=TIMESTAMP}, 
+    values (#{wechatUserId,jdbcType=BIGINT}, #{mobileNo,jdbcType=VARCHAR},
+      #{provinceId,jdbcType=BIGINT}, #{cityId,jdbcType=BIGINT}, #{areaId,jdbcType=BIGINT}, 
+      #{businessLicenseImage,jdbcType=VARCHAR}, #{status,jdbcType=BIGINT}, #{gmtCreate,jdbcType=TIMESTAMP}, 
       #{gmtModified,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.jiangzuoyoupin.domain.UserShopowner">
@@ -65,26 +55,11 @@
       <if test="cityId != null">
         city_id,
       </if>
-      <if test="idCardFrontImage != null">
-        id_card_front_image,
+      <if test="areaId != null">
+        area_id,
       </if>
-      <if test="idCardObverseImage != null">
-        id_card_obverse_image,
-      </if>
-      <if test="companyAccountId != null">
-        company_account_id,
-      </if>
-      <if test="registerAmount != null">
-        register_amount,
-      </if>
-      <if test="remittanceCertificateImage != null">
-        remittance_certificate_image,
-      </if>
-      <if test="loginName != null">
-        login_name,
-      </if>
-      <if test="loginPwd != null">
-        login_pwd,
+      <if test="businessLicenseImage != null">
+        business_license_image,
       </if>
       <if test="status != null">
         status,
@@ -112,29 +87,14 @@
       <if test="cityId != null">
         #{cityId,jdbcType=BIGINT},
       </if>
-      <if test="idCardFrontImage != null">
-        #{idCardFrontImage,jdbcType=VARCHAR},
+      <if test="areaId != null">
+        #{areaId,jdbcType=BIGINT},
       </if>
-      <if test="idCardObverseImage != null">
-        #{idCardObverseImage,jdbcType=VARCHAR},
-      </if>
-      <if test="companyAccountId != null">
-        #{companyAccountId,jdbcType=BIGINT},
-      </if>
-      <if test="registerAmount != null">
-        #{registerAmount,jdbcType=DOUBLE},
-      </if>
-      <if test="remittanceCertificateImage != null">
-        #{remittanceCertificateImage,jdbcType=VARCHAR},
-      </if>
-      <if test="loginName != null">
-        #{loginName,jdbcType=VARCHAR},
-      </if>
-      <if test="loginPwd != null">
-        #{loginPwd,jdbcType=VARCHAR},
+      <if test="businessLicenseImage != null">
+        #{businessLicenseImage,jdbcType=VARCHAR},
       </if>
       <if test="status != null">
-        #{status,jdbcType=TINYINT},
+        #{status,jdbcType=BIGINT},
       </if>
       <if test="gmtCreate != null">
         #{gmtCreate,jdbcType=TIMESTAMP},
@@ -159,29 +119,14 @@
       <if test="cityId != null">
         city_id = #{cityId,jdbcType=BIGINT},
       </if>
-      <if test="idCardFrontImage != null">
-        id_card_front_image = #{idCardFrontImage,jdbcType=VARCHAR},
+      <if test="areaId != null">
+        area_id = #{areaId,jdbcType=BIGINT},
       </if>
-      <if test="idCardObverseImage != null">
-        id_card_obverse_image = #{idCardObverseImage,jdbcType=VARCHAR},
-      </if>
-      <if test="companyAccountId != null">
-        company_account_id = #{companyAccountId,jdbcType=BIGINT},
-      </if>
-      <if test="registerAmount != null">
-        register_amount = #{registerAmount,jdbcType=DOUBLE},
-      </if>
-      <if test="remittanceCertificateImage != null">
-        remittance_certificate_image = #{remittanceCertificateImage,jdbcType=VARCHAR},
-      </if>
-      <if test="loginName != null">
-        login_name = #{loginName,jdbcType=VARCHAR},
-      </if>
-      <if test="loginPwd != null">
-        login_pwd = #{loginPwd,jdbcType=VARCHAR},
+      <if test="businessLicenseImage != null">
+        business_license_image = #{businessLicenseImage,jdbcType=VARCHAR},
       </if>
       <if test="status != null">
-        status = #{status,jdbcType=TINYINT},
+        status = #{status,jdbcType=BIGINT},
       </if>
       <if test="gmtCreate != null">
         gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
@@ -198,14 +143,9 @@
       mobile_no = #{mobileNo,jdbcType=VARCHAR},
       province_id = #{provinceId,jdbcType=BIGINT},
       city_id = #{cityId,jdbcType=BIGINT},
-      id_card_front_image = #{idCardFrontImage,jdbcType=VARCHAR},
-      id_card_obverse_image = #{idCardObverseImage,jdbcType=VARCHAR},
-      company_account_id = #{companyAccountId,jdbcType=BIGINT},
-      register_amount = #{registerAmount,jdbcType=DOUBLE},
-      remittance_certificate_image = #{remittanceCertificateImage,jdbcType=VARCHAR},
-      login_name = #{loginName,jdbcType=VARCHAR},
-      login_pwd = #{loginPwd,jdbcType=VARCHAR},
-      status = #{status,jdbcType=TINYINT},
+      area_id = #{areaId,jdbcType=BIGINT},
+      business_license_image = #{businessLicenseImage,jdbcType=VARCHAR},
+      status = #{status,jdbcType=BIGINT},
       gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
       gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}

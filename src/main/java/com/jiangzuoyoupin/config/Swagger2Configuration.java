@@ -24,7 +24,7 @@ public class Swagger2Configuration {
         ParameterBuilder tokenPar = new ParameterBuilder();
         List<Parameter> pars = new ArrayList<>();
         //header中的ticket参数非必填，传空也可以
-        tokenPar.name("access_token").description("登录授权token")
+        tokenPar.name("Token").description("登录授权token")
                 .modelRef(new ModelRef("string")).parameterType("header")
                 .required(false).build();
         //根据每个方法名也知道当前方法在设置什么参数

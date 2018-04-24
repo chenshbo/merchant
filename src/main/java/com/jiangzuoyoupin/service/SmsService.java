@@ -1,7 +1,14 @@
 package com.jiangzuoyoupin.service;
 
+import com.alibaba.fastjson.JSON;
+import com.jiangzuoyoupin.domain.SmsResult;
 import com.jiangzuoyoupin.domain.SmsVerifyCode;
 import com.jiangzuoyoupin.mapper.SmsVerifyCodeMapper;
+import com.jiangzuoyoupin.req.SendVerifyCodeReq;
+import com.jiangzuoyoupin.utils.DateUtil;
+import com.jiangzuoyoupin.utils.HttpUtil;
+import com.jiangzuoyoupin.utils.NumberUtil;
+import com.jiangzuoyoupin.utils.WebResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -17,6 +24,11 @@ import java.util.Date;
 @Service
 public class SmsService {
 
+    @Value("${sms.send.url}")
+    private String smsSendUrl;
+    //短信内容，注意内容中的逗号请使用中文状态下的逗号
+    private final static String CONTENT = "验证码%s，您正在进行注册操作，验证码有效期10分钟。";
+    private final static Integer VERIFY_CODE_EXPIRE_MIN = 10;
     // 每个用户每天发送验证码的上限
     @Value("${sms.day.limit}")
     private int smsDayLimit;
@@ -78,5 +90,24 @@ public class SmsService {
             return "短信验证码已过期";
         }
         return null;
+    }
+
+    public int sendVerifyCode(SendVerifyCodeReq req) {
+        String verifyCode = NumberUtil.getVerifyCode();
+        String msgContent = String.format(CONTENT, verifyCode);
+        String sendUrl = String.format(smsSendUrl, req.getMobileNo(), msgContent);
+        String jsonRes = HttpUtil.doGet(sendUrl);
+        SmsResult smsResult = JSON.parseObject(jsonRes, SmsResult.class);
+        if (smsResult == null || smsResult.getResult() != 0) {
+            return 0;
+        }
+        SmsVerifyCode smsVerifyCode = new SmsVerifyCode();
+        smsVerifyCode.setMobileNo(req.getMobileNo());
+        smsVerifyCode.setType(req.getType());
+        smsVerifyCode.setVerifyCode(verifyCode);
+        Date date = new Date();
+        smsVerifyCode.setGmtCreate(date);
+        smsVerifyCode.setExpireInDate(DateUtil.addMinutes(date, VERIFY_CODE_EXPIRE_MIN));
+        return smsVerifyCodeMapper.insert(smsVerifyCode);
     }
 }
