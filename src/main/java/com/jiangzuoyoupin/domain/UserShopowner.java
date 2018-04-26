@@ -17,6 +17,14 @@ public class UserShopowner {
 
     private String businessLicenseImage;
 
+    private String shopName;
+
+    private String shopSuffixName;
+
+    private String telephone;
+
+    private String address;
+
     private Integer status;
 
     private Date gmtCreate;
@@ -77,6 +85,38 @@ public class UserShopowner {
 
     public void setBusinessLicenseImage(String businessLicenseImage) {
         this.businessLicenseImage = businessLicenseImage == null ? null : businessLicenseImage.trim();
+    }
+
+    public String getShopName() {
+        return shopName;
+    }
+
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
+    }
+
+    public String getShopSuffixName() {
+        return shopSuffixName;
+    }
+
+    public void setShopSuffixName(String shopSuffixName) {
+        this.shopSuffixName = shopSuffixName;
+    }
+
+    public String getTelephone() {
+        return telephone;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public Integer getStatus() {

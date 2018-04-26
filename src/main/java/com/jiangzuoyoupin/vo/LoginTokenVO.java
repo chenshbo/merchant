@@ -24,6 +24,9 @@ public class LoginTokenVO implements Serializable{
     @ApiModelProperty(value = "token过期时间")
     private Date accessTokenExpires;
 
+    @ApiModelProperty(value = "角色，0粉丝1店主2匠探")
+    private Integer role;
+
     public Long getWechatUserId() {
         return wechatUserId;
     }
@@ -46,5 +49,13 @@ public class LoginTokenVO implements Serializable{
 
     public void setAccessTokenExpires(Date accessTokenExpires) {
         this.accessTokenExpires = accessTokenExpires;
+    }
+
+    public Integer getRole() {
+        return role;
+    }
+
+    public void setRole(Integer role) {
+        this.role = role;
     }
 }

@@ -3,6 +3,7 @@ package com.jiangzuoyoupin.controller.common;
 import com.jiangzuoyoupin.base.WebResult;
 import com.jiangzuoyoupin.domain.Area;
 import com.jiangzuoyoupin.domain.City;
+import com.jiangzuoyoupin.domain.Module;
 import com.jiangzuoyoupin.domain.Province;
 import com.jiangzuoyoupin.req.NameReq;
 import com.jiangzuoyoupin.service.DictService;
@@ -102,6 +103,12 @@ public class DictController{
     @GetMapping(value = "/selectAreaTree")
     public WebResult<List<AreaTreeVO>> selectAreaTree() {
         return WebResultUtil.returnResult(dictService.selectAreaTree());
+    }
+
+    @ApiOperation(value = "店主注册申请", notes = "店主注册申请")
+    @PostMapping(value = "/module/select")
+    public WebResult<List<Module>> selectModuleList() {
+        return WebResultUtil.returnResult(dictService.selectModuleList());
     }
 
 }

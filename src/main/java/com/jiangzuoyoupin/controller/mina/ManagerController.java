@@ -1,9 +1,11 @@
-package com.jiangzuoyoupin.controller.officialAccounts;
+package com.jiangzuoyoupin.controller.mina;
 
+import com.jiangzuoyoupin.annotation.Auth;
 import com.jiangzuoyoupin.base.WebResult;
 import com.jiangzuoyoupin.controller.common.BaseController;
 import com.jiangzuoyoupin.domain.ShopInfo;
 import com.jiangzuoyoupin.domain.UserShopowner;
+import com.jiangzuoyoupin.domain.WeChatUser;
 import com.jiangzuoyoupin.req.ShopInfoSaveReq;
 import com.jiangzuoyoupin.req.UserShopownerRegReq;
 import com.jiangzuoyoupin.service.ManagerService;
@@ -12,7 +14,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -25,9 +26,10 @@ import javax.servlet.http.HttpServletRequest;
  * @author chenshangbo
  * @date 2018-04-24 23:27:51
  */
+@Auth
 @Api("公众号-运营中心模块")
 @RestController
-@RequestMapping("officialAccounts/manager")
+@RequestMapping("mina/manager")
 public class ManagerController extends BaseController {
 
     @Autowired
@@ -44,13 +46,25 @@ public class ManagerController extends BaseController {
     @ApiOperation(value = "保存店铺信息", notes = "保存店铺信息")
     @ApiImplicitParam(name = "req", value = "店铺保存对象", dataType = "ShopInfoSaveReq")
     @PostMapping(value = "/saveShopInfo")
-    public WebResult saveShopInfo(@RequestBody ShopInfoSaveReq req) {
-        ShopInfo shopInfo = new ShopInfo();
+    public WebResult saveShopInfo(@RequestBody ShopInfoSaveReq req,HttpServletRequest request) {
+        WeChatUser weChatUser = getWeChatUserByToken(request);
+        if (weChatUser == null) {
+            return WebResultUtil.returnErrMsgResult("登录信息失效，请重新登录");
+        }
+        UserShopowner shopInfo = new UserShopowner();
         BeanUtils.copyProperties(req, shopInfo);
+        shopInfo.setWechatUserId(weChatUser.getId());
         int res = managerService.saveShopInfo(shopInfo);
         if (res == 0) {
             WebResultUtil.returnErrMsgResult("保存失败");
         }
+        return WebResultUtil.returnResult();
+    }
+
+    @ApiOperation(value = "店主注册申请", notes = "店主注册申请")
+    @ApiImplicitParam(name = "req", value = "店主注册对象", dataType = "UserShopownerRegReq")
+    @PostMapping(value = "/module/apply")
+    public WebResult saveBill(@RequestBody UserShopownerRegReq req, HttpServletRequest request) {
         return WebResultUtil.returnResult();
     }
 

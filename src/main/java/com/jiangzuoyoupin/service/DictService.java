@@ -2,9 +2,11 @@ package com.jiangzuoyoupin.service;
 
 import com.jiangzuoyoupin.domain.Area;
 import com.jiangzuoyoupin.domain.City;
+import com.jiangzuoyoupin.domain.Module;
 import com.jiangzuoyoupin.domain.Province;
 import com.jiangzuoyoupin.mapper.AreaMapper;
 import com.jiangzuoyoupin.mapper.CityMapper;
+import com.jiangzuoyoupin.mapper.ModuleMapper;
 import com.jiangzuoyoupin.mapper.ProvinceMapper;
 import com.jiangzuoyoupin.vo.AreaTreeVO;
 import org.springframework.beans.BeanUtils;
@@ -27,6 +29,8 @@ public class DictService {
     private CityMapper cityMapper;
     @Autowired
     private AreaMapper areaMapper;
+    @Autowired
+    private ModuleMapper moduleMapper;
 
     /**
      * 功能描述: 查询省份列表
@@ -108,5 +112,10 @@ public class DictService {
             provinceList.add(vo);
         });
         return provinceList;
+    }
+
+    public List<Module> selectModuleList() {
+        Module param = new Module();
+        return moduleMapper.selectByParams(param);
     }
 }

@@ -13,6 +13,9 @@ public class LoginToken {
 
     private Integer status;
 
+    /** 角色，0粉丝1店主2匠探 */
+    private Integer role;
+
     private Date gmtCreate;
 
     private Date gmtModified;
@@ -71,5 +74,13 @@ public class LoginToken {
 
     public void setGmtModified(Date gmtModified) {
         this.gmtModified = gmtModified;
+    }
+
+    public Integer getRole() {
+        return role;
+    }
+
+    public void setRole(Integer role) {
+        this.role = role;
     }
 }

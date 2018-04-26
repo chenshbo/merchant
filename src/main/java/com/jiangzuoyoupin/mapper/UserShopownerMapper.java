@@ -14,4 +14,8 @@ public interface UserShopownerMapper {
     int updateByPrimaryKeySelective(UserShopowner record);
 
     int updateByPrimaryKey(UserShopowner record);
+
+    int updateByWeChatUserId(UserShopowner record);
+
+    UserShopowner selectByWeChatUserId(Long weChatUserId);
 }

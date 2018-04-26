@@ -28,7 +28,7 @@ public class UserService {
     private WeChatUserMapper weChatUserMapper;
 
     @Autowired
-    private UserFansMapper userFansMapper;
+    private ShopManagerMapper shopManagerMapper;
 
     @Autowired
     private UserSupplierMapper userSupplierMapper;
@@ -69,10 +69,16 @@ public class UserService {
         WeChatUser params = new WeChatUser();
         params.setOpenId(wechat.getOpenId());
         WeChatUser byParams = weChatUserMapper.getByParams(params);
+        int role = 0;
         // openId存在 更新数据
         if(byParams != null){
             wechat.setId(byParams.getId());
             result = weChatUserMapper.updateByPrimaryKeySelective(wechat);
+            if(userShopownerMapper.selectByWeChatUserId(byParams.getId()) != null){
+                role = 1;
+            }else if(shopManagerMapper.selectByWeChatUserId(byParams.getId()) != null){
+                role = 2;
+            }
         }else{
             result = weChatUserMapper.insert(wechat);
         }
@@ -84,6 +90,7 @@ public class UserService {
             loginTokenMapper.updateStatusByWechatUserId(updateToken);
             // 重新生成登录信息
             loginToken = new LoginToken();
+            loginToken.setRole(role);
             loginToken.setWechatUserId(wechat.getId());
             loginToken.setAccessToken(TokenUtil.generateToken());
             loginToken.setStatus(1);
@@ -96,6 +103,10 @@ public class UserService {
         return loginToken;
     }
 
+    public WeChatUser getUserInfoByToken(String accessToken) {
+        return loginTokenMapper.getUserInfoByToken(accessToken);
+    }
+
     /**
      * 功能模块: 粉丝注册
      *
@@ -105,15 +116,7 @@ public class UserService {
      * @date 2018-04-09 22:08:49
      */
     public int registerFans(UserFans fans) {
-        int count = userFansMapper.insert(fans);
-        if(count > 0){
-            updateWeChatUserMobileNo(fans.getWechatUserId(), fans.getMobileNo());
-        }
-        return count;
-    }
-
-    public WeChatUser getUserInfoByToken(String accessToken) {
-        return loginTokenMapper.getUserInfoByToken(accessToken);
+        return updateWeChatUserMobileNo(fans.getWechatUserId(), fans.getMobileNo());
     }
 
     /**
@@ -133,6 +136,22 @@ public class UserService {
     }
 
     /**
+     * 功能模块: 保存店主信息
+     *
+     * @param shopowner
+     * @return int
+     * @author chenshangbo
+     * @date 2018-04-24 23:06:01
+     */
+    public int registerShopowner(UserShopowner shopowner) {
+        int count = userShopownerMapper.insert(shopowner);
+        if(count > 0){
+            updateWeChatUserMobileNo(shopowner.getWechatUserId(), shopowner.getMobileNo());
+        }
+        return count;
+    }
+
+    /**
      * 功能模块: 手机号为空更新手机号
      *
      * @param id
@@ -146,17 +165,5 @@ public class UserService {
         params.setId(id);
         params.setMobileNo(mobileNo);
         return weChatUserMapper.updateMobileNo(params);
-    }
-
-    /**
-     * 功能模块: 保存店主信息
-     *
-     * @param shopowner
-     * @return int
-     * @author chenshangbo
-     * @date 2018-04-24 23:06:01
-     */
-    public int registerShopowner(UserShopowner shopowner) {
-        return userShopownerMapper.insert(shopowner);
     }
 }
