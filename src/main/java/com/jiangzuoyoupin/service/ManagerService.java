@@ -1,9 +1,10 @@
 package com.jiangzuoyoupin.service;
 
-import com.jiangzuoyoupin.domain.ShopInfo;
-import com.jiangzuoyoupin.domain.UserShopowner;
-import com.jiangzuoyoupin.mapper.ShopInfoMapper;
-import com.jiangzuoyoupin.mapper.UserShopownerMapper;
+import com.jiangzuoyoupin.domain.ShopBill;
+import com.jiangzuoyoupin.domain.Shop;
+import com.jiangzuoyoupin.domain.WeChatUser;
+import com.jiangzuoyoupin.mapper.ShopMapper;
+import com.jiangzuoyoupin.mapper.WeChatUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,10 +18,13 @@ import org.springframework.stereotype.Service;
 public class ManagerService {
 
     @Autowired
-    private ShopInfoMapper shopInfoMapper;
+    private WeChatUserMapper weChatUserMapper;
 
     @Autowired
-    private UserShopownerMapper shopownerMapper;
+    private ShopBillMapper shopBillMapper;
+
+    @Autowired
+    private ShopMapper shopownerMapper;
 
     /**
      * 功能模块: 保存店铺信息
@@ -30,7 +34,11 @@ public class ManagerService {
      * @author chenshangbo
      * @date 2018-04-24 23:06:01
      */
-    public int saveShopInfo(UserShopowner shopInfo) {
+    public int saveShopInfo(Shop shopInfo) {
         return shopownerMapper.updateByWeChatUserId(shopInfo);
+    }
+
+    public int saveBill(ShopBill bill) {
+        return shopBillMapper.insert(bill);
     }
 }

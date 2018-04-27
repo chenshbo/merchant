@@ -1,9 +1,9 @@
 package com.jiangzuoyoupin.service;
 
 import com.github.pagehelper.PageHelper;
-import com.jiangzuoyoupin.domain.UserSupplier;
-import com.jiangzuoyoupin.dto.UserSupplierDto;
-import com.jiangzuoyoupin.mapper.UserSupplierMapper;
+import com.jiangzuoyoupin.domain.Supplier;
+import com.jiangzuoyoupin.dto.SupplierDto;
+import com.jiangzuoyoupin.mapper.SupplierMapper;
 import com.jiangzuoyoupin.req.SupplierQueryReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,17 +20,17 @@ import java.util.List;
 public class SupplierService {
 
     @Autowired
-    private UserSupplierMapper supplierMapper;
+    private SupplierMapper supplierMapper;
 
     /**
      * 功能模块: 分页条件查询供应商列表
      *
      * @param params
-     * @return java.util.List<com.jiangzuoyoupin.dto.UserSupplierDto>
+     * @return java.util.List<com.jiangzuoyoupin.dto.SupplierDto>
      * @author chenshangbo
      * @date 2018-04-17 23:07:49
      */
-    public List<UserSupplierDto> selectSupplierList(SupplierQueryReq params) {
+    public List<SupplierDto> selectSupplierList(SupplierQueryReq params) {
         if(params.getPagingRequired()){
             PageHelper.startPage(params.getCurrPage(),params.getPageRows());
         }
@@ -40,18 +40,18 @@ public class SupplierService {
     /**
      * 功能模块: 审核供应商
      *
-     * @param userSupplier
+     * @param Supplier
      * @return int
      * @author chenshangbo
      * @date 2018-04-17 23:08:26
      */
-    public int checkSupplier(UserSupplier userSupplier) {
+    public int checkSupplier(Supplier Supplier) {
         // 审核通过 分配登录账号和密码
-        if(userSupplier.getStatus().intValue() == 1){
-            UserSupplier supplier = supplierMapper.selectByPrimaryKey(userSupplier.getId());
-            userSupplier.setLoginName(supplier.getMobileNo());
-            userSupplier.setLoginPwd("123456");
+        if(Supplier.getStatus().intValue() == 1){
+            Supplier supplier = supplierMapper.selectByPrimaryKey(Supplier.getId());
+            Supplier.setLoginName(supplier.getMobileNo());
+            Supplier.setLoginPwd("123456");
         }
-        return supplierMapper.updateByParams(userSupplier);
+        return supplierMapper.updateByParams(Supplier);
     }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.jiangzuoyoupin.mapper.UserSupplierMapper">
-  <resultMap id="BaseResultMap" type="com.jiangzuoyoupin.domain.UserSupplier">
+<mapper namespace="com.jiangzuoyoupin.mapper.SupplierMapper">
+  <resultMap id="BaseResultMap" type="com.jiangzuoyoupin.domain.Supplier">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="wechat_user_id" jdbcType="BIGINT" property="wechatUserId" />
     <result column="mobile_no" jdbcType="VARCHAR" property="mobileNo" />
@@ -12,7 +12,7 @@
     <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
   </resultMap>
-  <resultMap id="ListResultMap" type="com.jiangzuoyoupin.dto.UserSupplierDto">
+  <resultMap id="ListResultMap" type="com.jiangzuoyoupin.dto.SupplierDto">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="wechat_user_id" jdbcType="BIGINT" property="wechatUserId" />
     <result column="mobile_no" jdbcType="VARCHAR" property="mobileNo" />
@@ -38,7 +38,7 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
 
-  <select id="selectByParams" parameterType="com.jiangzuoyoupin.domain.UserSupplier" resultMap="ListResultMap">
+  <select id="selectByParams" parameterType="com.jiangzuoyoupin.domain.Supplier" resultMap="ListResultMap">
     SELECT
       t_user_supplier.id,
       t_user_supplier.mobile_no,
@@ -65,7 +65,7 @@
     delete from t_user_supplier
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.jiangzuoyoupin.domain.UserSupplier" keyProperty="id" useGeneratedKeys="true">
+  <insert id="insert" parameterType="com.jiangzuoyoupin.domain.Supplier" keyProperty="id" useGeneratedKeys="true">
     insert into t_user_supplier (
       wechat_user_id,
       mobile_no,
@@ -87,7 +87,7 @@
       now()
     )
   </insert>
-  <insert id="insertSelective" parameterType="com.jiangzuoyoupin.domain.UserSupplier">
+  <insert id="insertSelective" parameterType="com.jiangzuoyoupin.domain.Supplier">
     insert into t_user_supplier
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -148,7 +148,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByParams" parameterType="com.jiangzuoyoupin.domain.UserSupplier">
+  <update id="updateByParams" parameterType="com.jiangzuoyoupin.domain.Supplier">
     update t_user_supplier
     <set>
       <if test="mobileNo != null and mobileNo != ''">
@@ -172,7 +172,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.jiangzuoyoupin.domain.UserSupplier">
+  <update id="updateByPrimaryKey" parameterType="com.jiangzuoyoupin.domain.Supplier">
     update t_user_supplier
     set wechat_user_id = #{wechatUserId,jdbcType=BIGINT},
       mobile_no = #{mobileNo,jdbcType=VARCHAR},

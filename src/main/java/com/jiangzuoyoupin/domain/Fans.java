@@ -2,7 +2,7 @@ package com.jiangzuoyoupin.domain;
 
 import java.util.Date;
 
-public class UserFans {
+public class Fans {
     private Long id;
 
     private Long wechatUserId;

@@ -16,6 +16,9 @@ public class LoginToken {
     /** 角色，0粉丝1店主2匠探 */
     private Integer role;
 
+    /** 店铺id */
+    private Long shopId;
+
     private Date gmtCreate;
 
     private Date gmtModified;
@@ -82,5 +85,13 @@ public class LoginToken {
 
     public void setRole(Integer role) {
         this.role = role;
+    }
+
+    public Long getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(Long shopId) {
+        this.shopId = shopId;
     }
 }

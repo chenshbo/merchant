@@ -5,14 +5,17 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 
 /**
- * 功能模块: 供应商注册req
+ * 功能模块: 店主注册req
  *
  * @author chenshangbo
- * @date 2018-04-18 22:36:38
+ * @date 2018-04-24 23:01:26
  */
-public class UserSupplierRegReq implements Serializable{
+public class ShopRegReq implements Serializable{
 
-    private static final long serialVersionUID = -822663160188263239L;
+    private static final long serialVersionUID = -2393488416940569268L;
+
+    @ApiModelProperty(value = "微信用户ID",required = true)
+    private Long wechatUserId;
 
     @ApiModelProperty(value = "手机号码",required = true)
     private String mobileNo;
@@ -31,6 +34,14 @@ public class UserSupplierRegReq implements Serializable{
 
     @ApiModelProperty(value = "营业执照",required = true)
     private String businessLicenseImage;
+
+    public Long getWechatUserId() {
+        return wechatUserId;
+    }
+
+    public void setWechatUserId(Long wechatUserId) {
+        this.wechatUserId = wechatUserId;
+    }
 
     public String getMobileNo() {
         return mobileNo;
@@ -77,7 +88,6 @@ public class UserSupplierRegReq implements Serializable{
     }
 
     public void setBusinessLicenseImage(String businessLicenseImage) {
-        this.businessLicenseImage = businessLicenseImage == null ? null : businessLicenseImage.trim();
+        this.businessLicenseImage = businessLicenseImage;
     }
-
 }

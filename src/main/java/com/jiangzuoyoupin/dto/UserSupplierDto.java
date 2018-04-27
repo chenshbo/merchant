@@ -2,7 +2,7 @@ package com.jiangzuoyoupin.dto;
 
 import java.util.Date;
 
-public class UserSupplierDto extends WeChatUserDto{
+public class SupplierDto extends WeChatUserDto{
     private Long id;
 
     private Long wechatUserId;

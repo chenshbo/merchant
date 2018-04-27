@@ -2,14 +2,14 @@
 //
 //import com.jiangzuoyoupin.base.WebResult;
 //import com.jiangzuoyoupin.controller.common.BaseController;
-//import com.jiangzuoyoupin.domain.UserFans;
-//import com.jiangzuoyoupin.domain.UserShopowner;
-//import com.jiangzuoyoupin.domain.UserSupplier;
+//import com.jiangzuoyoupin.domain.Fans;
+//import com.jiangzuoyoupin.domain.Shop;
+//import com.jiangzuoyoupin.domain.Supplier;
 //import com.jiangzuoyoupin.domain.WeChatUser;
 //import com.jiangzuoyoupin.req.SendVerifyCodeReq;
-//import com.jiangzuoyoupin.req.UserFansRegReq;
-//import com.jiangzuoyoupin.req.UserShopownerRegReq;
-//import com.jiangzuoyoupin.req.UserSupplierRegReq;
+//import com.jiangzuoyoupin.req.FansRegReq;
+//import com.jiangzuoyoupin.req.ShopRegReq;
+//import com.jiangzuoyoupin.req.SupplierRegReq;
 //import com.jiangzuoyoupin.service.SmsService;
 //import com.jiangzuoyoupin.utils.WebResultUtil;
 //import io.swagger.annotations.Api;
@@ -55,9 +55,9 @@
 //     * @date 2018-04-09 22:01:21
 //     */
 //    @ApiOperation(value = "粉丝注册", notes = "粉丝注册")
-//    @ApiImplicitParam(name = "req", value = "粉丝注册对象", dataType = "UserFansRegReq")
+//    @ApiImplicitParam(name = "req", value = "粉丝注册对象", dataType = "FansRegReq")
 //    @PostMapping(value = "/registerFans")
-//    public WebResult registerFans(@RequestBody UserFansRegReq req, HttpServletRequest request) {
+//    public WebResult registerFans(@RequestBody FansRegReq req, HttpServletRequest request) {
 //        WeChatUser weChatUser = getWeChatUserByToken(request);
 //        if (weChatUser == null) {
 //            return WebResultUtil.returnErrMsgResult("登录信息失效，请重新登录");
@@ -66,7 +66,7 @@
 //        if (StringUtils.isNotEmpty(errMsg)) {
 //            return WebResultUtil.returnErrMsgResult(errMsg);
 //        }
-//        UserFans fans = new UserFans();
+//        Fans fans = new Fans();
 //        BeanUtils.copyProperties(req, fans);
 //        fans.setWechatUserId(weChatUser.getId());
 //        int res = userService.registerFans(fans);
@@ -86,14 +86,14 @@
 //     * @date 2018-04-24 23:02:51
 //     */
 //    @ApiOperation(value = "店主注册申请", notes = "店主注册申请")
-//    @ApiImplicitParam(name = "req", value = "店主注册对象", dataType = "UserShopownerRegReq")
+//    @ApiImplicitParam(name = "req", value = "店主注册对象", dataType = "ShopRegReq")
 //    @PostMapping(value = "/registerShopowner")
-//    public WebResult registerShopowner(@RequestBody UserShopownerRegReq req, HttpServletRequest request) {
+//    public WebResult registerShopowner(@RequestBody ShopRegReq req, HttpServletRequest request) {
 //        String errMsg = smsService.checkVerifyCode(req.getMobileNo(), req.getVerifyCode());
 //        if (StringUtils.isNotEmpty(errMsg)) {
 //            return WebResultUtil.returnErrMsgResult(errMsg);
 //        }
-//        UserShopowner shopowner = new UserShopowner();
+//        Shop shopowner = new Shop();
 //        BeanUtils.copyProperties(req, shopowner);
 //        shopowner.setStatus(1);
 //        shopowner.setBusinessLicenseImage(imagesPath + "/" + shopowner.getBusinessLicenseImage());

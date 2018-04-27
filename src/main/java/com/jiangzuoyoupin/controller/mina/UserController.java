@@ -3,11 +3,14 @@ package com.jiangzuoyoupin.controller.mina;
 import com.jiangzuoyoupin.annotation.Auth;
 import com.jiangzuoyoupin.base.WebResult;
 import com.jiangzuoyoupin.controller.common.BaseController;
-import com.jiangzuoyoupin.domain.*;
+import com.jiangzuoyoupin.domain.Fans;
+import com.jiangzuoyoupin.domain.Shop;
+import com.jiangzuoyoupin.domain.Supplier;
+import com.jiangzuoyoupin.domain.WeChatUser;
+import com.jiangzuoyoupin.req.FansRegReq;
 import com.jiangzuoyoupin.req.SendVerifyCodeReq;
-import com.jiangzuoyoupin.req.UserFansRegReq;
-import com.jiangzuoyoupin.req.UserShopownerRegReq;
-import com.jiangzuoyoupin.req.UserSupplierRegReq;
+import com.jiangzuoyoupin.req.ShopRegReq;
+import com.jiangzuoyoupin.req.SupplierRegReq;
 import com.jiangzuoyoupin.service.SmsService;
 import com.jiangzuoyoupin.utils.WebResultUtil;
 import io.swagger.annotations.Api;
@@ -54,20 +57,15 @@ public class UserController extends BaseController {
      * @date 2018-04-09 22:01:21
      */
     @ApiOperation(value = "粉丝注册", notes = "粉丝注册")
-    @ApiImplicitParam(name = "req", value = "粉丝注册对象", dataType = "UserFansRegReq")
+    @ApiImplicitParam(name = "req", value = "粉丝注册对象", dataType = "FansRegReq")
     @PostMapping(value = "/fans/register")
-    public WebResult registerFans(@RequestBody UserFansRegReq req, HttpServletRequest request) {
-        WeChatUser weChatUser = getWeChatUserByToken(request);
-        if (weChatUser == null) {
-            return WebResultUtil.returnErrMsgResult("登录信息失效，请重新登录");
-        }
+    public WebResult registerFans(@RequestBody FansRegReq req) {
         String errMsg = smsService.checkVerifyCode(req.getMobileNo(), req.getVerifyCode());
         if (StringUtils.isNotEmpty(errMsg)) {
             return WebResultUtil.returnErrMsgResult(errMsg);
         }
-        UserFans fans = new UserFans();
+        Fans fans = new Fans();
         BeanUtils.copyProperties(req, fans);
-        fans.setWechatUserId(weChatUser.getId());
         int res = userService.registerFans(fans);
         if (res == 0) {
             WebResultUtil.returnErrMsgResult("注册失败");
@@ -84,10 +82,11 @@ public class UserController extends BaseController {
      * @author chenshangbo
      * @date 2018-04-18 22:39:39
      */
+    @Deprecated
     @ApiOperation(value = "供应商注册", notes = "供应商注册")
-    @ApiImplicitParam(name = "req", value = "供应商注册对象", dataType = "UserSupplierRegReq")
+    @ApiImplicitParam(name = "req", value = "供应商注册对象", dataType = "SupplierRegReq")
     @PostMapping(value = "/supplier/register")
-    public WebResult registerSupplier(@RequestBody UserSupplierRegReq req, HttpServletRequest request) {
+    public WebResult registerSupplier(@RequestBody SupplierRegReq req, HttpServletRequest request) {
         WeChatUser weChatUser = getWeChatUserByToken(request);
         if (weChatUser == null) {
             return WebResultUtil.returnErrMsgResult("登录信息失效，请重新登录");
@@ -96,7 +95,7 @@ public class UserController extends BaseController {
         if (StringUtils.isNotEmpty(errMsg)) {
             return WebResultUtil.returnErrMsgResult(errMsg);
         }
-        UserSupplier supplier = new UserSupplier();
+        Supplier supplier = new Supplier();
         BeanUtils.copyProperties(req, supplier);
         supplier.setStatus(0);
         supplier.setBusinessLicenseImage(imagesPath + "/" + supplier.getBusinessLicenseImage());
@@ -112,33 +111,27 @@ public class UserController extends BaseController {
      * 功能模块: 店主注册申请
      *
      * @param req
-     * @param request
      * @return com.jiangzuoyoupin.base.WebResult
      * @author chenshangbo
      * @date 2018-04-24 23:02:51
      */
-    @ApiOperation(value = "店主注册申请", notes = "店主注册申请")
-    @ApiImplicitParam(name = "req", value = "店主注册对象", dataType = "UserShopownerRegReq")
-    @PostMapping(value = "/shopowner/register")
-    public WebResult registerShopowner(@RequestBody UserShopownerRegReq req, HttpServletRequest request) {
-        WeChatUser weChatUser = getWeChatUserByToken(request);
-        if (weChatUser == null) {
-            return WebResultUtil.returnErrMsgResult("登录信息失效，请重新登录");
-        }
+    @ApiOperation(value = "店主注册申请", notes = "店主注册申请，成功返回shopId，需要更新用户角色为1和shopId")
+    @ApiImplicitParam(name = "req", value = "店主注册对象", dataType = "ShopRegReq")
+    @PostMapping(value = "/shop/register")
+    public WebResult<Long> registerShop(@RequestBody ShopRegReq req) {
         String errMsg = smsService.checkVerifyCode(req.getMobileNo(), req.getVerifyCode());
         if (StringUtils.isNotEmpty(errMsg)) {
             return WebResultUtil.returnErrMsgResult(errMsg);
         }
-        UserShopowner shopowner = new UserShopowner();
-        BeanUtils.copyProperties(req, shopowner);
-        shopowner.setWechatUserId(weChatUser.getId());
-        shopowner.setStatus(1);
-        shopowner.setBusinessLicenseImage(imagesPath + "/" + shopowner.getBusinessLicenseImage());
-        int res = userService.registerShopowner(shopowner);
-        if (res == 0) {
+        Shop shop = new Shop();
+        BeanUtils.copyProperties(req, shop);
+        shop.setStatus(1);
+        shop.setBusinessLicenseImage(imagesPath + "/" + shop.getBusinessLicenseImage());
+        Long res = userService.registerShop(shop);
+        if (res == null || !res.equals(0l)) {
             WebResultUtil.returnErrMsgResult("注册失败");
         }
-        return WebResultUtil.returnResult();
+        return WebResultUtil.returnResult(res);
     }
 
     /**

@@ -3,14 +3,14 @@ package com.jiangzuoyoupin.controller.back;
 import com.jiangzuoyoupin.annotation.Auth;
 import com.jiangzuoyoupin.base.WebPageResult;
 import com.jiangzuoyoupin.base.WebResult;
-import com.jiangzuoyoupin.domain.UserSupplier;
-import com.jiangzuoyoupin.dto.UserSupplierDto;
+import com.jiangzuoyoupin.domain.Supplier;
+import com.jiangzuoyoupin.dto.SupplierDto;
 import com.jiangzuoyoupin.req.SupplierCheckReq;
 import com.jiangzuoyoupin.req.SupplierQueryReq;
 import com.jiangzuoyoupin.service.SupplierService;
 import com.jiangzuoyoupin.utils.ConvertUtils;
 import com.jiangzuoyoupin.utils.WebResultUtil;
-import com.jiangzuoyoupin.vo.UserSupplierVO;
+import com.jiangzuoyoupin.vo.SupplierVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -55,10 +55,10 @@ public class AuditController {
     @ApiOperation(value = "供应商列表", notes = "条件查询供应商列表")
     @ApiImplicitParam(name = "req", value = "条件查询对象", dataType = "SupplierQueryReq")
     @PostMapping(value = "/supplier/list")
-    public WebPageResult<List<UserSupplierVO>> selectSupplierList(@RequestBody SupplierQueryReq req) {
-        List<UserSupplierDto> supplierList = supplierService.selectSupplierList(req);
-        List<UserSupplierVO> voList = supplierList.stream().map(res -> {
-            UserSupplierVO vo = new UserSupplierVO();
+    public WebPageResult<List<SupplierVO>> selectSupplierList(@RequestBody SupplierQueryReq req) {
+        List<SupplierDto> supplierList = supplierService.selectSupplierList(req);
+        List<SupplierVO> voList = supplierList.stream().map(res -> {
+            SupplierVO vo = new SupplierVO();
             BeanUtils.copyProperties(res, vo);
             vo.setBusinessLicenseImage(rootUrl + vo.getBusinessLicenseImage());
             return vo;
@@ -79,7 +79,7 @@ public class AuditController {
     @ApiImplicitParam(name = "req", value = "审核对象", dataType = "SupplierCheckReq")
     @PostMapping(value = "/supplier/check")
     public WebResult checkSupplier(@RequestBody SupplierCheckReq req) {
-        UserSupplier params = new UserSupplier();
+        Supplier params = new Supplier();
         BeanUtils.copyProperties(req, params);
         int count = supplierService.checkSupplier(params);
         if (count > 0) {

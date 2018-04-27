@@ -1,16 +1,16 @@
 package com.jiangzuoyoupin.service;
 
 import com.jiangzuoyoupin.domain.*;
-import com.jiangzuoyoupin.mapper.*;
-import com.jiangzuoyoupin.req.SupplierQueryReq;
+import com.jiangzuoyoupin.mapper.LoginTokenMapper;
+import com.jiangzuoyoupin.mapper.ShopMapper;
+import com.jiangzuoyoupin.mapper.SupplierMapper;
+import com.jiangzuoyoupin.mapper.WeChatUserMapper;
 import com.jiangzuoyoupin.utils.TokenUtil;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * 功能模块: 用户service
@@ -31,10 +31,10 @@ public class UserService {
     private ShopManagerMapper shopManagerMapper;
 
     @Autowired
-    private UserSupplierMapper userSupplierMapper;
+    private SupplierMapper supplierMapper;
 
     @Autowired
-    private UserShopownerMapper userShopownerMapper;
+    private ShopMapper shopMapper;
 
     @Autowired
     private LoginTokenMapper loginTokenMapper;
@@ -70,14 +70,21 @@ public class UserService {
         params.setOpenId(wechat.getOpenId());
         WeChatUser byParams = weChatUserMapper.getByParams(params);
         int role = 0;
+        Long shopId = 0l;
         // openId存在 更新数据
         if(byParams != null){
             wechat.setId(byParams.getId());
             result = weChatUserMapper.updateByPrimaryKeySelective(wechat);
-            if(userShopownerMapper.selectByWeChatUserId(byParams.getId()) != null){
+            Shop shop = shopMapper.selectByWeChatUserId(byParams.getId());
+            if(shop != null){
                 role = 1;
-            }else if(shopManagerMapper.selectByWeChatUserId(byParams.getId()) != null){
-                role = 2;
+                shopId = shop.getId();
+            }else {
+                ShopManager manager = shopManagerMapper.selectByWeChatUserId(byParams.getId());
+                if (manager != null) {
+                    role = 2;
+                    shopId = manager.getShopId();
+                }
             }
         }else{
             result = weChatUserMapper.insert(wechat);
@@ -91,6 +98,7 @@ public class UserService {
             // 重新生成登录信息
             loginToken = new LoginToken();
             loginToken.setRole(role);
+            loginToken.setShopId(shopId);
             loginToken.setWechatUserId(wechat.getId());
             loginToken.setAccessToken(TokenUtil.generateToken());
             loginToken.setStatus(1);
@@ -115,7 +123,7 @@ public class UserService {
      * @author chenshangbo
      * @date 2018-04-09 22:08:49
      */
-    public int registerFans(UserFans fans) {
+    public int registerFans(Fans fans) {
         return updateWeChatUserMobileNo(fans.getWechatUserId(), fans.getMobileNo());
     }
 
@@ -127,8 +135,8 @@ public class UserService {
      * @author chenshangbo
      * @date 2018-04-20 23:30:00
      */
-    public int registerSupplier(UserSupplier supplier) {
-        int count = userSupplierMapper.insert(supplier);
+    public int registerSupplier(Supplier supplier) {
+        int count = supplierMapper.insert(supplier);
         if(count > 0){
             updateWeChatUserMobileNo(supplier.getWechatUserId(), supplier.getMobileNo());
         }
@@ -138,17 +146,17 @@ public class UserService {
     /**
      * 功能模块: 保存店主信息
      *
-     * @param shopowner
+     * @param shop
      * @return int
      * @author chenshangbo
      * @date 2018-04-24 23:06:01
      */
-    public int registerShopowner(UserShopowner shopowner) {
-        int count = userShopownerMapper.insert(shopowner);
+    public Long registerShop(Shop shop) {
+        int count = shopMapper.insert(shop);
         if(count > 0){
-            updateWeChatUserMobileNo(shopowner.getWechatUserId(), shopowner.getMobileNo());
+            updateWeChatUserMobileNo(shop.getWechatUserId(), shop.getMobileNo());
         }
-        return count;
+        return shop.getId();
     }
 
     /**
@@ -166,4 +174,11 @@ public class UserService {
         params.setMobileNo(mobileNo);
         return weChatUserMapper.updateMobileNo(params);
     }
+
+    public WeChatUser getWechatUserByMobileNo(String customMobileNo){
+        WeChatUser params = new WeChatUser();
+        params.setMobileNo(customMobileNo);
+        return weChatUserMapper.getByParams(params);
+    }
+
 }

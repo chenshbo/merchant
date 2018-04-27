@@ -2,7 +2,7 @@ package com.jiangzuoyoupin.domain;
 
 import java.util.Date;
 
-public class UserSupplier{
+public class Supplier{
 
     private Long id;
 

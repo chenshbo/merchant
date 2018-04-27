@@ -2,10 +2,10 @@ package com.jiangzuoyoupin.controller.back;
 
 import com.jiangzuoyoupin.annotation.Auth;
 import com.jiangzuoyoupin.base.WebResult;
-import com.jiangzuoyoupin.domain.UserFans;
+import com.jiangzuoyoupin.domain.Fans;
 import com.jiangzuoyoupin.domain.WeChatUser;
 import com.jiangzuoyoupin.req.AdminLoginReq;
-import com.jiangzuoyoupin.req.UserFansRegReq;
+import com.jiangzuoyoupin.req.FansRegReq;
 import com.jiangzuoyoupin.service.SmsService;
 import com.jiangzuoyoupin.service.UserService;
 import com.jiangzuoyoupin.utils.MD5;

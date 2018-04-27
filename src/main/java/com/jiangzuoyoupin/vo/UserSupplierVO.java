@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
 
-public class UserSupplierVO extends WeChatUserVO {
+public class SupplierVO extends WeChatUserVO {
 
     @ApiModelProperty(value = "主键id")
     private Long id;

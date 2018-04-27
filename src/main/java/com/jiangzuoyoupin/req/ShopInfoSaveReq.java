@@ -15,7 +15,7 @@ public class ShopInfoSaveReq implements Serializable{
     private static final long serialVersionUID = 6768218712375022287L;
 
     @ApiModelProperty(value = "店主id")
-    private Long shopownerId;
+    private Long shopId;
 
     @ApiModelProperty(value = "店名")
     private String shopName;
@@ -29,12 +29,12 @@ public class ShopInfoSaveReq implements Serializable{
     @ApiModelProperty(value = "地址")
     private String address;
 
-    public Long getShopownerId() {
-        return shopownerId;
+    public Long getShopId() {
+        return shopId;
     }
 
-    public void setShopownerId(Long shopownerId) {
-        this.shopownerId = shopownerId;
+    public void setShopId(Long shopId) {
+        this.shopId = shopId;
     }
 
     public String getShopName() {

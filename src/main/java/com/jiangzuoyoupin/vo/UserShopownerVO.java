@@ -2,7 +2,7 @@ package com.jiangzuoyoupin.vo;
 
 import java.util.Date;
 
-public class UserShopownerVO extends WeChatUserVO {
+public class ShopVO extends WeChatUserVO {
     private Long id;
 
     private Long wechatUserId;

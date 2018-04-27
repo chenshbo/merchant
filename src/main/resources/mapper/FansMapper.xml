@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.jiangzuoyoupin.mapper.UserFansMapper">
-  <resultMap id="BaseResultMap" type="com.jiangzuoyoupin.domain.UserFans">
+<mapper namespace="com.jiangzuoyoupin.mapper.FansMapper">
+  <resultMap id="BaseResultMap" type="com.jiangzuoyoupin.domain.Fans">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="wechat_user_id" jdbcType="BIGINT" property="wechatUserId" />
     <result column="mobile_no" jdbcType="VARCHAR" property="mobileNo" />
@@ -21,13 +21,13 @@
     delete from t_user_fans
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.jiangzuoyoupin.domain.UserFans" keyProperty="id" useGeneratedKeys="true">
+  <insert id="insert" parameterType="com.jiangzuoyoupin.domain.Fans" keyProperty="id" useGeneratedKeys="true">
     insert into t_user_fans (wechat_user_id, mobile_no,
       gmt_create, gmt_modified)
     values (#{wechatUserId,jdbcType=BIGINT}, #{mobileNo,jdbcType=VARCHAR},
       now(),now())
   </insert>
-  <insert id="insertSelective" parameterType="com.jiangzuoyoupin.domain.UserFans">
+  <insert id="insertSelective" parameterType="com.jiangzuoyoupin.domain.Fans">
     insert into t_user_fans
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -64,7 +64,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.jiangzuoyoupin.domain.UserFans">
+  <update id="updateByPrimaryKeySelective" parameterType="com.jiangzuoyoupin.domain.Fans">
     update t_user_fans
     <set>
       <if test="wechatUserId != null">
@@ -82,7 +82,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.jiangzuoyoupin.domain.UserFans">
+  <update id="updateByPrimaryKey" parameterType="com.jiangzuoyoupin.domain.Fans">
     update t_user_fans
     set wechat_user_id = #{wechatUserId,jdbcType=BIGINT},
       mobile_no = #{mobileNo,jdbcType=VARCHAR},

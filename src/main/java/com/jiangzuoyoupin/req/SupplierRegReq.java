@@ -5,14 +5,14 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 
 /**
- * 功能模块: 店主注册req
+ * 功能模块: 供应商注册req
  *
  * @author chenshangbo
- * @date 2018-04-24 23:01:26
+ * @date 2018-04-18 22:36:38
  */
-public class UserShopownerRegReq implements Serializable{
+public class SupplierRegReq implements Serializable{
 
-    private static final long serialVersionUID = -2393488416940569268L;
+    private static final long serialVersionUID = -822663160188263239L;
 
     @ApiModelProperty(value = "手机号码",required = true)
     private String mobileNo;
@@ -77,6 +77,7 @@ public class UserShopownerRegReq implements Serializable{
     }
 
     public void setBusinessLicenseImage(String businessLicenseImage) {
-        this.businessLicenseImage = businessLicenseImage;
+        this.businessLicenseImage = businessLicenseImage == null ? null : businessLicenseImage.trim();
     }
+
 }

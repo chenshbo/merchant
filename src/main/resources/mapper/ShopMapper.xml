@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.jiangzuoyoupin.mapper.UserShopownerMapper">
-  <resultMap id="BaseResultMap" type="com.jiangzuoyoupin.domain.UserShopowner">
+<mapper namespace="com.jiangzuoyoupin.mapper.ShopMapper">
+  <resultMap id="BaseResultMap" type="com.jiangzuoyoupin.domain.Shop">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="wechat_user_id" jdbcType="BIGINT" property="wechatUserId" />
     <result column="mobile_no" jdbcType="VARCHAR" property="mobileNo" />
@@ -9,6 +9,10 @@
     <result column="city_id" jdbcType="BIGINT" property="cityId" />
     <result column="area_id" jdbcType="BIGINT" property="areaId" />
     <result column="business_license_image" jdbcType="VARCHAR" property="businessLicenseImage" />
+    <result column="shop_name" property="shopName" jdbcType="VARCHAR" />
+    <result column="shop_suffix_name" property="shopSuffixName" jdbcType="VARCHAR" />
+    <result column="telephone" property="telephone" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
     <result column="status" jdbcType="BIGINT" property="status" />
     <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
@@ -20,31 +24,31 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from t_user_shopowner
+    from t_shop
     where id = #{id,jdbcType=BIGINT}
   </select>
   <select id="selectByWeChatUserId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select
     <include refid="Base_Column_List" />
-    from t_user_shopowner
+    from t_shop
     where wechat_user_id = #{wechatUserId,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from t_user_shopowner
+    delete from t_shop
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.jiangzuoyoupin.domain.UserShopowner" useGeneratedKeys="true" keyProperty="id">
-    insert into t_user_shopowner (wechat_user_id, mobile_no,
-      province_id, city_id, area_id, 
-      business_license_image, status, gmt_create, 
-      gmt_modified)
+  <insert id="insert" parameterType="com.jiangzuoyoupin.domain.Shop" useGeneratedKeys="true" keyProperty="id">
+    insert into t_shop (wechat_user_id, mobile_no,
+      province_id, city_id, area_id, business_license_image, shop_name,
+      shop_suffix_name, telephone, address, status, gmt_create, gmt_modified)
     values (#{wechatUserId,jdbcType=BIGINT}, #{mobileNo,jdbcType=VARCHAR},
       #{provinceId,jdbcType=BIGINT}, #{cityId,jdbcType=BIGINT}, #{areaId,jdbcType=BIGINT}, 
-      #{businessLicenseImage,jdbcType=VARCHAR}, #{status,jdbcType=BIGINT}, #{gmtCreate,jdbcType=TIMESTAMP}, 
-      #{gmtModified,jdbcType=TIMESTAMP})
+      #{businessLicenseImage,jdbcType=VARCHAR}, #{shopName,jdbcType=VARCHAR},
+      #{shopSuffixName,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR},
+      #{status,jdbcType=BIGINT}, now(),now())
   </insert>
-  <insert id="insertSelective" parameterType="com.jiangzuoyoupin.domain.UserShopowner">
-    insert into t_user_shopowner
+  <insert id="insertSelective" parameterType="com.jiangzuoyoupin.domain.Shop">
+    insert into t_shop
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -66,6 +70,19 @@
       </if>
       <if test="businessLicenseImage != null">
         business_license_image,
+      </if>
+
+      <if test="shopName != null" >
+        shop_name,
+      </if>
+      <if test="shopSuffixName != null" >
+        shop_suffix_name,
+      </if>
+      <if test="telephone != null" >
+        telephone,
+      </if>
+      <if test="address != null" >
+        address,
       </if>
       <if test="status != null">
         status,
@@ -99,6 +116,18 @@
       <if test="businessLicenseImage != null">
         #{businessLicenseImage,jdbcType=VARCHAR},
       </if>
+      <if test="shopName != null" >
+        #{shopName,jdbcType=VARCHAR},
+      </if>
+      <if test="shopSuffixName != null" >
+        #{shopSuffixName,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null" >
+        #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
       <if test="status != null">
         #{status,jdbcType=BIGINT},
       </if>
@@ -110,8 +139,8 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.jiangzuoyoupin.domain.UserShopowner">
-    update t_user_shopowner
+  <update id="updateByPrimaryKeySelective" parameterType="com.jiangzuoyoupin.domain.Shop">
+    update t_shop
     <set>
       <if test="wechatUserId != null">
         wechat_user_id = #{wechatUserId,jdbcType=BIGINT},
@@ -155,8 +184,8 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.jiangzuoyoupin.domain.UserShopowner">
-    update t_user_shopowner
+  <update id="updateByPrimaryKey" parameterType="com.jiangzuoyoupin.domain.Shop">
+    update t_shop
     set wechat_user_id = #{wechatUserId,jdbcType=BIGINT},
       mobile_no = #{mobileNo,jdbcType=VARCHAR},
       province_id = #{provinceId,jdbcType=BIGINT},
@@ -172,8 +201,8 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
 
-  <update id="updateByWeChatUserId" parameterType="com.jiangzuoyoupin.domain.UserShopowner">
-    update t_user_shopowner
+  <update id="updateByWeChatUserId" parameterType="com.jiangzuoyoupin.domain.Shop">
+    update t_shop
     set shop_name = #{shopName,jdbcType=VARCHAR},
         shop_suffix_name = #{shopSuffixName,jdbcType=VARCHAR},
         telephone = #{telephone,jdbcType=VARCHAR},
