@@ -1,10 +1,7 @@
 package com.jiangzuoyoupin.service;
 
 import com.jiangzuoyoupin.domain.*;
-import com.jiangzuoyoupin.mapper.LoginTokenMapper;
-import com.jiangzuoyoupin.mapper.ShopMapper;
-import com.jiangzuoyoupin.mapper.SupplierMapper;
-import com.jiangzuoyoupin.mapper.WeChatUserMapper;
+import com.jiangzuoyoupin.mapper.*;
 import com.jiangzuoyoupin.utils.TokenUtil;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;

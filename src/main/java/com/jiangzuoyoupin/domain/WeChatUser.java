@@ -15,6 +15,8 @@ public class WeChatUser {
 
     private Integer gender;
 
+    private Double balance;
+
     private Date gmtCreate;
 
     private Date gmtModified;
@@ -65,6 +67,14 @@ public class WeChatUser {
 
     public void setGender(Integer gender) {
         this.gender = gender;
+    }
+
+    public Double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(Double balance) {
+        this.balance = balance;
     }
 
     public Date getGmtCreate() {

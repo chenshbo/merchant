@@ -2,6 +2,8 @@ package com.jiangzuoyoupin.mapper;
 
 import com.jiangzuoyoupin.domain.Module;
 
+import java.util.List;
+
 public interface ModuleMapper {
     int deleteByPrimaryKey(Long id);
 
@@ -14,4 +16,6 @@ public interface ModuleMapper {
     int updateByPrimaryKeySelective(Module record);
 
     int updateByPrimaryKey(Module record);
+
+    List<Module> selectByParams(Module param);
 }

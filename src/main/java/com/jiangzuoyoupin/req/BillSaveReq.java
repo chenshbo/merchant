@@ -14,13 +14,13 @@ public class BillSaveReq implements Serializable{
 
     private static final long serialVersionUID = 8043924278854300741L;
 
-    @ApiModelProperty(value = "客户名称",required = true)
+    @ApiModelProperty(value = "店铺id",required = true)
     private Long shopId;
-    @ApiModelProperty(value = "客户名称",required = true)
+    @ApiModelProperty(value = "微信用户id",required = true)
     private Long weChatUserId;
     @ApiModelProperty(value = "客户名称",required = true)
     private String customName;
-    @ApiModelProperty(value = "昵称",required = true)
+    @ApiModelProperty(value = "客户手机号码",required = true)
     private String customMobileNo;
     @ApiModelProperty(value = "消费金额",required = true)
     private Double amount;

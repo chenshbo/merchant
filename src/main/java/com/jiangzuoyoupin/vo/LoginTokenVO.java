@@ -27,6 +27,9 @@ public class LoginTokenVO implements Serializable{
     @ApiModelProperty(value = "角色，0粉丝1店主2匠探")
     private Integer role;
 
+    @ApiModelProperty(value = "店铺id")
+    private Long shopId;
+
     public Long getWechatUserId() {
         return wechatUserId;
     }
@@ -57,5 +60,13 @@ public class LoginTokenVO implements Serializable{
 
     public void setRole(Integer role) {
         this.role = role;
+    }
+
+    public Long getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(Long shopId) {
+        this.shopId = shopId;
     }
 }

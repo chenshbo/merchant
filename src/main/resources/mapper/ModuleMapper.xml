@@ -18,6 +18,15 @@
     from t_module
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="selectByParams" resultMap="BaseResultMap" parameterType="com.jiangzuoyoupin.domain.Module" >
+    select
+    <include refid="Base_Column_List" />
+    from t_module
+    where 1=1
+    <if test="name != null and name != ''">
+      name = #{name,jdbcType=BIGINT}
+    </if>
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from t_module
     where id = #{id,jdbcType=BIGINT}

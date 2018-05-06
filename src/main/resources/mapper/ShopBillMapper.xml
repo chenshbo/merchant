@@ -5,20 +5,20 @@
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="shop_id" property="shopId" jdbcType="BIGINT" />
     <result column="custom_wechat_user_id" property="customWechatUserId" jdbcType="BIGINT" />
-    <result column="wechat_user_id" property="wechatUserId" jdbcType="BIGINT" />
     <result column="custom_name" property="customName" jdbcType="VARCHAR" />
     <result column="custom_mobile_no" property="customMobileNo" jdbcType="VARCHAR" />
     <result column="amount" property="amount" jdbcType="DOUBLE" />
     <result column="bonus_ratio" property="bonusRatio" jdbcType="INTEGER" />
     <result column="reward" property="reward" jdbcType="DOUBLE" />
     <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="sort_status" property="sortStatus" jdbcType="TINYINT" />
     <result column="create_wechat_user_id" property="createWechatUserId" jdbcType="BIGINT" />
     <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
     <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, shop_id, custom_wechat_user_id, wechat_user_id, custom_name, custom_mobile_no, 
-    amount, bonus_ratio, reward, status, create_wechat_user_id, gmt_create, gmt_modified
+    id, shop_id, custom_wechat_user_id, custom_name, custom_mobile_no,
+    amount, bonus_ratio, reward, status, sort_status, create_wechat_user_id, gmt_create, gmt_modified
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -32,14 +32,14 @@
   </delete>
   <insert id="insert" parameterType="com.jiangzuoyoupin.domain.ShopBill" keyProperty="id" useGeneratedKeys="true">
     insert into t_shop_bill (shop_id, custom_wechat_user_id,
-      wechat_user_id, custom_name, custom_mobile_no, 
+      custom_name, custom_mobile_no,
       amount, bonus_ratio, reward, 
-      status, create_wechat_user_id, gmt_create, 
+      status, sort_status, create_wechat_user_id, gmt_create,
       gmt_modified)
     values (#{shopId,jdbcType=BIGINT}, #{customWechatUserId,jdbcType=BIGINT},
-      #{wechatUserId,jdbcType=BIGINT}, #{customName,jdbcType=VARCHAR}, #{customMobileNo,jdbcType=VARCHAR}, 
+      #{customName,jdbcType=VARCHAR}, #{customMobileNo,jdbcType=VARCHAR},
       #{amount,jdbcType=DOUBLE}, #{bonusRatio,jdbcType=INTEGER}, #{reward,jdbcType=DOUBLE}, 
-      #{status,jdbcType=TINYINT}, #{createWechatUserId,jdbcType=BIGINT}, now(), now())
+      #{status,jdbcType=TINYINT}, #{sortStatus,jdbcType=TINYINT},#{createWechatUserId,jdbcType=BIGINT}, now(), now())
   </insert>
   <insert id="insertSelective" parameterType="com.jiangzuoyoupin.domain.ShopBill" >
     insert into t_shop_bill
@@ -53,13 +53,10 @@
       <if test="customWechatUserId != null" >
         custom_wechat_user_id,
       </if>
-      <if test="wechatUserId != null" >
-        wechat_user_id,
-      </if>
-      <if test="customName != null" >
+      <if test="customName != null and customName != ''" >
         custom_name,
       </if>
-      <if test="customMobileNo != null" >
+      <if test="customMobileNo != null and customMobileNo != ''" >
         custom_mobile_no,
       </if>
       <if test="amount != null" >
@@ -73,6 +70,9 @@
       </if>
       <if test="status != null" >
         status,
+      </if>
+      <if test="sortStatus != null" >
+        sort_status,
       </if>
       <if test="createWechatUserId != null" >
         create_wechat_user_id,
@@ -94,13 +94,10 @@
       <if test="customWechatUserId != null" >
         #{customWechatUserId,jdbcType=BIGINT},
       </if>
-      <if test="wechatUserId != null" >
-        #{wechatUserId,jdbcType=BIGINT},
-      </if>
-      <if test="customName != null" >
+      <if test="customName != null and customName != ''" >
         #{customName,jdbcType=VARCHAR},
       </if>
-      <if test="customMobileNo != null" >
+      <if test="customMobileNo != null and customMobileNo != ''" >
         #{customMobileNo,jdbcType=VARCHAR},
       </if>
       <if test="amount != null" >
@@ -114,6 +111,9 @@
       </if>
       <if test="status != null" >
         #{status,jdbcType=TINYINT},
+      </if>
+      <if test="sortStatus != null" >
+        #{sortStatus,jdbcType=TINYINT},
       </if>
       <if test="createWechatUserId != null" >
         #{createWechatUserId,jdbcType=BIGINT},
@@ -135,13 +135,13 @@
       <if test="customWechatUserId != null" >
         custom_wechat_user_id = #{customWechatUserId,jdbcType=BIGINT},
       </if>
-      <if test="wechatUserId != null" >
-        wechat_user_id = #{wechatUserId,jdbcType=BIGINT},
+      <if test="createWeChatUserId != null" >
+        create_wechat_user_id = #{createWechatUserId,jdbcType=BIGINT},
       </if>
-      <if test="customName != null" >
+      <if test="customName != null and customName != ''" >
         custom_name = #{customName,jdbcType=VARCHAR},
       </if>
-      <if test="customMobileNo != null" >
+      <if test="customMobileNo != null and customMobileNo != ''" >
         custom_mobile_no = #{customMobileNo,jdbcType=VARCHAR},
       </if>
       <if test="amount != null" >
@@ -156,6 +156,9 @@
       <if test="status != null" >
         status = #{status,jdbcType=TINYINT},
       </if>
+      <if test="sortStatus != null" >
+        sort_status = #{sortStatus,jdbcType=TINYINT},
+      </if>
       <if test="createWechatUserId != null" >
         create_wechat_user_id = #{createWechatUserId,jdbcType=BIGINT},
       </if>
@@ -167,15 +170,109 @@
     update t_shop_bill
     set shop_id = #{shopId,jdbcType=BIGINT},
       custom_wechat_user_id = #{customWechatUserId,jdbcType=BIGINT},
-      wechat_user_id = #{wechatUserId,jdbcType=BIGINT},
       custom_name = #{customName,jdbcType=VARCHAR},
       custom_mobile_no = #{customMobileNo,jdbcType=VARCHAR},
       amount = #{amount,jdbcType=DOUBLE},
       bonus_ratio = #{bonusRatio,jdbcType=INTEGER},
       reward = #{reward,jdbcType=DOUBLE},
       status = #{status,jdbcType=TINYINT},
+      sort_status = #{sortStatus,jdbcType=TINYINT},
       create_wechat_user_id = #{createWechatUserId,jdbcType=BIGINT},
       gmt_modified = now()
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+  <!-- 查询总金额和奖金池 -->
+  <select id="getSaleTotalAmount" parameterType="long" resultType="com.jiangzuoyoupin.dto.ShopBillDto">
+    SELECT a.totalAmount, (a.total_reward - b.full_amount) totalReward FROM
+    (SELECT IFNULL(SUM(amount),0.00) totalAmount,IFNULL(SUM(reward),0.00) total_reward FROM t_shop_bill WHERE shop_id = #{shopId}) a,
+    (SELECT IFNULL(SUM(amount),0.00) full_amount FROM t_shop_bill WHERE shop_id = #{shopId} AND sort_status = 3) b
+  </select>
+
+  <!-- 更新最早记录的排序状态为达标 -->
+  <update id="updateEarliestSortStatus" parameterType="long">
+    UPDATE t_shop_bill SET sort_status = 1
+    WHERE shop_id = #{shopId}
+    <![CDATA[
+    AND amount <= (
+      SELECT a.total_reward - b.full_amount FROM
+      (SELECT IFNULL(SUM(reward),0.00) total_reward FROM t_shop_bill WHERE shop_id = #{shopId}) a,
+      (SELECT IFNULL(SUM(amount),0.00) full_amount FROM t_shop_bill WHERE shop_id = #{shopId} AND sort_status = 1 ) b
+    )
+    ]]>
+    ORDER BY gmt_create ASC LIMIT 1
+  </update>
+
+  <resultMap id="DtoBaseResultMap" type="com.jiangzuoyoupin.dto.ShopBillDto" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="shop_id" property="shopId" jdbcType="BIGINT" />
+    <result column="custom_wechat_user_id" property="customWechatUserId" jdbcType="BIGINT" />
+    <result column="custom_name" property="customName" jdbcType="VARCHAR" />
+    <result column="custom_mobile_no" property="customMobileNo" jdbcType="VARCHAR" />
+    <result column="amount" property="amount" jdbcType="DOUBLE" />
+    <result column="bonus_ratio" property="bonusRatio" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="sort_status" property="sortStatus" jdbcType="TINYINT" />
+    <result column="create_wechat_user_id" property="createWechatUserId" jdbcType="BIGINT" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+    <result column="nick_name" property="nickName" jdbcType="VARCHAR" />
+  </resultMap>
+  <select id="selectBillList" parameterType="long" resultMap="DtoBaseResultMap">
+    SELECT
+      id,
+      shop_id,
+      custom_wechat_user_id,
+      custom_name,
+      amount,
+      status,
+      sort_status,
+      create_wechat_user_id,
+      gmt_create,
+      gmt_modified
+    FROM t_shop_bill
+    WHERE shop_id = #{shopId}
+    ORDER BY gmt_create ASC
+  </select>
+
+  <select id="getFirst" resultMap="BaseResultMap" parameterType="java.lang.Long">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM t_shop_bill
+    WHERE shop_id = #{shopId}
+    ORDER BY gmt_create ASC
+    limit 1
+  </select>
+
+  <select id="selectMyBillList" resultMap="DtoBaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM t_shop_bill
+    WHERE shop_id = #{shopId}
+    AND custom_wechat_user_id = #{weChatUserId}
+    ORDER BY gmt_create ASC
+  </select>
+
+  <select id="selectCurrBillList" parameterType="long" resultMap="DtoBaseResultMap">
+    SELECT
+      t_wechat_user.nick_name,
+      t_shop_bill.amount
+    FROM t_shop_bill,t_wechat_user
+    WHERE t_shop_bill.shop_id = #{shopId}
+    AND t_shop_bill.sort_status = 0
+    AND t_shop_bill.custom_wechat_user_id = t_wechat_user.id
+    ORDER BY gmt_create ASC
+  </select>
+
+  <select id="selectFreeBillList" parameterType="long" resultMap="DtoBaseResultMap">
+    SELECT
+      t_wechat_user.nick_name,
+      t_shop_bill.amount
+    FROM t_shop_bill,t_wechat_user
+    WHERE t_shop_bill.shop_id = #{shopId}
+    AND t_shop_bill.sort_status != 0
+    AND t_shop_bill.custom_wechat_user_id = t_wechat_user.id
+    ORDER BY gmt_create ASC
+  </select>
+
 </mapper>

@@ -27,44 +27,5 @@ public class ModuleApplyReq implements Serializable{
     @ApiModelProperty(value = "地址")
     private String address;
 
-    public Long getShopownerId() {
-        return shopownerId;
-    }
-
-    public void setShopownerId(Long shopownerId) {
-        this.shopownerId = shopownerId;
-    }
-
-    public String getShopName() {
-        return shopName;
-    }
-
-    public void setShopName(String shopName) {
-        this.shopName = shopName == null ? null : shopName.trim();
-    }
-
-    public String getShopSuffixName() {
-        return shopSuffixName;
-    }
-
-    public void setShopSuffixName(String shopSuffixName) {
-        this.shopSuffixName = shopSuffixName == null ? null : shopSuffixName.trim();
-    }
-
-    public String getTelephone() {
-        return telephone;
-    }
-
-    public void setTelephone(String telephone) {
-        this.telephone = telephone == null ? null : telephone.trim();
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address == null ? null : address.trim();
-    }
 
 }

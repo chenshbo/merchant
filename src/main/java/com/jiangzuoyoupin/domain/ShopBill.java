@@ -19,7 +19,9 @@ public class ShopBill {
 
     private Double reward;
 
-    private Byte status;
+    private Integer status;
+
+    private Integer sortStatus;
 
     private Long createWechatUserId;
 
@@ -91,12 +93,20 @@ public class ShopBill {
         this.reward = reward;
     }
 
-    public Byte getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(Byte status) {
+    public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public Integer getSortStatus() {
+        return sortStatus;
+    }
+
+    public void setSortStatus(Integer sortStatus) {
+        this.sortStatus = sortStatus;
     }
 
     public Long getCreateWechatUserId() {

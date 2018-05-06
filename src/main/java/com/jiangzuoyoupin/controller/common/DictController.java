@@ -105,8 +105,8 @@ public class DictController{
         return WebResultUtil.returnResult(dictService.selectAreaTree());
     }
 
-    @ApiOperation(value = "店主注册申请", notes = "店主注册申请")
-    @PostMapping(value = "/module/select")
+    @ApiOperation(value = "查询功能模块列表", notes = "查询功能模块列表")
+    @GetMapping(value = "/module/select")
     public WebResult<List<Module>> selectModuleList() {
         return WebResultUtil.returnResult(dictService.selectModuleList());
     }

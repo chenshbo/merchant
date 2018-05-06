@@ -8,11 +8,12 @@
     <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
     <result column="avatar_url" jdbcType="VARCHAR" property="avatarUrl" />
     <result column="gender" jdbcType="BIGINT" property="gender" />
+    <result column="balance" jdbcType="DOUBLE" property="balance" />
     <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, open_id, mobile_no, nick_name, avatar_url, gender, gmt_create, gmt_modified
+    id, open_id, mobile_no, nick_name, avatar_url, gender, balance, gmt_create, gmt_modified
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -135,6 +136,9 @@
       <if test="gender != null">
         gender = #{gender,jdbcType=BIGINT},
       </if>
+      <if test="balance != null">
+        balance = #{balance,jdbcType=DOUBLE},
+      </if>
       gmt_modified = now()
     </set>
     where id = #{id,jdbcType=BIGINT}
@@ -146,6 +150,7 @@
       nick_name = #{nickName,jdbcType=VARCHAR},
       avatar_url = #{avatarUrl,jdbcType=VARCHAR},
       gender = #{gender,jdbcType=BIGINT},
+      balance = #{balance,jdbcType=DOUBLE},
       gmt_modified = now()
     where id = #{id,jdbcType=BIGINT}
   </update>

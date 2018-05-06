@@ -5,11 +5,20 @@ import com.jiangzuoyoupin.base.WebResult;
 import com.jiangzuoyoupin.controller.common.BaseController;
 import com.jiangzuoyoupin.domain.ShopBill;
 import com.jiangzuoyoupin.domain.Shop;
+import com.jiangzuoyoupin.domain.ShopManager;
 import com.jiangzuoyoupin.domain.WeChatUser;
+import com.jiangzuoyoupin.dto.ShopBillDto;
 import com.jiangzuoyoupin.req.BillSaveReq;
+import com.jiangzuoyoupin.req.IdReq;
+import com.jiangzuoyoupin.req.ManagerAddReq;
 import com.jiangzuoyoupin.req.ShopInfoSaveReq;
+import com.jiangzuoyoupin.service.BillService;
 import com.jiangzuoyoupin.service.ManagerService;
+import com.jiangzuoyoupin.utils.ConvertUtils;
 import com.jiangzuoyoupin.utils.WebResultUtil;
+import com.jiangzuoyoupin.vo.ShopBillListVO;
+import com.jiangzuoyoupin.vo.ShopBillTotalVO;
+import com.jiangzuoyoupin.vo.ShopManagerListVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -19,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * 功能模块: 运营中心controller
@@ -27,13 +37,16 @@ import javax.servlet.http.HttpServletRequest;
  * @date 2018-04-24 23:27:51
  */
 @Auth
-@Api("公众号-运营中心模块")
+@Api("小程序-运营中心模块")
 @RestController
 @RequestMapping("mina/manager")
 public class ManagerController extends BaseController {
 
     @Autowired
     private ManagerService managerService;
+
+    @Autowired
+    private BillService billService;
 
     /**
      * 功能模块: 保存店铺信息
@@ -43,7 +56,7 @@ public class ManagerController extends BaseController {
      * @author chenshangbo
      * @date 2018-04-24 23:27:03
      */
-    @ApiOperation(value = "保存店铺信息", notes = "保存店铺信息")
+    @ApiOperation(value = "店铺信息-保存", notes = "保存店铺信息")
     @ApiImplicitParam(name = "req", value = "店铺保存对象", dataType = "ShopInfoSaveReq")
     @PostMapping(value = "/saveShopInfo")
     public WebResult saveShopInfo(@RequestBody ShopInfoSaveReq req,HttpServletRequest request) {
@@ -70,7 +83,7 @@ public class ManagerController extends BaseController {
      * @author: chenshangbo
      * @date: 2018-04-27 10:51:21
      */
-    @ApiOperation(value = "申请开通模块权限", notes = "申请开通模块权限")
+    @ApiOperation(value = "功能开通-申请开通模块权限", notes = "申请开通模块权限")
     @PostMapping(value = "/module/apply")
     public WebResult moduleApply() {
         return WebResultUtil.returnResult();
@@ -85,7 +98,7 @@ public class ManagerController extends BaseController {
      * @author chenshangbo
      * @date 2018-04-24 23:02:51
      */
-    @ApiOperation(value = "账单保存", notes = "保存粉丝消费账单")
+    @ApiOperation(value = "幸福账单-账单保存", notes = "保存粉丝消费账单")
     @ApiImplicitParam(name = "req", value = "消费账单对象", dataType = "BillSaveReq")
     @PostMapping(value = "/bill/save")
     public WebResult saveBill(@RequestBody BillSaveReq req, HttpServletRequest request) {
@@ -101,22 +114,81 @@ public class ManagerController extends BaseController {
         BeanUtils.copyProperties(req,shopBill);
         shopBill.setCreateWechatUserId(weChatUser.getId());
         shopBill.setCustomWechatUserId(fans.getId());
+
         int count = managerService.saveBill(shopBill);
         if(count == 0){
-            return WebResultUtil.returnErrMsgResult("新增失败");
+            return WebResultUtil.returnErrMsgResult("保存幸福账单失败");
         }
         return WebResultUtil.returnResult();
     }
 
-    @ApiOperation(value = "查询总销售额和奖金池信息", notes = "根据shopId查询总销售额和奖金池信息")
+    @ApiOperation(value = "幸福账单-查询总销售额和奖金池信息", notes = "根据shopId查询总销售额和奖金池信息")
     @GetMapping(value = "/getSaleTotalBill/{shopId}")
-    public WebResult getSaleTotalAmount(@ApiParam(name = "shopId", value = "店铺id", required = true) @PathVariable Long shopId) {
+    public WebResult<ShopBillTotalVO> getSaleTotalAmount(@ApiParam(name = "shopId", value = "店铺id", required = true) @PathVariable Long shopId) {
+        ShopBillDto result = managerService.getSaleTotalAmount(shopId);
+        return WebResultUtil.returnResult(ConvertUtils.convert2vo(result,ShopBillTotalVO.class));
+    }
+
+    @ApiOperation(value = "幸福账单-查询账单列表", notes = "根据shopId查询总销售额和奖金池信息")
+    @GetMapping(value = "/selectBillList/{shopId}")
+    public WebResult<List<ShopBillListVO>> selectBillList(@ApiParam(name = "shopId", value = "店铺id", required = true) @PathVariable Long shopId) {
+        List<ShopBillDto> list = managerService.selectBillList(shopId);
+        return WebResultUtil.returnResult(ConvertUtils.poList2voList(list,ShopBillListVO.class));
+    }
+
+    @ApiOperation(value = "幸福账单-审核账单", notes = "审核账单")
+    @GetMapping(value = "/checkBill/{id}")
+    public WebResult checkBill(@ApiParam(name = "id", value = "账单id", required = true) @PathVariable Long id) {
+        int count = managerService.checkBill(id);
+        if(count == 0){
+            return WebResultUtil.returnErrMsgResult("审核账单失败");
+        }
         return WebResultUtil.returnResult();
     }
 
-    @ApiOperation(value = "查询总销售额和奖金池信息", notes = "根据shopId查询总销售额和奖金池信息")
-    @PostMapping(value = "/selectBillList/{shopId}")
-    public WebResult selectBillList(@ApiParam(name = "shopId", value = "店铺id", required = true) @PathVariable Long shopId) {
+    @ApiOperation(value = "幸福账单-转账", notes = "转账")
+    @GetMapping(value = "/transfer/{id}")
+    public WebResult transfer(@ApiParam(name = "id", value = "账单id", required = true) @PathVariable Long id) {
+        int count = billService.transfer(id);
+        if(count == 0){
+            return WebResultUtil.returnErrMsgResult("转账失败");
+        }
+        return WebResultUtil.returnResult();
+    }
+
+    @ApiOperation(value = "匠探团队-邀请", notes = "邀请匠探")
+    @ApiImplicitParam(name = "req", value = "邀请对象", dataType = "ManagerAddReq")
+    @PostMapping(value = "/addManager")
+    public WebResult addManager(@RequestBody ManagerAddReq req) {
+        WeChatUser fans = userService.getWechatUserByMobileNo(req.getMobileNo());
+        if(fans == null){
+            return WebResultUtil.returnErrMsgResult("该客户还未注册，请注册再试");
+        }
+        ShopManager manager = new ShopManager();
+        manager.setShopId(req.getShopId());
+        manager.setWechatUserId(fans.getId());
+        int count = managerService.addManager(manager);
+        if(count == 0){
+            return WebResultUtil.returnErrMsgResult("邀请匠探失败");
+        }
+        return WebResultUtil.returnResult();
+    }
+
+    @ApiOperation(value = "匠探团队-列表", notes = "店铺匠探列表")
+    @GetMapping(value = "/selectManagerList/{shopId}")
+    public WebResult<ShopManagerListVO> selectManagerList(@ApiParam(name = "shopId", value = "店铺id", required = true) @PathVariable Long shopId) {
+        List<ShopManager> managerList = managerService.selectManagerList(shopId);
+        return WebResultUtil.returnResult(ConvertUtils.poList2voList(managerList,ShopManagerListVO.class));
+    }
+
+    @ApiOperation(value = "匠探团队-删除", notes = "删除店铺匠探")
+    @ApiImplicitParam(name = "req", value = "id请求对象", dataType = "IdReq")
+    @PostMapping(value = "/delManager")
+    public WebResult delManager(@RequestBody IdReq req) {
+        int count = managerService.delManager(req.getId());
+        if(count == 0){
+            return WebResultUtil.returnErrMsgResult("删除匠探失败");
+        }
         return WebResultUtil.returnResult();
     }
 
