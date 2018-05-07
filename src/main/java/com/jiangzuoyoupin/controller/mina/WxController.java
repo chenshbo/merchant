@@ -55,9 +55,9 @@ public class WxController {
         String openid = "";
 
         // 通过code获取access_token
-        String url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" + wxAppId
+        String url = "https://api.weixin.qq.com/sns/jscode2session?appid=" + wxAppId
                 + "&secret=" + wxAppSecret
-                + "&code=" + req.getCode()
+                + "&js_code=" + req.getCode()
                 + "&grant_type=authorization_code";
         String tokenInfo = HttpUtil.doGet(url);
         JSONObject tokenJson = JSONObject.parseObject(tokenInfo);

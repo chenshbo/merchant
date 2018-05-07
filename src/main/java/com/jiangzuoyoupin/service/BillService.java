@@ -9,6 +9,7 @@ import com.jiangzuoyoupin.req.ShopIdAndWeChatUserIdReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,18 +29,26 @@ public class BillService {
 
     public String getMySchedule(Long shopId, Long weChatUserId) {
         ShopBill first = shopBillMapper.getFirst(shopId);
-        if (first == null || !first.getCustomWechatUserId().equals(weChatUserId)) {
+        if (first == null || !first.getCustomWeChatUserId().equals(weChatUserId)) {
             return "0.00";
         }
         ShopBillDto saleTotalAmount = shopBillMapper.getSaleTotalAmount(shopId);
         if (saleTotalAmount == null || saleTotalAmount.getTotalReward().equals(0.00)) {
             return "0.00";
         }
-        return String.format("%.2f", saleTotalAmount.getTotalReward() / first.getAmount()).toString();
+        return String.format("%.2f", saleTotalAmount.getTotalReward() / first.getAmount() * 100).toString();
     }
 
     public List<ShopBillDto> selectMyBillList(Long shopId, Long weChatUserId) {
-        return shopBillMapper.selectMyBillList(shopId, weChatUserId);
+        List<ShopBillDto> billList = shopBillMapper.selectBillList(shopId);
+        List<ShopBillDto> resList = new ArrayList<>();
+        for(int i = 0;i < billList.size();i++){
+            if(billList.get(i).getCustomWeChatUserId().equals(weChatUserId)){
+                billList.get(i).setRank(i+1);
+                resList.add(billList.get(i));
+            }
+        }
+        return resList;
     }
 
     public int applyFree(Long id) {
@@ -69,7 +78,7 @@ public class BillService {
 
         // 扣除用户余额
         WeChatUser update = new WeChatUser();
-        update.setId(shopBill.getCustomWechatUserId());
+        update.setId(shopBill.getCustomWeChatUserId());
         update.setBalance(update.getBalance() - shopBill.getAmount());
         weChatUserMapper.updateByPrimaryKeySelective(update);
 
@@ -88,7 +97,7 @@ public class BillService {
 
         // 增加用户余额
         WeChatUser update = new WeChatUser();
-        update.setId(shopBill.getCustomWechatUserId());
+        update.setId(shopBill.getCustomWeChatUserId());
         update.setBalance(update.getBalance() + shopBill.getAmount());
         weChatUserMapper.updateByPrimaryKeySelective(update);
 

@@ -13,7 +13,7 @@ public class LoginToken {
 
     private Integer status;
 
-    /** 角色，0粉丝1店主2匠探 */
+    /** 角色，0游客1粉丝2店主3匠探 */
     private Integer role;
 
     /** 店铺id */

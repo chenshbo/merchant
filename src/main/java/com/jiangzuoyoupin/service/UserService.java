@@ -2,12 +2,15 @@ package com.jiangzuoyoupin.service;
 
 import com.jiangzuoyoupin.domain.*;
 import com.jiangzuoyoupin.mapper.*;
+import com.jiangzuoyoupin.utils.NumberUtil;
 import com.jiangzuoyoupin.utils.TokenUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 功能模块: 用户service
@@ -70,21 +73,30 @@ public class UserService {
         Long shopId = 0l;
         // openId存在 更新数据
         if(byParams != null){
+            if(StringUtils.isNotEmpty(byParams.getMobileNo())){
+                role = 1;
+            }
             wechat.setId(byParams.getId());
             result = weChatUserMapper.updateByPrimaryKeySelective(wechat);
             Shop shop = shopMapper.selectByWeChatUserId(byParams.getId());
             if(shop != null){
-                role = 1;
+                role = 2;
                 shopId = shop.getId();
             }else {
                 ShopManager manager = shopManagerMapper.selectByWeChatUserId(byParams.getId());
                 if (manager != null) {
-                    role = 2;
+                    role = 3;
                     shopId = manager.getShopId();
                 }
             }
         }else{
             result = weChatUserMapper.insert(wechat);
+        }
+        // 店铺id为空
+        if(shopId.equals(0L)){
+            List<Shop> shopList = shopMapper.selectAll();
+            Integer random = NumberUtil.getRandomByRange(shopList.size());
+            shopId = shopList.get(random.intValue()).getId();
         }
         if (result > 0) {
             // 之前的token无效

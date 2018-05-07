@@ -25,6 +25,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -47,6 +48,9 @@ public class ManagerController extends BaseController {
 
     @Autowired
     private BillService billService;
+
+    @Value("${root.url}")
+    private String rootUrl;
 
     /**
      * 功能模块: 保存店铺信息
@@ -72,6 +76,25 @@ public class ManagerController extends BaseController {
             WebResultUtil.returnErrMsgResult("保存失败");
         }
         return WebResultUtil.returnResult();
+    }
+
+    /**
+     * 功能模块: 保存店铺信息
+     *
+     * @param shopId
+     * @return com.jiangzuoyoupin.base.WebResult
+     * @author chenshangbo
+     * @date 2018-04-24 23:27:03
+     */
+    @ApiOperation(value = "店铺信息-查询", notes = "查询店铺信息")
+    @GetMapping(value = "/getShopInfo/{shopId}")
+    public WebResult<Shop> getShopInfo(@ApiParam(name = "shopId", value = "店铺id", required = true) @PathVariable Long shopId) {
+        Shop shop = managerService.getShopInfo(shopId);
+        if (shop == null) {
+            WebResultUtil.returnErrMsgResult("该店铺不存在");
+        }
+        shop.setBusinessLicenseImage(rootUrl + shop.getBusinessLicenseImage());
+        return WebResultUtil.returnResult(shop);
     }
 
     /**
@@ -112,8 +135,8 @@ public class ManagerController extends BaseController {
         }
         ShopBill shopBill = new ShopBill();
         BeanUtils.copyProperties(req,shopBill);
-        shopBill.setCreateWechatUserId(weChatUser.getId());
-        shopBill.setCustomWechatUserId(fans.getId());
+        shopBill.setCreateWeChatUserId(weChatUser.getId());
+        shopBill.setCustomWeChatUserId(fans.getId());
 
         int count = managerService.saveBill(shopBill);
         if(count == 0){

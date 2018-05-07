@@ -24,7 +24,7 @@ public class LoginTokenVO implements Serializable{
     @ApiModelProperty(value = "token过期时间")
     private Date accessTokenExpires;
 
-    @ApiModelProperty(value = "角色，0粉丝1店主2匠探")
+    @ApiModelProperty(value = "角色，0游客1粉丝2店主3匠探")
     private Integer role;
 
     @ApiModelProperty(value = "店铺id")

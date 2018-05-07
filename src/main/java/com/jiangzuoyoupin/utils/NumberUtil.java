@@ -13,11 +13,25 @@ public class NumberUtil {
 
     /**
      * 产生随机的六位数
+     *
      * @return
      */
-    public static String getVerifyCode(){
-        Random rad = new Random();
-        return rad.nextInt(1000000)+"";
+    public static String getVerifyCode() {
+        Random random = new Random();
+        String result = "";
+        for (int i = 0; i < 6; i++) {
+            result += random.nextInt(10);
+        }
+        return result;
+    }
+
+    /**
+     * 范围内随机数
+     *
+     * @return
+     */
+    public static Integer getRandomByRange(Integer max) {
+        return (int) (Math.random() * max);
     }
 
 
@@ -68,7 +82,7 @@ public class NumberUtil {
 
                     if (bv2 > cv2) return -1;
                     else if (bv2 < cv2) return 1;
-                    
+
                 }
             }
 
@@ -81,7 +95,12 @@ public class NumberUtil {
 
 
     public static void main(String[] args) throws Exception {
-        System.out.println(getVerifyCode());
+        for (int i = 0; i < 10; i++) {
+
+            System.out.println(getVerifyCode());
+        }
+
+        System.out.printf(",A,B".substring(1,",A,B".length()));
 //        System.out.println(versionCompare("1.1.24", "1.1.24.1"));
     }
 

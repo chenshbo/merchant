@@ -56,11 +56,12 @@ public class ManagerService {
      */
     public int saveBill(ShopBill bill) {
         Shop shop = shopMapper.selectByPrimaryKey(bill.getShopId());
-        if (shop.getWechatUserId().equals(bill.getCreateWechatUserId())) {
+        if (shop.getWechatUserId().equals(bill.getCreateWeChatUserId())) {
             bill.setStatus(1);
         } else {
             bill.setStatus(0);
         }
+        bill.setSortStatus(0);// 待位
         int count = shopBillMapper.insert(bill);
         if (count > 0) {
             // 更新上一条账单状态和排序状态
@@ -78,7 +79,14 @@ public class ManagerService {
      * @date 2018-05-05 23:31:04
      */
     public ShopBillDto getSaleTotalAmount(Long shopId) {
-        return shopBillMapper.getSaleTotalAmount(shopId);
+        ShopBillDto dto = shopBillMapper.getSaleTotalAmount(shopId);
+        List<ShopBillDto> freeList = shopBillMapper.selectFreeBillList(shopId);
+        if(freeList != null && !freeList.isEmpty()){
+            dto.setFreeCount(freeList.size());
+        }else{
+            dto.setFreeCount(0);
+        }
+        return dto;
     }
 
     /**
@@ -136,4 +144,7 @@ public class ManagerService {
         return shopManagerMapper.deleteByPrimaryKey(id);
     }
 
+    public Shop getShopInfo(Long shopId) {
+        return shopMapper.selectByPrimaryKey(shopId);
+    }
 }

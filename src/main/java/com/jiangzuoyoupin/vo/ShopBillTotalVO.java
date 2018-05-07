@@ -14,6 +14,8 @@ public class ShopBillTotalVO {
     private Double totalAmount;
     @ApiModelProperty(value = "总奖金池")
     private Double totalReward;
+    @ApiModelProperty(value = "免单人数")
+    private Integer freeCount;
 
     public Double getTotalAmount() {
         return totalAmount;
@@ -29,5 +31,13 @@ public class ShopBillTotalVO {
 
     public void setTotalReward(Double totalReward) {
         this.totalReward = totalReward;
+    }
+
+    public Integer getFreeCount() {
+        return freeCount;
+    }
+
+    public void setFreeCount(Integer freeCount) {
+        this.freeCount = freeCount;
     }
 }

@@ -26,6 +26,9 @@ public class MyBillListVO implements Serializable{
     @ApiModelProperty(value = "排序状态，0待位1达标2完成")
     private Integer sortStatus;
 
+    @ApiModelProperty(value = "排名")
+    private Integer rank;
+
     public Long getId() {
         return id;
     }
@@ -56,5 +59,13 @@ public class MyBillListVO implements Serializable{
 
     public void setSortStatus(Integer sortStatus) {
         this.sortStatus = sortStatus;
+    }
+
+    public Integer getRank() {
+        return rank;
+    }
+
+    public void setRank(Integer rank) {
+        this.rank = rank;
     }
 }

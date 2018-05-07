@@ -25,7 +25,7 @@ public class ShopBillListVO implements Serializable{
     private String customName;
     @ApiModelProperty(value = "消费金额")
     private Double amount;
-    @ApiModelProperty(value = "账单状态，0待审核1审核通过2转账3完成")
+    @ApiModelProperty(value = "账单状态，0待审核1审核通过2转账3提现4完成")
     private Integer status;
     @ApiModelProperty(value = "排序状态，0待位1达标2完成")
     private Integer sortStatus;

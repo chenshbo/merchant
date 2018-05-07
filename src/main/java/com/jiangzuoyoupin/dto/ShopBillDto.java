@@ -1,6 +1,6 @@
 package com.jiangzuoyoupin.dto;
 
-import java.util.Date;
+import com.jiangzuoyoupin.domain.ShopBill;
 
 /**
  * 功能模块: 账单dto
@@ -8,29 +8,14 @@ import java.util.Date;
  * @author chenshangbo
  * @date 2018-05-05 11:03:29
  */
-public class ShopBillDto {
+public class ShopBillDto extends ShopBill{
 
-    private Long id;
-    private Long shopId;
     private Double totalAmount;
     private Double totalReward;
-
-    private Long customWeChatUserId;
-    private String customName;
-    private Double amount;
-    private Integer status;
-    private Integer sortStatus;
-    private Date gmtModified;
+    private Integer freeCount;
 
     private String nickName;
-
-    public Long getShopId() {
-        return shopId;
-    }
-
-    public void setShopId(Long shopId) {
-        this.shopId = shopId;
-    }
+    private Integer rank;
 
     public Double getTotalAmount() {
         return totalAmount;
@@ -48,60 +33,12 @@ public class ShopBillDto {
         this.totalReward = totalReward;
     }
 
-    public Long getCustomWeChatUserId() {
-        return customWeChatUserId;
+    public Integer getFreeCount() {
+        return freeCount;
     }
 
-    public void setCustomWeChatUserId(Long customWeChatUserId) {
-        this.customWeChatUserId = customWeChatUserId;
-    }
-
-    public String getCustomName() {
-        return customName;
-    }
-
-    public void setCustomName(String customName) {
-        this.customName = customName;
-    }
-
-    public Double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Double amount) {
-        this.amount = amount;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public Integer getSortStatus() {
-        return sortStatus;
-    }
-
-    public void setSortStatus(Integer sortStatus) {
-        this.sortStatus = sortStatus;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Date getGmtModified() {
-        return gmtModified;
-    }
-
-    public void setGmtModified(Date gmtModified) {
-        this.gmtModified = gmtModified;
+    public void setFreeCount(Integer freeCount) {
+        this.freeCount = freeCount;
     }
 
     public String getNickName() {
@@ -110,5 +47,13 @@ public class ShopBillDto {
 
     public void setNickName(String nickName) {
         this.nickName = nickName;
+    }
+
+    public Integer getRank() {
+        return rank;
+    }
+
+    public void setRank(Integer rank) {
+        this.rank = rank;
     }
 }

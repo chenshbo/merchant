@@ -4,7 +4,7 @@
   <resultMap id="BaseResultMap" type="com.jiangzuoyoupin.domain.ShopBill" >
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="shop_id" property="shopId" jdbcType="BIGINT" />
-    <result column="custom_wechat_user_id" property="customWechatUserId" jdbcType="BIGINT" />
+    <result column="custom_wechat_user_id" property="customWeChatUserId" jdbcType="BIGINT" />
     <result column="custom_name" property="customName" jdbcType="VARCHAR" />
     <result column="custom_mobile_no" property="customMobileNo" jdbcType="VARCHAR" />
     <result column="amount" property="amount" jdbcType="DOUBLE" />
@@ -12,7 +12,7 @@
     <result column="reward" property="reward" jdbcType="DOUBLE" />
     <result column="status" property="status" jdbcType="TINYINT" />
     <result column="sort_status" property="sortStatus" jdbcType="TINYINT" />
-    <result column="create_wechat_user_id" property="createWechatUserId" jdbcType="BIGINT" />
+    <result column="create_wechat_user_id" property="createWeChatUserId" jdbcType="BIGINT" />
     <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
     <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
   </resultMap>
@@ -36,10 +36,10 @@
       amount, bonus_ratio, reward, 
       status, sort_status, create_wechat_user_id, gmt_create,
       gmt_modified)
-    values (#{shopId,jdbcType=BIGINT}, #{customWechatUserId,jdbcType=BIGINT},
+    values (#{shopId,jdbcType=BIGINT}, #{customWeChatUserId,jdbcType=BIGINT},
       #{customName,jdbcType=VARCHAR}, #{customMobileNo,jdbcType=VARCHAR},
       #{amount,jdbcType=DOUBLE}, #{bonusRatio,jdbcType=INTEGER}, #{reward,jdbcType=DOUBLE}, 
-      #{status,jdbcType=TINYINT}, #{sortStatus,jdbcType=TINYINT},#{createWechatUserId,jdbcType=BIGINT}, now(), now())
+      #{status,jdbcType=TINYINT}, #{sortStatus,jdbcType=TINYINT},#{createWeChatUserId,jdbcType=BIGINT}, now(), now())
   </insert>
   <insert id="insertSelective" parameterType="com.jiangzuoyoupin.domain.ShopBill" >
     insert into t_shop_bill
@@ -50,7 +50,7 @@
       <if test="shopId != null" >
         shop_id,
       </if>
-      <if test="customWechatUserId != null" >
+      <if test="customWeChatUserId != null" >
         custom_wechat_user_id,
       </if>
       <if test="customName != null and customName != ''" >
@@ -74,7 +74,7 @@
       <if test="sortStatus != null" >
         sort_status,
       </if>
-      <if test="createWechatUserId != null" >
+      <if test="createWeChatUserId != null" >
         create_wechat_user_id,
       </if>
       <if test="gmtCreate != null" >
@@ -91,7 +91,7 @@
       <if test="shopId != null" >
         #{shopId,jdbcType=BIGINT},
       </if>
-      <if test="customWechatUserId != null" >
+      <if test="customWeChatUserId != null" >
         #{customWechatUserId,jdbcType=BIGINT},
       </if>
       <if test="customName != null and customName != ''" >
@@ -115,8 +115,8 @@
       <if test="sortStatus != null" >
         #{sortStatus,jdbcType=TINYINT},
       </if>
-      <if test="createWechatUserId != null" >
-        #{createWechatUserId,jdbcType=BIGINT},
+      <if test="createWeChatUserId != null" >
+        #{createWeChatUserId,jdbcType=BIGINT},
       </if>
       <if test="gmtCreate != null" >
         #{gmtCreate,jdbcType=TIMESTAMP},
@@ -132,8 +132,8 @@
       <if test="shopId != null" >
         shop_id = #{shopId,jdbcType=BIGINT},
       </if>
-      <if test="customWechatUserId != null" >
-        custom_wechat_user_id = #{customWechatUserId,jdbcType=BIGINT},
+      <if test="customWeChatUserId != null" >
+        custom_wechat_user_id = #{customWeChatUserId,jdbcType=BIGINT},
       </if>
       <if test="createWeChatUserId != null" >
         create_wechat_user_id = #{createWechatUserId,jdbcType=BIGINT},
@@ -159,8 +159,8 @@
       <if test="sortStatus != null" >
         sort_status = #{sortStatus,jdbcType=TINYINT},
       </if>
-      <if test="createWechatUserId != null" >
-        create_wechat_user_id = #{createWechatUserId,jdbcType=BIGINT},
+      <if test="createWeChatUserId != null" >
+        create_wechat_user_id = #{createWeChatUserId,jdbcType=BIGINT},
       </if>
         gmt_modified = now()
     </set>
@@ -169,7 +169,7 @@
   <update id="updateByPrimaryKey" parameterType="com.jiangzuoyoupin.domain.ShopBill" >
     update t_shop_bill
     set shop_id = #{shopId,jdbcType=BIGINT},
-      custom_wechat_user_id = #{customWechatUserId,jdbcType=BIGINT},
+      custom_wechat_user_id = #{customWeChatUserId,jdbcType=BIGINT},
       custom_name = #{customName,jdbcType=VARCHAR},
       custom_mobile_no = #{customMobileNo,jdbcType=VARCHAR},
       amount = #{amount,jdbcType=DOUBLE},
@@ -177,7 +177,7 @@
       reward = #{reward,jdbcType=DOUBLE},
       status = #{status,jdbcType=TINYINT},
       sort_status = #{sortStatus,jdbcType=TINYINT},
-      create_wechat_user_id = #{createWechatUserId,jdbcType=BIGINT},
+      create_wechat_user_id = #{createWeChatUserId,jdbcType=BIGINT},
       gmt_modified = now()
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -206,14 +206,14 @@
   <resultMap id="DtoBaseResultMap" type="com.jiangzuoyoupin.dto.ShopBillDto" >
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="shop_id" property="shopId" jdbcType="BIGINT" />
-    <result column="custom_wechat_user_id" property="customWechatUserId" jdbcType="BIGINT" />
+    <result column="custom_wechat_user_id" property="customWeChatUserId" jdbcType="BIGINT" />
     <result column="custom_name" property="customName" jdbcType="VARCHAR" />
     <result column="custom_mobile_no" property="customMobileNo" jdbcType="VARCHAR" />
     <result column="amount" property="amount" jdbcType="DOUBLE" />
     <result column="bonus_ratio" property="bonusRatio" jdbcType="INTEGER" />
     <result column="status" property="status" jdbcType="TINYINT" />
     <result column="sort_status" property="sortStatus" jdbcType="TINYINT" />
-    <result column="create_wechat_user_id" property="createWechatUserId" jdbcType="BIGINT" />
+    <result column="create_wechat_user_id" property="createWeChatUserId" jdbcType="BIGINT" />
     <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
     <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
     <result column="nick_name" property="nickName" jdbcType="VARCHAR" />
@@ -261,7 +261,7 @@
     WHERE t_shop_bill.shop_id = #{shopId}
     AND t_shop_bill.sort_status = 0
     AND t_shop_bill.custom_wechat_user_id = t_wechat_user.id
-    ORDER BY gmt_create ASC
+    ORDER BY t_shop_bill.gmt_create ASC
   </select>
 
   <select id="selectFreeBillList" parameterType="long" resultMap="DtoBaseResultMap">
@@ -272,7 +272,7 @@
     WHERE t_shop_bill.shop_id = #{shopId}
     AND t_shop_bill.sort_status != 0
     AND t_shop_bill.custom_wechat_user_id = t_wechat_user.id
-    ORDER BY gmt_create ASC
+    ORDER BY t_shop_bill.gmt_create ASC
   </select>
 
 </mapper>

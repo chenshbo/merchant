@@ -210,4 +210,10 @@
         gmt_modified = now()
     where wechat_user_id = #{wechatUserId,jdbcType=BIGINT}
   </update>
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_shop
+  </select>
 </mapper>

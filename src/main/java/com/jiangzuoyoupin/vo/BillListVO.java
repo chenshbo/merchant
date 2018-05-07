@@ -17,6 +17,9 @@ public class BillListVO implements Serializable{
     @ApiModelProperty(value = "昵称")
     private String nickName;
 
+    @ApiModelProperty(value = "头像")
+    private String avatarUrl;
+
     @ApiModelProperty(value = "消费金额")
     private Double amount;
 

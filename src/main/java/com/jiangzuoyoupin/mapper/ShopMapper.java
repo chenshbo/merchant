@@ -2,6 +2,8 @@ package com.jiangzuoyoupin.mapper;
 
 import com.jiangzuoyoupin.domain.Shop;
 
+import java.util.List;
+
 public interface ShopMapper {
     int deleteByPrimaryKey(Long id);
 
@@ -18,4 +20,6 @@ public interface ShopMapper {
     int updateByWeChatUserId(Shop record);
 
     Shop selectByWeChatUserId(Long weChatUserId);
+
+    List<Shop> selectAll();
 }

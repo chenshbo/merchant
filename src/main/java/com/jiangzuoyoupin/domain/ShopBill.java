@@ -7,7 +7,7 @@ public class ShopBill {
 
     private Long shopId;
 
-    private Long customWechatUserId;
+    private Long customWeChatUserId;
 
     private String customName;
 
@@ -23,7 +23,7 @@ public class ShopBill {
 
     private Integer sortStatus;
 
-    private Long createWechatUserId;
+    private Long createWeChatUserId;
 
     private Date gmtCreate;
 
@@ -45,12 +45,12 @@ public class ShopBill {
         this.shopId = shopId;
     }
 
-    public Long getCustomWechatUserId() {
-        return customWechatUserId;
+    public Long getCustomWeChatUserId() {
+        return customWeChatUserId;
     }
 
-    public void setCustomWechatUserId(Long customWechatUserId) {
-        this.customWechatUserId = customWechatUserId;
+    public void setCustomWeChatUserId(Long customWeChatUserId) {
+        this.customWeChatUserId = customWeChatUserId;
     }
 
     public String getCustomName() {
@@ -109,12 +109,12 @@ public class ShopBill {
         this.sortStatus = sortStatus;
     }
 
-    public Long getCreateWechatUserId() {
-        return createWechatUserId;
+    public Long getCreateWeChatUserId() {
+        return createWeChatUserId;
     }
 
-    public void setCreateWechatUserId(Long createWechatUserId) {
-        this.createWechatUserId = createWechatUserId;
+    public void setCreateWeChatUserId(Long createWeChatUserId) {
+        this.createWeChatUserId = createWeChatUserId;
     }
 
     public Date getGmtCreate() {
