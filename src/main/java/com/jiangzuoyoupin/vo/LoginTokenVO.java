@@ -30,8 +30,8 @@ public class LoginTokenVO implements Serializable{
     @ApiModelProperty(value = "店铺id")
     private Long shopId;
 
-    @ApiModelProperty(value = "店铺id")
-    private String moduleAuthStr;
+    @ApiModelProperty(value = "是否开通权限 0未开通1已开通 ")
+    private Integer isOpenPermissions;
 
     public Long getWechatUserId() {
         return wechatUserId;
@@ -71,5 +71,13 @@ public class LoginTokenVO implements Serializable{
 
     public void setShopId(Long shopId) {
         this.shopId = shopId;
+    }
+
+    public Integer getIsOpenPermissions() {
+        return isOpenPermissions;
+    }
+
+    public void setIsOpenPermissions(Integer isOpenPermissions) {
+        this.isOpenPermissions = isOpenPermissions;
     }
 }

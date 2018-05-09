@@ -86,6 +86,7 @@ public class UserService {
         WeChatUser byParams = weChatUserMapper.getByParams(params);
         int role = 0;
         Long shopId = 0l;
+        int isOpenPermissions = 0;
         // openId存在 更新数据
         if(byParams != null){
             if(StringUtils.isNotEmpty(byParams.getMobileNo())){
@@ -97,11 +98,16 @@ public class UserService {
             if(shop != null){
                 role = 2;
                 shopId = shop.getId();
+                isOpenPermissions = shop.getIsOpenPermissions();
             }else {
                 ShopManager manager = shopManagerMapper.selectByWeChatUserId(byParams.getId());
                 if (manager != null) {
                     role = 3;
                     shopId = manager.getShopId();
+                    Shop managerShop = shopMapper.selectByPrimaryKey(manager.getShopId());
+                    if(managerShop != null){
+                        isOpenPermissions = managerShop.getIsOpenPermissions();
+                    }
                 }
             }
         }else{
@@ -123,6 +129,7 @@ public class UserService {
             loginToken = new LoginToken();
             loginToken.setRole(role);
             loginToken.setShopId(shopId);
+            loginToken.setIsOpenPermissions(isOpenPermissions);
             loginToken.setWechatUserId(wechat.getId());
             loginToken.setAccessToken(TokenUtil.generateToken());
             loginToken.setStatus(1);

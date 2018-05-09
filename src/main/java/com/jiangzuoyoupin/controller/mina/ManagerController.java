@@ -65,16 +65,6 @@ public class ManagerController extends BaseController {
     @Value("${wx.secret}")
     private String wxAppSecret;
 
-
-
-    /**
-     * 功能模块: 保存店铺信息
-     *
-     * @param req
-     * @return com.jiangzuoyoupin.base.WebResult
-     * @author chenshangbo
-     * @date 2018-04-24 23:27:03
-     */
     @ApiOperation(value = "店铺信息-保存", notes = "保存店铺信息")
     @ApiImplicitParam(name = "req", value = "店铺保存对象", dataType = "ShopInfoSaveReq")
     @PostMapping(value = "/saveShopInfo")
@@ -93,14 +83,6 @@ public class ManagerController extends BaseController {
         return WebResultUtil.returnResult();
     }
 
-    /**
-     * 功能模块: 保存店铺信息
-     *
-     * @param shopId
-     * @return com.jiangzuoyoupin.base.WebResult
-     * @author chenshangbo
-     * @date 2018-04-24 23:27:03
-     */
     @ApiOperation(value = "店铺信息-查询", notes = "查询店铺信息")
     @GetMapping(value = "/getShopInfo/{shopId}")
     public WebResult<Shop> getShopInfo(@ApiParam(name = "shopId", value = "店铺id", required = true) @PathVariable Long shopId) {
@@ -117,18 +99,19 @@ public class ManagerController extends BaseController {
         return WebResultUtil.returnResult(shop);
     }
 
-    /**
-     * 功能描述: TODO
-     *
-     * @param
-     * @return: com.jiangzuoyoupin.base.WebResult
-     * @since: 1.0.0
-     * @author: chenshangbo
-     * @date: 2018-04-27 10:51:21
-     */
     @ApiOperation(value = "功能开通-申请开通模块权限", notes = "申请开通模块权限")
-    @PostMapping(value = "/module/apply")
-    public WebResult moduleApply() {
+    @ApiImplicitParam(name = "req", value = "申请开通功能请求对象", dataType = "ModuleApplyReq")
+    @PostMapping(value = "/applyOpenPermissions")
+    public WebResult applyOpenPermissions(@RequestBody ModuleApplyReq req) {
+        if(req.getApplyType().intValue() == 2){
+            if(!managerService.checkInvitationCode(req.getInvitationCode())){
+                return WebResultUtil.returnErrMsgResult("邀请码已失效");
+            }
+        }
+        int count = managerService.applyOpenPermissions(req.getShopId(),req.getInvitationCode());
+        if(count == 0){
+            return WebResultUtil.returnErrMsgResult("开通失败");
+        }
         return WebResultUtil.returnResult();
     }
 
@@ -208,8 +191,8 @@ public class ManagerController extends BaseController {
             return WebResultUtil.returnErrMsgResult("该客户还未注册，请注册再试");
         }
         // 判断是否被注册
-        if(!managerService.checkManagerExist(fans.getId())){
-            return WebResultUtil.returnErrMsgResult("该客户已被其他店主注册");
+        if(managerService.checkManagerExist(fans.getId())){
+            return WebResultUtil.returnErrMsgResult("该客户已注册店主或者已被其他店主注册");
         }
         ShopManager manager = new ShopManager();
         manager.setShopId(req.getShopId());

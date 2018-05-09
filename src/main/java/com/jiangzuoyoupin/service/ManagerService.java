@@ -1,13 +1,12 @@
 package com.jiangzuoyoupin.service;
 
+import com.jiangzuoyoupin.domain.InvitationCode;
 import com.jiangzuoyoupin.domain.Shop;
 import com.jiangzuoyoupin.domain.ShopBill;
 import com.jiangzuoyoupin.domain.ShopManager;
 import com.jiangzuoyoupin.dto.ShopBillDto;
-import com.jiangzuoyoupin.mapper.ShopBillMapper;
-import com.jiangzuoyoupin.mapper.ShopManagerMapper;
-import com.jiangzuoyoupin.mapper.ShopMapper;
-import com.jiangzuoyoupin.mapper.WeChatUserMapper;
+import com.jiangzuoyoupin.mapper.*;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,9 +22,6 @@ import java.util.List;
 public class ManagerService {
 
     @Autowired
-    private WeChatUserMapper weChatUserMapper;
-
-    @Autowired
     private ShopBillMapper shopBillMapper;
 
     @Autowired
@@ -33,6 +29,9 @@ public class ManagerService {
 
     @Autowired
     private ShopManagerMapper shopManagerMapper;
+
+    @Autowired
+    private InvitationCodeMapper invitationCodeMapper;
 
     /**
      * 功能模块: 保存店铺信息
@@ -149,6 +148,30 @@ public class ManagerService {
     }
 
     public boolean checkManagerExist(Long weChatUserId) {
-        return shopManagerMapper.selectByWeChatUserId(weChatUserId) != null ? true : false;
+        return shopManagerMapper.selectByWeChatUserId(weChatUserId) != null
+                ? true
+                : shopMapper.selectByWeChatUserId(weChatUserId) != null ? true : false;
+    }
+
+    public boolean checkInvitationCode(String invitationCode) {
+        InvitationCode param = new InvitationCode();
+        param.setCode(invitationCode);
+        param.setStatus(1);
+        InvitationCode result = invitationCodeMapper.getByParams(param);
+        if(result != null){
+            return true;
+        }
+        return false;
+    }
+
+    public int applyOpenPermissions(Long shopId,String invitationCode) {
+        Shop param = new Shop();
+        param.setId(shopId);
+        param.setIsOpenPermissions(1);
+        int count = shopMapper.updateByPrimaryKeySelective(param);
+        if(count > 0 && StringUtils.isNotEmpty(invitationCode)){
+            invitationCodeMapper.updateByCode(invitationCode);
+        }
+        return count;
     }
 }

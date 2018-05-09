@@ -14,13 +14,14 @@
     <result column="telephone" property="telephone" jdbcType="VARCHAR" />
     <result column="address" property="address" jdbcType="VARCHAR" />
     <result column="qrcode_img" property="qrCodeImg" jdbcType="VARCHAR" />
+    <result column="is_open_permissions" property="isOpenPermissions" jdbcType="BIGINT" />
     <result column="status" jdbcType="BIGINT" property="status" />
     <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
   </resultMap>
   <sql id="Base_Column_List">
     id, wechat_user_id, mobile_no, province_id, city_id, area_id, business_license_image, 
-    shop_name, shop_suffix_name, telephone, address,qrcode_img, status, gmt_create, gmt_modified
+    shop_name, shop_suffix_name, telephone, address,qrcode_img,is_open_permissions, status, gmt_create, gmt_modified
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -179,12 +180,10 @@
       <if test="status != null">
         status = #{status,jdbcType=BIGINT},
       </if>
-      <if test="gmtCreate != null">
-        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      <if test="isOpenPermissions != null">
+        is_open_permissions = #{isOpenPermissions,jdbcType=BIGINT},
       </if>
-      <if test="gmtModified != null">
-        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
-      </if>
+        gmt_modified = now()
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -201,7 +200,8 @@
       shop_suffix_name = #{shopSuffixName,jdbcType=VARCHAR},
       telephone = #{telephone,jdbcType=VARCHAR},
       address = #{address,jdbcType=VARCHAR},
-      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
+      is_open_permissions = #{isOpenPermissions,jdbcType=BIGINT},
+      gmt_modified = now()
     where id = #{id,jdbcType=BIGINT}
   </update>
 

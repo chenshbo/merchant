@@ -19,6 +19,9 @@ public class LoginToken {
     /** 店铺id */
     private Long shopId;
 
+    /** 是否开通权限 0未开通1已开通 */
+    private Integer isOpenPermissions;
+
     private Date gmtCreate;
 
     private Date gmtModified;
@@ -93,5 +96,13 @@ public class LoginToken {
 
     public void setShopId(Long shopId) {
         this.shopId = shopId;
+    }
+
+    public Integer getIsOpenPermissions() {
+        return isOpenPermissions;
+    }
+
+    public void setIsOpenPermissions(Integer isOpenPermissions) {
+        this.isOpenPermissions = isOpenPermissions;
     }
 }

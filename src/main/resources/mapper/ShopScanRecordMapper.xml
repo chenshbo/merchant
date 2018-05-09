@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jiangzuoyoupin.mapper.ShopScanRecordMapper">
+    <resultMap id="BaseResultMap" type="com.jiangzuoyoupin.domain.ShopScanRecord">
+        <result column="id" property="id" jdbcType="BIGINT"/>
+        <result column="shop_id" property="shopId" jdbcType="BIGINT"/>
+        <result column="wechat_user_id" property="weChatUserId" jdbcType="BIGINT"/>
+        <result column="collect_status" property="collectStatus" jdbcType="BIGINT"/>
+        <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP"/>
+        <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <insert id="insert" parameterType="com.jiangzuoyoupin.domain.ShopScanRecord" useGeneratedKeys="true" keyProperty="id">
+    insert into t_shop_scan_record (shop_id, wechat_user_id,
+      collect_status, gmt_create, gmt_modified
+      )
+    values (#{shopId,jdbcType=BIGINT}, #{weChatUserId,jdbcType=BIGINT},
+      #{collectStatus,jdbcType=BIGINT}, now(),now()
+      )
+    </insert>
+    <insert id="insertSelective" parameterType="com.jiangzuoyoupin.domain.ShopScanRecord">
+        insert into t_shop_scan_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="shopId != null">
+                shop_id,
+            </if>
+            <if test="weChatUserId != null">
+                wechat_user_id,
+            </if>
+            <if test="collectStatus != null">
+                collect_status,
+            </if>
+            <if test="gmtCreate != null">
+                gmt_create,
+            </if>
+            <if test="gmtModified != null">
+                gmt_modified,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="shopId != null">
+                #{shopId,jdbcType=BIGINT},
+            </if>
+            <if test="weChatUserId != null">
+                #{wechatUserId,jdbcType=BIGINT},
+            </if>
+            <if test="collectStatus != null">
+                #{collectStatus,jdbcType=BIGINT},
+            </if>
+            <if test="gmtCreate != null">
+                #{gmtCreate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="gmtModified != null">
+                #{gmtModified,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="selectByParams" parameterType="com.jiangzuoyoupin.domain.ShopScanRecord" resultMap="BaseResultMap">
+        SELECT
+            id,
+            shop_id,
+            wechat_user_id,
+            collect_status,
+            gmt_create,
+            gmt_modified
+        FROM t_shop_scan_record
+        WHERE 1=1
+        <if test="id != null" >
+            and id = #{id,jdbcType=BIGINT}
+        </if>
+        <if test="shopId != null" >
+            and shop_id = #{shopId,jdbcType=BIGINT}
+        </if>
+        <if test="weChatUserId != null" >
+            and wechat_user_id = #{weChatUserId,jdbcType=BIGINT}
+        </if>
+    </select>
+
+    <resultMap id="DtoResultMap" type="com.jiangzuoyoupin.dto.ShopScanRecordDto">
+        <result column="id" property="id" jdbcType="BIGINT"/>
+        <result column="shop_id" property="shopId" jdbcType="BIGINT"/>
+        <result column="collect_status" property="collectStatus" jdbcType="BIGINT"/>
+        <result column="mobile_no" jdbcType="VARCHAR" property="mobileNo"/>
+        <result column="shop_name" property="shopName" jdbcType="VARCHAR"/>
+        <result column="shop_suffix_name" property="shopSuffixName" jdbcType="VARCHAR"/>
+        <result column="telephone" property="telephone" jdbcType="VARCHAR"/>
+        <result column="address" property="address" jdbcType="VARCHAR"/>
+    </resultMap>
+    <select id="selectMyScanList" parameterType="com.jiangzuoyoupin.req.ScanRecordQueryReq" resultMap="DtoResultMap">
+        SELECT t_shop_scan_record.id,
+          t_shop_scan_record.shop_id,
+          t_shop_scan_record.collect_status,
+          t_shop.mobile_no,
+          t_shop.shop_name,
+          t_shop.shop_suffix_name,
+          t_shop.telephone,
+          t_shop.address
+        FROM t_shop_scan_record
+        LEFT JOIN t_shop ON t_shop_scan_record.shop_id = t_shop.id
+        WHERE t_shop_scan_record.wechat_user_id = #{weChatUserId}
+        <if test="collectStatus != null">
+            AND t_shop_scan_record.collect_status = #{collectStatus}
+        </if>
+        ORDER BY t_shop_scan_record.gmt_modified DESC
+    </select>
+
+    <update id="updateCollectStatus" parameterType="com.jiangzuoyoupin.domain.ShopScanRecord">
+        UPDATE t_shop_scan_record
+        SET
+          collect_status = #{collectStatus},
+          gmt_modified = now()
+        WHERE id = #{id}
+    </update>
+</mapper>

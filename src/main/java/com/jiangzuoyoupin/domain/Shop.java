@@ -27,6 +27,8 @@ public class Shop {
 
     private Integer status;
 
+    private Integer isOpenPermissions;
+
     private String qrCodeImg;
 
     private Date gmtCreate;
@@ -151,5 +153,13 @@ public class Shop {
 
     public void setQrCodeImg(String qrCodeImg) {
         this.qrCodeImg = qrCodeImg;
+    }
+
+    public Integer getIsOpenPermissions() {
+        return isOpenPermissions;
+    }
+
+    public void setIsOpenPermissions(Integer isOpenPermissions) {
+        this.isOpenPermissions = isOpenPermissions;
     }
 }
