@@ -27,11 +27,8 @@ public interface ShopBillMapper {
 
     ShopBill getFirst(@Param("shopId")Long shopId);
 
-    List<ShopBillDto> selectMyBillList(@Param("shopId")Long shopId, @Param("weChatUserId")Long weChatUserId);
-
     List<ShopBillDto> selectCurrBillList(@Param("shopId")Long shopId);
 
     List<ShopBillDto> selectFreeBillList(@Param("shopId")Long shopId);
 
-    int applyFree(Long id);
 }

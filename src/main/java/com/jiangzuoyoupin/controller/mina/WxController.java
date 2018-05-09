@@ -39,6 +39,9 @@ public class WxController {
     @Value("${wx.secret}")
     private String wxAppSecret;
 
+//    @Autowired
+//    private WxPayConfig wxPayConfig;
+
     /**
      * 功能模块: 微信授权登录
      *
@@ -95,4 +98,37 @@ public class WxController {
         return WebResultUtil.returnResult(vo);
     }
 
+    /**
+     * 功能模块: 微信授权登录
+     *
+     * @param req
+     * @return com.jiangzuoyoupin.base.WebResult
+     * @author chenshangbo
+     * @date 2018-04-09 21:12:36
+     */
+    @ApiOperation(value = "微信授权登录", notes = "根据code换取openid和用户信息，返回用户登录的token")
+    @ApiImplicitParam(name = "req", value = "授权登录对象", dataType = "WeChatUserLoginReq")
+    @PostMapping(value = "/prepay")
+    public WebResult prepay(@RequestBody WeChatUserLoginReq req) {
+//        WXPay wxpay = new WXPay(wxPayConfig);
+//
+//        Map<String, String> data = new HashMap<>();
+//        data.put("body", "腾讯充值中心-QQ会员充值");
+//        data.put("out_trade_no", "2016090910595900000012");
+//        data.put("device_info", "WEB");
+//        data.put("fee_type", "CNY");
+//        data.put("total_fee", "1");
+//        data.put("spbill_create_ip", "123.12.12.123");
+//        data.put("notify_url", "http://www.example.com/wxpay/notify");
+//        data.put("trade_type", "JSAPI");  // 此处指定为扫码支付
+//        data.put("product_id", "12");
+//
+//        try {
+//            Map<String, String> resp = wxpay.unifiedOrder(data);
+//            System.out.println(resp);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+        return WebResultUtil.returnResult();
+    }
 }

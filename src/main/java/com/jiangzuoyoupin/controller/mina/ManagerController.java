@@ -1,5 +1,6 @@
 package com.jiangzuoyoupin.controller.mina;
 
+import com.alibaba.fastjson.JSONObject;
 import com.jiangzuoyoupin.annotation.Auth;
 import com.jiangzuoyoupin.base.WebResult;
 import com.jiangzuoyoupin.controller.common.BaseController;
@@ -8,13 +9,12 @@ import com.jiangzuoyoupin.domain.Shop;
 import com.jiangzuoyoupin.domain.ShopManager;
 import com.jiangzuoyoupin.domain.WeChatUser;
 import com.jiangzuoyoupin.dto.ShopBillDto;
-import com.jiangzuoyoupin.req.BillSaveReq;
-import com.jiangzuoyoupin.req.IdReq;
-import com.jiangzuoyoupin.req.ManagerAddReq;
-import com.jiangzuoyoupin.req.ShopInfoSaveReq;
+import com.jiangzuoyoupin.req.*;
 import com.jiangzuoyoupin.service.BillService;
 import com.jiangzuoyoupin.service.ManagerService;
 import com.jiangzuoyoupin.utils.ConvertUtils;
+import com.jiangzuoyoupin.utils.FileUtil;
+import com.jiangzuoyoupin.utils.HttpUtil;
 import com.jiangzuoyoupin.utils.WebResultUtil;
 import com.jiangzuoyoupin.vo.ShopBillListVO;
 import com.jiangzuoyoupin.vo.ShopBillTotalVO;
@@ -23,13 +23,20 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * 功能模块: 运营中心controller
@@ -51,6 +58,14 @@ public class ManagerController extends BaseController {
 
     @Value("${root.url}")
     private String rootUrl;
+
+    @Value("${wx.appid}")
+    private String wxAppId;
+
+    @Value("${wx.secret}")
+    private String wxAppSecret;
+
+
 
     /**
      * 功能模块: 保存店铺信息
@@ -93,7 +108,12 @@ public class ManagerController extends BaseController {
         if (shop == null) {
             WebResultUtil.returnErrMsgResult("该店铺不存在");
         }
-        shop.setBusinessLicenseImage(rootUrl + shop.getBusinessLicenseImage());
+        if(StringUtils.isNotEmpty(shop.getBusinessLicenseImage())){
+            shop.setBusinessLicenseImage(rootUrl + shop.getBusinessLicenseImage());
+        }
+        if(StringUtils.isNotEmpty(shop.getQrCodeImg())){
+            shop.setQrCodeImg(rootUrl + shop.getQrCodeImg());
+        }
         return WebResultUtil.returnResult(shop);
     }
 
@@ -186,6 +206,10 @@ public class ManagerController extends BaseController {
         WeChatUser fans = userService.getWechatUserByMobileNo(req.getMobileNo());
         if(fans == null){
             return WebResultUtil.returnErrMsgResult("该客户还未注册，请注册再试");
+        }
+        // 判断是否被注册
+        if(!managerService.checkManagerExist(fans.getId())){
+            return WebResultUtil.returnErrMsgResult("该客户已被其他店主注册");
         }
         ShopManager manager = new ShopManager();
         manager.setShopId(req.getShopId());

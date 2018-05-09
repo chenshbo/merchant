@@ -27,6 +27,8 @@ public class Shop {
 
     private Integer status;
 
+    private String qrCodeImg;
+
     private Date gmtCreate;
 
     private Date gmtModified;
@@ -141,5 +143,13 @@ public class Shop {
 
     public void setGmtModified(Date gmtModified) {
         this.gmtModified = gmtModified;
+    }
+
+    public String getQrCodeImg() {
+        return qrCodeImg;
+    }
+
+    public void setQrCodeImg(String qrCodeImg) {
+        this.qrCodeImg = qrCodeImg;
     }
 }

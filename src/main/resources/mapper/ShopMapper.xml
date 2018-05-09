@@ -13,13 +13,14 @@
     <result column="shop_suffix_name" property="shopSuffixName" jdbcType="VARCHAR" />
     <result column="telephone" property="telephone" jdbcType="VARCHAR" />
     <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="qrcode_img" property="qrCodeImg" jdbcType="VARCHAR" />
     <result column="status" jdbcType="BIGINT" property="status" />
     <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
   </resultMap>
   <sql id="Base_Column_List">
     id, wechat_user_id, mobile_no, province_id, city_id, area_id, business_license_image, 
-    shop_name, shop_suffix_name, telephone, address, status, gmt_create, gmt_modified
+    shop_name, shop_suffix_name, telephone, address,qrcode_img, status, gmt_create, gmt_modified
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -171,6 +172,9 @@
       </if>
       <if test="address != null" >
         address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="qrCodeImg != null" >
+        qrcode_img = #{qrCodeImg,jdbcType=VARCHAR},
       </if>
       <if test="status != null">
         status = #{status,jdbcType=BIGINT},

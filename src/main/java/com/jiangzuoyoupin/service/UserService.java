@@ -1,14 +1,19 @@
 package com.jiangzuoyoupin.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.jiangzuoyoupin.domain.*;
 import com.jiangzuoyoupin.mapper.*;
+import com.jiangzuoyoupin.utils.HttpUtil;
 import com.jiangzuoyoupin.utils.NumberUtil;
 import com.jiangzuoyoupin.utils.TokenUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.Date;
 import java.util.List;
 
@@ -38,6 +43,16 @@ public class UserService {
 
     @Autowired
     private LoginTokenMapper loginTokenMapper;
+
+    private static String path = "pages/index?id=";
+    @Value("${wx.appid}")
+    private String wxAppId;
+    @Value("${wx.secret}")
+    private String wxAppSecret;
+    @Value("${web.upload.path}")
+    private String webUploadPath;
+    @Value("${images.path}")
+    private String imagesPath;
 
     public boolean checkLoginToken(String accessToken){
 
@@ -164,8 +179,45 @@ public class UserService {
         int count = shopMapper.insert(shop);
         if(count > 0){
             updateWeChatUserMobileNo(shop.getWechatUserId(), shop.getMobileNo());
+            String qrCode = createQrCode(path, shop.getId());
+            Shop update = new Shop();
+            update.setId(shop.getId());
+            update.setQrCodeImg(qrCode);
+            shopMapper.updateByPrimaryKeySelective(update);
         }
         return shop.getId();
+    }
+
+    public String createQrCode(String path, Long id) {
+        String getTokenUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="+wxAppId+"&secret="+wxAppSecret;
+        String tokenInfo = HttpUtil.doGet(getTokenUrl);
+        JSONObject tokenJson = JSONObject.parseObject(tokenInfo);
+        if (!tokenJson.containsKey("errcode")) {
+            String access_token = tokenJson.getString("access_token");// 接口调用凭证
+            String getQrCodeUrl = "https://api.weixin.qq.com/wxa/getwxacode?access_token="+access_token;
+            String params = "{\"path\":\""+path+id+"\",\"width\":430}";
+            byte[] qrCodeInfo = null;
+            String newFileName = "qr"+id+".png";
+            try {
+                qrCodeInfo = HttpUtil.getByteByPost(getQrCodeUrl,params);
+                try {
+                    File targetFile = new File(webUploadPath + imagesPath);
+                    if(!targetFile.exists()){
+                        targetFile.mkdirs();
+                    }
+                    FileOutputStream out = new FileOutputStream(webUploadPath + imagesPath + "/" +newFileName);
+                    out.write(qrCodeInfo);
+                    out.flush();
+                    out.close();
+                } catch (Exception e) {
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return imagesPath+"/"+newFileName;
+        }else{
+            return "";
+        }
     }
 
     /**

@@ -217,6 +217,7 @@
     <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
     <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
     <result column="nick_name" property="nickName" jdbcType="VARCHAR" />
+    <result column="avatar_url" property="avatarUrl" jdbcType="VARCHAR" />
   </resultMap>
   <select id="selectBillList" parameterType="long" resultMap="DtoBaseResultMap">
     SELECT
@@ -256,6 +257,7 @@
   <select id="selectCurrBillList" parameterType="long" resultMap="DtoBaseResultMap">
     SELECT
       t_wechat_user.nick_name,
+      t_wechat_user.avatar_url,
       t_shop_bill.amount
     FROM t_shop_bill,t_wechat_user
     WHERE t_shop_bill.shop_id = #{shopId}
@@ -267,6 +269,7 @@
   <select id="selectFreeBillList" parameterType="long" resultMap="DtoBaseResultMap">
     SELECT
       t_wechat_user.nick_name,
+      t_wechat_user.avatar_url,
       t_shop_bill.amount
     FROM t_shop_bill,t_wechat_user
     WHERE t_shop_bill.shop_id = #{shopId}

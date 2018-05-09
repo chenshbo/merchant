@@ -30,6 +30,9 @@ public class LoginTokenVO implements Serializable{
     @ApiModelProperty(value = "店铺id")
     private Long shopId;
 
+    @ApiModelProperty(value = "店铺id")
+    private String moduleAuthStr;
+
     public Long getWechatUserId() {
         return wechatUserId;
     }

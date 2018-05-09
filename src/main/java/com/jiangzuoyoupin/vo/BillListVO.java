@@ -38,4 +38,12 @@ public class BillListVO implements Serializable{
     public void setAmount(Double amount) {
         this.amount = amount;
     }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
 }

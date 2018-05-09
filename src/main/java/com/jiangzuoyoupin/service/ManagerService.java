@@ -147,4 +147,8 @@ public class ManagerService {
     public Shop getShopInfo(Long shopId) {
         return shopMapper.selectByPrimaryKey(shopId);
     }
+
+    public boolean checkManagerExist(Long weChatUserId) {
+        return shopManagerMapper.selectByWeChatUserId(weChatUserId) != null ? true : false;
+    }
 }

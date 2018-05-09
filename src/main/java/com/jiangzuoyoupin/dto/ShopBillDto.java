@@ -16,6 +16,7 @@ public class ShopBillDto extends ShopBill{
 
     private String nickName;
     private Integer rank;
+    private String avatarUrl;
 
     public Double getTotalAmount() {
         return totalAmount;
@@ -55,5 +56,13 @@ public class ShopBillDto extends ShopBill{
 
     public void setRank(Integer rank) {
         this.rank = rank;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 }
