@@ -39,8 +39,8 @@ public class CollectService {
         return scanRecordMapper.selectMyScanList(queryReq);
     }
 
-    public int toCollect(ShopScanRecord scanRecord) {
-        scanRecord.setCollectStatus(1);
+    public int updateCollectStatus(ShopScanRecord scanRecord) {
+        scanRecord.setCollectStatus(scanRecord.getCollectStatus());
         return scanRecordMapper.updateCollectStatus(scanRecord);
     }
 }

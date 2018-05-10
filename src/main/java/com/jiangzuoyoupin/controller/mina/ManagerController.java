@@ -1,11 +1,10 @@
 package com.jiangzuoyoupin.controller.mina;
 
-import com.alibaba.fastjson.JSONObject;
 import com.jiangzuoyoupin.annotation.Auth;
 import com.jiangzuoyoupin.base.WebResult;
 import com.jiangzuoyoupin.controller.common.BaseController;
-import com.jiangzuoyoupin.domain.ShopBill;
 import com.jiangzuoyoupin.domain.Shop;
+import com.jiangzuoyoupin.domain.ShopBill;
 import com.jiangzuoyoupin.domain.ShopManager;
 import com.jiangzuoyoupin.domain.WeChatUser;
 import com.jiangzuoyoupin.dto.ShopBillDto;
@@ -13,8 +12,6 @@ import com.jiangzuoyoupin.req.*;
 import com.jiangzuoyoupin.service.BillService;
 import com.jiangzuoyoupin.service.ManagerService;
 import com.jiangzuoyoupin.utils.ConvertUtils;
-import com.jiangzuoyoupin.utils.FileUtil;
-import com.jiangzuoyoupin.utils.HttpUtil;
 import com.jiangzuoyoupin.utils.WebResultUtil;
 import com.jiangzuoyoupin.vo.ShopBillListVO;
 import com.jiangzuoyoupin.vo.ShopBillTotalVO;
@@ -30,13 +27,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 /**
  * 功能模块: 运营中心controller

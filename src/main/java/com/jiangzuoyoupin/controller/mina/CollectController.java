@@ -5,6 +5,7 @@ import com.jiangzuoyoupin.base.WebResult;
 import com.jiangzuoyoupin.controller.common.BaseController;
 import com.jiangzuoyoupin.domain.ShopScanRecord;
 import com.jiangzuoyoupin.dto.ShopScanRecordDto;
+import com.jiangzuoyoupin.req.CollectStatusUpdateReq;
 import com.jiangzuoyoupin.req.IdReq;
 import com.jiangzuoyoupin.req.ScanRecordQueryReq;
 import com.jiangzuoyoupin.req.ShopIdAndWeChatUserIdReq;
@@ -63,12 +64,12 @@ public class CollectController extends BaseController {
     }
 
     @ApiOperation(value = "增加收藏", notes = "收藏店铺")
-    @ApiImplicitParam(name = "req", value = "请求对象", dataType = "IdReq")
-    @PostMapping(value = "/toCollect")
-    public WebResult toCollect(@RequestBody IdReq req) {
+    @ApiImplicitParam(name = "req", value = "请求对象", dataType = "CollectStatusUpdateReq")
+    @PostMapping(value = "/updateCollectStatus")
+    public WebResult updateCollectStatus(@RequestBody CollectStatusUpdateReq req) {
         ShopScanRecord scanRecord = new ShopScanRecord();
         BeanUtils.copyProperties(req, scanRecord);
-        int count = collectService.toCollect(scanRecord);
+        int count = collectService.updateCollectStatus(scanRecord);
         if(count == 0){
             return WebResultUtil.returnErrMsgResult("收藏失败");
         }

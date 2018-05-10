@@ -68,4 +68,10 @@ public class IdWorker {
         return System.currentTimeMillis();
     }
 
+
+    public static void main(String[] args) {
+        IdWorker id = new IdWorker();
+        System.out.println(id.nextId());
+    }
+
 }
