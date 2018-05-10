@@ -249,4 +249,7 @@ public class UserService {
         return weChatUserMapper.getByParams(params);
     }
 
+    public WeChatUser getUserInfoById(Long weChatUserId) {
+        return weChatUserMapper.selectByPrimaryKey(weChatUserId);
+    }
 }

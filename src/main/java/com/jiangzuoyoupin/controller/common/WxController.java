@@ -1,12 +1,15 @@
-package com.jiangzuoyoupin.controller.mina;
+package com.jiangzuoyoupin.controller.common;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.wxpay.sdk.WXPay;
 import com.github.wxpay.sdk.WXPayUtil;
+import com.jiangzuoyoupin.annotation.Auth;
 import com.jiangzuoyoupin.base.WebResult;
 import com.jiangzuoyoupin.config.WxPayConfig;
 import com.jiangzuoyoupin.domain.LoginToken;
 import com.jiangzuoyoupin.domain.WeChatUser;
+import com.jiangzuoyoupin.req.PrepayReq;
 import com.jiangzuoyoupin.req.WeChatUserLoginReq;
 import com.jiangzuoyoupin.service.UserService;
 import com.jiangzuoyoupin.utils.HttpUtil;
@@ -20,6 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.RequestHandler;
 
@@ -35,7 +39,7 @@ import java.util.*;
  */
 @Api("小程序-微信API模块")
 @RestController
-@RequestMapping("mina/wx")
+@RequestMapping("common/wx")
 public class WxController {
 
     @Autowired
@@ -49,9 +53,6 @@ public class WxController {
     @Autowired
     private WxPayConfig wxPayConfig;
 
-    @Autowired
-    private IdWorker idWorker;
-
     /**
      * 功能模块: 微信授权登录
      *
@@ -64,7 +65,6 @@ public class WxController {
     @ApiImplicitParam(name = "req", value = "授权登录对象", dataType = "WeChatUserLoginReq")
     @PostMapping(value = "/login")
     public WebResult<LoginTokenVO> login(@RequestBody WeChatUserLoginReq req) {
-        String access_token = "";
         String openid = "";
 
         // 通过code获取access_token
@@ -75,7 +75,6 @@ public class WxController {
         String tokenInfo = HttpUtil.doGet(url);
         JSONObject tokenJson = JSONObject.parseObject(tokenInfo);
         if (!tokenJson.containsKey("errcode")) {
-            access_token = tokenJson.getString("access_token");// 接口调用凭证
             openid = tokenJson.getString("openid");// 授权用户唯一标识
         } else {
             return WebResultUtil.returnErrMsgResult("获取微信access_token失败，" + tokenJson.getString("errmsg"));
@@ -85,20 +84,6 @@ public class WxController {
         WeChatUser wechat = new WeChatUser();
         BeanUtils.copyProperties(req, wechat);
         wechat.setOpenId(openid);
-//        String uuidUrl = "https://api.weixin.qq.com/sns/userinfo?access_token="
-//                + access_token
-//                + "&openid=" + openid;
-//        String wxUserInfo = HttpUtil.doGet(uuidUrl);
-//        JSONObject wxUserJson = JSONObject.parseObject(wxUserInfo);
-//        WechatUser wechat = new WechatUser();
-//        if (wxUserJson != null && !wxUserJson.containsKey("errcode")) {
-//            wechat.setNickName(wxUserJson.getString("nickname"));
-//            wechat.setHeadImgUrl(wxUserJson.getString("headimgurl"));
-//            wechat.setUnionId(wxUserJson.getString("unionid"));
-//            wechat.setOpenId(openid);
-//        }else{
-//            return WebResultUtil.returnErrMsgResult("获取微信用户信息失败，"+wxUserJson.getString("errcode"));
-//        }
         LoginToken loginToken = userService.saveWxUserInfoAndGenerateToken(wechat);
         if (loginToken == null) {
             return WebResultUtil.returnErrMsgResult("微信授权登录失败");
@@ -108,38 +93,53 @@ public class WxController {
         return WebResultUtil.returnResult(vo);
     }
 
-    /**
-     * 功能模块: 微信授权登录
-     *
-     * @param req
-     * @return com.jiangzuoyoupin.base.WebResult
-     * @author chenshangbo
-     * @date 2018-04-09 21:12:36
-     */
-    @ApiOperation(value = "微信授权登录", notes = "根据code换取openid和用户信息，返回用户登录的token")
-    @ApiImplicitParam(name = "req", value = "授权登录对象", dataType = "WeChatUserLoginReq")
-    @PostMapping(value = "/prepay")
-    public WebResult prepay(@RequestBody WeChatUserLoginReq req) {
-        WXPay wxpay = new WXPay(wxPayConfig);
-
-        Map<String, String> data = new HashMap<>();
-        data.put("body", "JSAPI支付测试");// 商品描述
-        data.put("trade_type", "JSAPI"); // 交易类型 小程序指定JSAPI
-        data.put("out_trade_no", String.valueOf(idWorker.nextId())); // 商户订单号
-        data.put("device_info", "WEB"); // 设备号 默认WEB
-        data.put("fee_type", "CNY"); // 标价币种
-        data.put("total_fee", "1"); // 金额
-        data.put("notify_url", "https://zjyp.lyhangzhou.top/wxpay/notify");
-        data.put("spbill_create_ip", "47.98.217.177");
-
-        try {
-            Map<String, String> resp = wxpay.unifiedOrder(data);
-            System.out.println(resp);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return WebResultUtil.returnResult();
-    }
+//    @ApiOperation(value = "支付预下单", notes = "支付预下单获取prepay_id")
+//    @ApiImplicitParam(name = "req", value = "预下单对象", dataType = "PrepayReq")
+//    @PostMapping(value = "/prepay")
+//    public WebResult prepay(@RequestBody PrepayReq req) {
+//        WXPay wxpay = new WXPay(wxPayConfig);
+//        WeChatUser user = userService.getUserInfoById(req.getWeChatUserId());
+//        if(user == null){
+//            return WebResultUtil.returnErrMsgResult("用户不存在");
+//        }
+//        Map<String, String> data = new HashMap<>();
+//        data.put("body", "JSAPI支付测试");// 商品描述
+//        data.put("trade_type", "JSAPI"); // 交易类型 小程序指定JSAPI
+//        data.put("out_trade_no", String.valueOf(idWorker.nextId())); // 商户订单号
+//        data.put("device_info", "WEB"); // 设备号 默认WEB
+//        data.put("fee_type", "CNY"); // 标价币种
+//        data.put("total_fee", "1"); // 金额
+//        data.put("spbill_create_ip", "47.98.217.177");
+//        data.put("openid", user.getOpenId());
+//        data.put("attach", "shopId=1");
+//        data.put("notify_url", "https://zjyp.lyhangzhou.top/common/wx/notify");
+//        try {
+//            Map<String, String> resp = wxpay.unifiedOrder(data);
+//            System.out.println(resp);
+//            String result_code = resp.get("result_code");// 业务结果
+//            String return_code = resp.get("return_code");// SUCCESS/FAIL
+//            if ("FAIL".equals(return_code)) {
+//                System.err.println("微信返回的交易状态不正确（result_code=" + return_code + "）");
+//                return WebResultUtil.returnErrMsgResult(result_code);
+//            }
+//            HashMap<String, String> back = new HashMap<>();
+//            String time = Long.toString(System.currentTimeMillis());
+//            back.put("appId", wxPayConfig.getAppID());
+//            back.put("timeStamp", time);
+//            back.put("nonceStr", WXPayUtil.generateNonceStr());
+//            back.put("signType", "MD5");
+//            back.put("package", "prepay_id=" + resp.get("prepay_id"));
+//            String sign2 =WXPayUtil.generateSignature(back,wxPayConfig.getKey());
+//
+//            JSONObject jsonObject =JSONObject.parseObject(JSON.toJSONString(back));
+//            jsonObject.put("paySign", sign2);
+//            System.out.println("二次签名后返回给前端的签名证书字符串是：" + sign2);
+//            return WebResultUtil.returnResult(jsonObject);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return WebResultUtil.returnErrMsgResult("预下单失败");
+//        }
+//    }
 
     @RequestMapping(value = "/notify")
     @ResponseBody
@@ -160,12 +160,13 @@ public class WxController {
             request.getReader().close();
         } catch (Exception e) {
             e.printStackTrace();
-            result = setXml("fail","xml获取失败");
+            return setXml("FAIL","xml获取失败");
         }
         if (StringUtils.isEmpty(notityXml)) {
-            result = setXml("fail","xml为空");
+            return setXml("FAIL","xml为空");
         }
         Map map = WXPayUtil.xmlToMap(notityXml);
+        System.out.println(map);
         // 解析各种数据
         String appid = (String) map.get("appid");//应用ID
         String attach = (String) map.get("attach");//商家数据包
@@ -184,51 +185,18 @@ public class WxController {
         String total_fee = (String) map.get("total_fee");// 获取订单金额
         String trade_type = (String) map.get("trade_type");//交易类型
         String transaction_id = (String) map.get("transaction_id");//微信支付订单号
-
-        SortedMap<String, String> parameters = new TreeMap<String, String>();
-        // 数据加密
-        parameters.put("fee_type", fee_type);//货币种类
-        parameters.put("openid", openid);//用户标识
-        parameters.put("out_trade_no", out_trade_no);// 商户订单号
-        parameters.put("result_code", result_code);// 业务结果
-        parameters.put("return_code", return_code);// SUCCESS/FAIL
-        parameters.put("time_end", time_end);// 支付完成时间
-        parameters.put("total_fee", total_fee);// 获取订单金额
-        parameters.put("trade_type", trade_type);//交易类型
-        String endsign = WXPayUtil.generateSignature(parameters, wxPayConfig.getKey());
-
-        System.out.println("**************************************************************************************************");
-        System.out.println(appid+"-------------------应用ID");
-        System.out.println(attach+"-------------------商家数据包");
-        System.out.println(bank_type+"-------------------付款银行");
-        System.out.println(cash_fee+"-------------------现金支付金额");
-        System.out.println(fee_type+"-------------------货币种类");
-        System.out.println(is_subscribe+"-------------------是否关注公众账号");
-        System.out.println(mch_id+"-------------------商户号");
-        System.out.println(nonce_str+"-------------------随机字符串");
-        System.out.println(openid+"-------------------用户标识");
-        System.out.println(out_trade_no+"-------------------获取商户订单号");
-        System.out.println(result_code+"-------------------业务结果");
-        System.out.println(return_code+"------------------- SUCCESS/FAIL");
-        System.out.println(sign+"-------------------获取签名-微信回调的签名");
-        System.out.println(time_end+"-------------------支付完成时间");
-        System.out.println(total_fee+"-------------------获取订单金额");
-        System.out.println(trade_type+"-------------------交易类型");
-        System.out.println(transaction_id+"-------------------微信支付订单号");
-        System.out.println(endsign+"-------------------第二次加密sign");
-        System.out.println("**************************************************************************************************");
-
-
-        // 验证签名
-        if (sign.equals(endsign)) {
-            result = setXml("SUCCESS", "OK");
-        } else {
-            System.err.println("签名不一致！");
-            result = setXml("fail", "签名不一致！");
-        }
-        if (!"SUCCESS".equals("SUCCESS")) {
+        if (!"SUCCESS".equals(return_code)) {
             System.err.println("微信返回的交易状态不正确（result_code=" + "SUCCESS" + "）");
-            result =  setXml("fail", "微信返回的交易状态不正确（result_code=" + "SUCCESS" + "）");
+            return setXml("fail", "微信返回的交易状态不正确（result_code=" + "SUCCESS" + "）");
+        }
+        WXPay wxpay = new WXPay(wxPayConfig);
+        // 验证签名
+        if (wxpay.isPayResultNotifySignatureValid(map)) {
+            System.err.println("签名不一致！");
+            return setXml("FAIL", "签名不一致！");
+        }else {
+            System.out.println("回调成功");
+            return setXml("SUCCESS", "OK");
         }
         //如果成功写入数据库
 //        if ("SUCCESS".equals("SUCCESS")) {// 如果微信返回的结果是success，则修改订单状态
@@ -248,9 +216,6 @@ public class WxController {
 //                cpitalTableService.insertCapital(capitalTable);
 //            }
 //        }
-        System.out.println("回调成功");
-        System.out.println("----返回给微信的xml：" + result);
-        return result;
     }
 
     //通过xml 发给微信消息
@@ -261,4 +226,5 @@ public class WxController {
         return "<xml><return_code><![CDATA[" + return_code + "]]>" +
                 "</return_code><return_msg><![CDATA[" + return_msg + "]]></return_msg></xml>";
     }
+
 }

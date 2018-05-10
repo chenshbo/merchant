@@ -20,9 +20,10 @@ public class WxPayConfig implements WXPayConfig{
     private byte[] certData;
 
     public WxPayConfig() throws Exception {
-        File file = ResourceUtils.getFile("classpath:certificate/apiclient_cert.p12");
-        InputStream certStream = new FileInputStream(file);
-        this.certData = new byte[(int) file.length()];
+//        File file = ResourceUtils.getFile("classpath:certificate/apiclient_cert.p12");
+//        InputStream certStream = new FileInputStream(file);
+        InputStream certStream = getClass().getClassLoader().getResourceAsStream("certificate/apiclient_cert.p12");
+        this.certData = new byte[9999];
         certStream.read(this.certData);
         certStream.close();
     }

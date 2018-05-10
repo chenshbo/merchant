@@ -20,6 +20,9 @@ public class ModuleApplyReq implements Serializable{
     @ApiModelProperty(value = "申请类型 1支付开通2邀请码开通",required = true)
     private Integer applyType;
 
+    @ApiModelProperty(value = "支付用户id",required = true)
+    private Long weChatUserId;
+
     @ApiModelProperty(value = "邀请码")
     private String invitationCode;
 
@@ -45,5 +48,13 @@ public class ModuleApplyReq implements Serializable{
 
     public void setInvitationCode(String invitationCode) {
         this.invitationCode = invitationCode;
+    }
+
+    public Long getWeChatUserId() {
+        return weChatUserId;
+    }
+
+    public void setWeChatUserId(Long weChatUserId) {
+        this.weChatUserId = weChatUserId;
     }
 }

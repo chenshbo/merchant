@@ -131,6 +131,15 @@
 				</includes>
 			</resource>
 			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>*.p12</include>
+					<include>*.pem</include>
+					<include>**/*.p12</include>
+					<include>**/*.pem</include>
+				</includes>
+			</resource>
+			<resource>
 				<directory>src/main/java</directory>
 				<includes>
 					<include>*.xml</include>

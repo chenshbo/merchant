@@ -1,7 +1,12 @@
 package com.jiangzuoyoupin.controller.mina;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.github.wxpay.sdk.WXPay;
+import com.github.wxpay.sdk.WXPayUtil;
 import com.jiangzuoyoupin.annotation.Auth;
 import com.jiangzuoyoupin.base.WebResult;
+import com.jiangzuoyoupin.config.WxPayConfig;
 import com.jiangzuoyoupin.controller.common.BaseController;
 import com.jiangzuoyoupin.domain.Shop;
 import com.jiangzuoyoupin.domain.ShopBill;
@@ -12,6 +17,7 @@ import com.jiangzuoyoupin.req.*;
 import com.jiangzuoyoupin.service.BillService;
 import com.jiangzuoyoupin.service.ManagerService;
 import com.jiangzuoyoupin.utils.ConvertUtils;
+import com.jiangzuoyoupin.utils.IdWorker;
 import com.jiangzuoyoupin.utils.WebResultUtil;
 import com.jiangzuoyoupin.vo.ShopBillListVO;
 import com.jiangzuoyoupin.vo.ShopBillTotalVO;
@@ -27,7 +33,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 功能模块: 运营中心controller
@@ -55,6 +63,15 @@ public class ManagerController extends BaseController {
 
     @Value("${wx.secret}")
     private String wxAppSecret;
+
+    @Value("${bill.permission.amount}")
+    private Long billPermissionAmount;
+
+    @Autowired
+    private WxPayConfig wxPayConfig;
+
+    @Autowired
+    private IdWorker idWorker;
 
     @ApiOperation(value = "店铺信息-保存", notes = "保存店铺信息")
     @ApiImplicitParam(name = "req", value = "店铺保存对象", dataType = "ShopInfoSaveReq")
@@ -94,7 +111,50 @@ public class ManagerController extends BaseController {
     @ApiImplicitParam(name = "req", value = "申请开通功能请求对象", dataType = "ModuleApplyReq")
     @PostMapping(value = "/applyOpenPermissions")
     public WebResult applyOpenPermissions(@RequestBody ModuleApplyReq req) {
-        if(req.getApplyType().intValue() == 2){
+        if(req.getApplyType().intValue() == 1){
+            WXPay wxpay = new WXPay(wxPayConfig);
+            WeChatUser user = userService.getUserInfoById(req.getWeChatUserId());
+            if(user == null){
+                return WebResultUtil.returnErrMsgResult("用户不存在");
+            }
+            Map<String, String> data = new HashMap<>();
+            data.put("body", "功能开通-申请开通模块权限");// 商品描述
+            data.put("trade_type", "JSAPI"); // 交易类型 小程序指定JSAPI
+            data.put("out_trade_no", String.valueOf(idWorker.nextId())); // 商户订单号
+            data.put("device_info", "WEB"); // 设备号 默认WEB
+            data.put("fee_type", "CNY"); // 标价币种
+            data.put("total_fee", String.valueOf(billPermissionAmount)); // 金额
+            data.put("spbill_create_ip", "47.98.217.177");
+            data.put("openid", user.getOpenId());
+            data.put("attach", "shopId="+req.getShopId());
+            data.put("notify_url", "https://zjyp.lyhangzhou.top/common/wx/notify");
+            try {
+                Map<String, String> resp = wxpay.unifiedOrder(data);
+                System.out.println(resp);
+                String result_code = resp.get("result_code");// 业务结果
+                String return_code = resp.get("return_code");// SUCCESS/FAIL
+                if ("FAIL".equals(return_code)) {
+                    System.err.println("微信返回的交易状态不正确（result_code=" + return_code + "）");
+                    return WebResultUtil.returnErrMsgResult(result_code);
+                }
+                HashMap<String, String> back = new HashMap<>();
+                String time = Long.toString(System.currentTimeMillis());
+                back.put("appId", wxPayConfig.getAppID());
+                back.put("timeStamp", time);
+                back.put("nonceStr", WXPayUtil.generateNonceStr());
+                back.put("signType", "MD5");
+                back.put("package", "prepay_id=" + resp.get("prepay_id"));
+                String sign2 =WXPayUtil.generateSignature(back,wxPayConfig.getKey());
+
+                JSONObject jsonObject =JSONObject.parseObject(JSON.toJSONString(back));
+                jsonObject.put("paySign", sign2);
+                System.out.println("二次签名后返回给前端的签名证书字符串是：" + sign2);
+                return WebResultUtil.returnResult(jsonObject);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return WebResultUtil.returnErrMsgResult("预下单失败");
+            }
+        }else{
             if(!managerService.checkInvitationCode(req.getInvitationCode())){
                 return WebResultUtil.returnErrMsgResult("邀请码已失效");
             }
