@@ -103,4 +103,12 @@ public class BillService {
 
         return 1;
     }
+
+    public ShopBillDto getBillInfoById(Long id) {
+        return shopBillMapper.getBillInfoById(id);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(123412/100);
+    }
 }

@@ -12,6 +12,7 @@ import com.jiangzuoyoupin.domain.WeChatUser;
 import com.jiangzuoyoupin.req.PrepayReq;
 import com.jiangzuoyoupin.req.WeChatUserLoginReq;
 import com.jiangzuoyoupin.req.WeChatUserSaveReq;
+import com.jiangzuoyoupin.service.PayService;
 import com.jiangzuoyoupin.service.UserService;
 import com.jiangzuoyoupin.utils.HttpUtil;
 import com.jiangzuoyoupin.utils.IdWorker;
@@ -45,6 +46,9 @@ public class WxController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private PayService payService;
 
     @Value("${root.url}")
     private String rootUrl;
@@ -179,29 +183,13 @@ public class WxController {
         if (StringUtils.isEmpty(notityXml)) {
             return setXml("FAIL","xml为空");
         }
-        Map map = WXPayUtil.xmlToMap(notityXml);
+        Map<String, String> map = WXPayUtil.xmlToMap(notityXml);
         System.out.println(map);
-        // 解析各种数据
-        String appid = (String) map.get("appid");//应用ID
-        String attach = (String) map.get("attach");//商家数据包
-        String bank_type = (String) map.get("bank_type");//付款银行
-        String cash_fee = (String) map.get("cash_fee");//现金支付金额
-        String fee_type = (String) map.get("fee_type");//货币种类
-        String is_subscribe = (String) map.get("is_subscribe");//是否关注公众账号
-        String mch_id = (String) map.get("mch_id");//商户号
-        String nonce_str = (String) map.get("nonce_str");//随机字符串
-        String openid = (String) map.get("openid");//用户标识
-        String out_trade_no = (String) map.get("out_trade_no");// 获取商户订单号
-        String result_code = (String) map.get("result_code");// 业务结果
-        String return_code = (String) map.get("return_code");// SUCCESS/FAIL
-        String sign = (String) map.get("sign");// 获取签名
-        String time_end = (String) map.get("time_end");//支付完成时间
-        String total_fee = (String) map.get("total_fee");// 获取订单金额
-        String trade_type = (String) map.get("trade_type");//交易类型
-        String transaction_id = (String) map.get("transaction_id");//微信支付订单号
+        String result_code = map.get("result_code");// 业务结果
+        String return_code = map.get("return_code");// SUCCESS/FAIL
         if (!"SUCCESS".equals(return_code)) {
-            System.err.println("微信返回的交易状态不正确（result_code=" + "SUCCESS" + "）");
-            return setXml("fail", "微信返回的交易状态不正确（result_code=" + "SUCCESS" + "）");
+            System.err.println("微信返回的交易状态不正确（result_code=" + result_code + "）");
+            return setXml("fail", "微信返回的交易状态不正确（result_code=" + result_code + "）");
         }
         WXPay wxpay = new WXPay(wxPayConfig);
         // 验证签名
@@ -210,6 +198,7 @@ public class WxController {
             return setXml("FAIL", "签名不一致！");
         }else {
             System.out.println("回调成功");
+            payService.updatePayOrder(map);
             return setXml("SUCCESS", "OK");
         }
         //如果成功写入数据库

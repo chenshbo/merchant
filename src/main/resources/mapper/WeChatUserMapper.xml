@@ -163,4 +163,13 @@
       gmt_modified = now()
     where id = #{id,jdbcType=BIGINT} and mobile_no is null
   </update>
+
+  <!-- 更新余额 -->
+  <update id="updateBalance" parameterType="com.jiangzuoyoupin.domain.WeChatUser">
+    update t_wechat_user
+    set
+      balance = balance + #{balance},
+      gmt_modified = now()
+    where id = #{id,jdbcType=BIGINT}
+  </update>
 </mapper>

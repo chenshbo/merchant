@@ -18,4 +18,6 @@ public interface WeChatUserMapper {
     WeChatUser getByParams(WeChatUser wechat);
 
     int updateMobileNo(WeChatUser params);
+
+    int updateBalance(WeChatUser userUpdate);
 }

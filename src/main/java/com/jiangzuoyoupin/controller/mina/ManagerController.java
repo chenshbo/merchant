@@ -8,14 +8,12 @@ import com.jiangzuoyoupin.annotation.Auth;
 import com.jiangzuoyoupin.base.WebResult;
 import com.jiangzuoyoupin.config.WxPayConfig;
 import com.jiangzuoyoupin.controller.common.BaseController;
-import com.jiangzuoyoupin.domain.Shop;
-import com.jiangzuoyoupin.domain.ShopBill;
-import com.jiangzuoyoupin.domain.ShopManager;
-import com.jiangzuoyoupin.domain.WeChatUser;
+import com.jiangzuoyoupin.domain.*;
 import com.jiangzuoyoupin.dto.ShopBillDto;
 import com.jiangzuoyoupin.req.*;
 import com.jiangzuoyoupin.service.BillService;
 import com.jiangzuoyoupin.service.ManagerService;
+import com.jiangzuoyoupin.service.PayService;
 import com.jiangzuoyoupin.utils.ConvertUtils;
 import com.jiangzuoyoupin.utils.IdWorker;
 import com.jiangzuoyoupin.utils.WebResultUtil;
@@ -54,6 +52,9 @@ public class ManagerController extends BaseController {
 
     @Autowired
     private BillService billService;
+
+    @Autowired
+    private PayService payService;
 
     @Value("${root.url}")
     private String rootUrl;
@@ -112,48 +113,21 @@ public class ManagerController extends BaseController {
     @PostMapping(value = "/applyOpenPermissions")
     public WebResult applyOpenPermissions(@RequestBody ModuleApplyReq req) {
         if(req.getApplyType().intValue() == 1){
-            WXPay wxpay = new WXPay(wxPayConfig);
             WeChatUser user = userService.getUserInfoById(req.getWeChatUserId());
             if(user == null){
                 return WebResultUtil.returnErrMsgResult("用户不存在");
             }
             Map<String, String> data = new HashMap<>();
             data.put("body", "功能开通-申请开通模块权限");// 商品描述
-            data.put("trade_type", "JSAPI"); // 交易类型 小程序指定JSAPI
-            data.put("out_trade_no", String.valueOf(idWorker.nextId())); // 商户订单号
-            data.put("device_info", "WEB"); // 设备号 默认WEB
-            data.put("fee_type", "CNY"); // 标价币种
             data.put("total_fee", String.valueOf(billPermissionAmount)); // 金额
-            data.put("spbill_create_ip", "47.98.217.177");
             data.put("openid", user.getOpenId());
-            data.put("attach", "shopId="+req.getShopId());
-            data.put("notify_url", "https://zjyp.lyhangzhou.top/common/wx/notify");
-            try {
-                Map<String, String> resp = wxpay.unifiedOrder(data);
-                System.out.println(resp);
-                String result_code = resp.get("result_code");// 业务结果
-                String return_code = resp.get("return_code");// SUCCESS/FAIL
-                if ("FAIL".equals(return_code)) {
-                    System.err.println("微信返回的交易状态不正确（result_code=" + return_code + "）");
-                    return WebResultUtil.returnErrMsgResult(result_code);
-                }
-                HashMap<String, String> back = new HashMap<>();
-                String time = Long.toString(System.currentTimeMillis());
-                back.put("appId", wxPayConfig.getAppID());
-                back.put("timeStamp", time);
-                back.put("nonceStr", WXPayUtil.generateNonceStr());
-                back.put("signType", "MD5");
-                back.put("package", "prepay_id=" + resp.get("prepay_id"));
-                String sign2 =WXPayUtil.generateSignature(back,wxPayConfig.getKey());
-
-                JSONObject jsonObject =JSONObject.parseObject(JSON.toJSONString(back));
-                jsonObject.put("paySign", sign2);
-                System.out.println("二次签名后返回给前端的签名证书字符串是：" + sign2);
-                return WebResultUtil.returnResult(jsonObject);
-            } catch (Exception e) {
-                e.printStackTrace();
+            data.put("out_trade_no", String.valueOf(idWorker.nextId())); // 商户订单号
+            data.put("attach", "order_type=1");
+            JSONObject jsonObject = prepay(data);
+            if(jsonObject == null){
                 return WebResultUtil.returnErrMsgResult("预下单失败");
             }
+            return WebResultUtil.returnResult(jsonObject);
         }else{
             if(!managerService.checkInvitationCode(req.getInvitationCode())){
                 return WebResultUtil.returnErrMsgResult("邀请码已失效");
@@ -226,11 +200,31 @@ public class ManagerController extends BaseController {
     @ApiOperation(value = "幸福账单-转账", notes = "转账")
     @GetMapping(value = "/transfer/{id}")
     public WebResult transfer(@ApiParam(name = "id", value = "账单id", required = true) @PathVariable Long id) {
-        int count = billService.transfer(id);
+        ShopBillDto shopBillDto = billService.getBillInfoById(id);
+        String tradeNo = String.valueOf(idWorker.nextId());
+        String openId = shopBillDto.getOpenId();
+        Long totalFee = shopBillDto.getAmount().longValue() * 100;
+        Map<String, String> data = new HashMap<>();
+        data.put("body", "幸福账单-转账");// 商品描述
+        data.put("total_fee", String.valueOf(totalFee)); // 金额
+        data.put("openid", openId);
+        data.put("out_trade_no", tradeNo); // 商户订单号
+        data.put("attach", "{\"orderType\":2\"shopBillId\":" + shopBillDto.getId() + ",\"customWeChatUserId\":"+shopBillDto.getCustomWeChatUserId()+"}");
+        JSONObject jsonObject = prepay(data);
+        if(jsonObject == null){
+            return WebResultUtil.returnErrMsgResult("预下单失败");
+        }
+        WeChatPayOrder payOrder = new WeChatPayOrder();
+        payOrder.setTradeNo(tradeNo);
+        payOrder.setWechatUserId(shopBillDto.getShopOwnerUserId());
+        payOrder.setOrderType(2);
+        payOrder.setShopBillId(shopBillDto.getId());
+        payOrder.setTotalFee(totalFee);
+        int count = payService.addPayOrder(payOrder);
         if(count == 0){
             return WebResultUtil.returnErrMsgResult("转账失败");
         }
-        return WebResultUtil.returnResult();
+        return WebResultUtil.returnResult(jsonObject);
     }
 
     @ApiOperation(value = "匠探团队-邀请", notes = "邀请匠探")

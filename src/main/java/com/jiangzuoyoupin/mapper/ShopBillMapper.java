@@ -31,4 +31,5 @@ public interface ShopBillMapper {
 
     List<ShopBillDto> selectFreeBillList(@Param("shopId")Long shopId);
 
+    ShopBillDto getBillInfoById(Long id);
 }

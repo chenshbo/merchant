@@ -2,6 +2,7 @@ package com.jiangzuoyoupin.utils;
 
 import org.apache.commons.lang3.time.DateUtils;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -551,7 +552,7 @@ public class DateUtil extends DateUtils {
 		return localDateTime.getDayOfWeek().getValue();
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws ParseException {
         Date d = startOfToday();
         System.out.println(d.toString());
 
@@ -580,6 +581,8 @@ public class DateUtil extends DateUtils {
         System.out.println(dataFormat);
 
 
+		System.out.println(DateUtil.parseDate("20141030133525","yyyyMMddHHmmss"));
+
     }
 
 }
@@ -594,6 +597,7 @@ class DateFormats {
 	public final SimpleDateFormat ymdChinese = new SimpleDateFormat("yyyy年MM月dd");
 	public final SimpleDateFormat ymdSlash = new SimpleDateFormat("yyyy/MM/dd");
 	public final SimpleDateFormat ymdhmsss = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+	public final SimpleDateFormat ymdhms2 = new SimpleDateFormat("yyyyMMddHHmmss");
 }
 
 class DateTimeFormatters{

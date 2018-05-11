@@ -17,6 +17,8 @@ public class ShopBillDto extends ShopBill{
     private String nickName;
     private Integer rank;
     private String avatarUrl;
+    private String openId;
+    private Long shopOwnerUserId;
 
     public Double getTotalAmount() {
         return totalAmount;
@@ -64,5 +66,21 @@ public class ShopBillDto extends ShopBill{
 
     public void setAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
+    }
+
+    public String getOpenId() {
+        return openId;
+    }
+
+    public void setOpenId(String openId) {
+        this.openId = openId;
+    }
+
+    public Long getShopOwnerUserId() {
+        return shopOwnerUserId;
+    }
+
+    public void setShopOwnerUserId(Long shopOwnerUserId) {
+        this.shopOwnerUserId = shopOwnerUserId;
     }
 }
