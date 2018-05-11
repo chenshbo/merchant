@@ -78,8 +78,8 @@ public class UserService {
      * @author chenshangbo
      * @date 2018-04-09 21:14:34
      */
-    public LoginToken saveWxUserInfoAndGenerateToken(WeChatUser wechat) {
-        int result;
+    public LoginToken generateToken(WeChatUser wechat) {
+        int result = 0;
         LoginToken loginToken = null;
         WeChatUser params = new WeChatUser();
         params.setOpenId(wechat.getOpenId());
@@ -93,7 +93,8 @@ public class UserService {
                 role = 1;
             }
             wechat.setId(byParams.getId());
-            result = weChatUserMapper.updateByPrimaryKeySelective(wechat);
+//            result = weChatUserMapper.updateByPrimaryKeySelective(wechat);
+            result = 1;
             Shop shop = shopMapper.selectByWeChatUserId(byParams.getId());
             if(shop != null){
                 role = 2;
@@ -251,5 +252,9 @@ public class UserService {
 
     public WeChatUser getUserInfoById(Long weChatUserId) {
         return weChatUserMapper.selectByPrimaryKey(weChatUserId);
+    }
+
+    public int saveWxUserInfo(WeChatUser user) {
+        return weChatUserMapper.updateByPrimaryKeySelective(user);
     }
 }

@@ -16,12 +16,6 @@ public class WeChatUserLoginReq implements Serializable{
 
     @ApiModelProperty(value = "授权码",required = true)
     private String code;
-    @ApiModelProperty(value = "昵称",required = true)
-    private String nickName;
-    @ApiModelProperty(value = "头像",required = true)
-    private String avatarUrl;
-    @ApiModelProperty(value = "性别，1男2女0未知")
-    private Integer gender;
 
     public String getCode() {
         return code;
@@ -31,27 +25,4 @@ public class WeChatUserLoginReq implements Serializable{
         this.code = code;
     }
 
-    public String getNickName() {
-        return nickName;
-    }
-
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
-    }
-
-    public String getAvatarUrl() {
-        return avatarUrl;
-    }
-
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
-    }
-
-    public Integer getGender() {
-        return gender;
-    }
-
-    public void setGender(Integer gender) {
-        this.gender = gender;
-    }
 }

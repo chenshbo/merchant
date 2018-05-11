@@ -11,6 +11,7 @@ import com.jiangzuoyoupin.domain.LoginToken;
 import com.jiangzuoyoupin.domain.WeChatUser;
 import com.jiangzuoyoupin.req.PrepayReq;
 import com.jiangzuoyoupin.req.WeChatUserLoginReq;
+import com.jiangzuoyoupin.req.WeChatUserSaveReq;
 import com.jiangzuoyoupin.service.UserService;
 import com.jiangzuoyoupin.utils.HttpUtil;
 import com.jiangzuoyoupin.utils.IdWorker;
@@ -67,7 +68,7 @@ public class WxController {
     public WebResult<LoginTokenVO> login(@RequestBody WeChatUserLoginReq req) {
         String openid = "";
 
-        // 通过code获取access_token
+        // 通过code获取openid
         String url = "https://api.weixin.qq.com/sns/jscode2session?appid=" + wxPayConfig.getAppID()
                 + "&secret=" + wxAppSecret
                 + "&js_code=" + req.getCode()
@@ -77,14 +78,14 @@ public class WxController {
         if (!tokenJson.containsKey("errcode")) {
             openid = tokenJson.getString("openid");// 授权用户唯一标识
         } else {
-            return WebResultUtil.returnErrMsgResult("获取微信access_token失败，" + tokenJson.getString("errmsg"));
+            return WebResultUtil.returnErrMsgResult("获取微信openid失败，" + tokenJson.getString("errmsg"));
         }
 
         // 拉取用户信息
         WeChatUser wechat = new WeChatUser();
         BeanUtils.copyProperties(req, wechat);
         wechat.setOpenId(openid);
-        LoginToken loginToken = userService.saveWxUserInfoAndGenerateToken(wechat);
+        LoginToken loginToken = userService.generateToken(wechat);
         if (loginToken == null) {
             return WebResultUtil.returnErrMsgResult("微信授权登录失败");
         }
@@ -92,6 +93,19 @@ public class WxController {
         BeanUtils.copyProperties(loginToken, vo);
         return WebResultUtil.returnResult(vo);
     }
+    @ApiOperation(value = "保存微信用户信息", notes = "保存微信用户信息")
+    @ApiImplicitParam(name = "req", value = "请求对象", dataType = "WeChatUserSaveReq")
+    @PostMapping(value = "/saveWxUserInfo")
+    public WebResult saveWxUserInfo(@RequestBody WeChatUserSaveReq req) {
+        WeChatUser user = new WeChatUser();
+        BeanUtils.copyProperties(req,user);
+        int count = userService.saveWxUserInfo(user);
+        if(count == 0){
+            return WebResultUtil.returnErrMsgResult("保存微信用户信息失败");
+        }
+        return WebResultUtil.returnResult();
+    }
+
 
 //    @ApiOperation(value = "支付预下单", notes = "支付预下单获取prepay_id")
 //    @ApiImplicitParam(name = "req", value = "预下单对象", dataType = "PrepayReq")
