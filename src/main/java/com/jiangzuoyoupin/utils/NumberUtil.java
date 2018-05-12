@@ -1,5 +1,6 @@
 package com.jiangzuoyoupin.utils;
 
+import java.math.BigDecimal;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -91,6 +92,10 @@ public class NumberUtil {
             throw new RuntimeException("版本格式不正确");
         }
 
+    }
+
+    public static Double getDoubleAmount(String totalFee){
+        return Double.parseDouble(BigDecimal.valueOf(Long.valueOf(totalFee)).divide(new BigDecimal(100)).toString());
     }
 
 

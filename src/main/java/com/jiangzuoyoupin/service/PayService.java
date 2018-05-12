@@ -7,6 +7,8 @@ import com.jiangzuoyoupin.dto.ShopScanRecordDto;
 import com.jiangzuoyoupin.mapper.*;
 import com.jiangzuoyoupin.req.ScanRecordQueryReq;
 import com.jiangzuoyoupin.utils.DateUtil;
+import com.jiangzuoyoupin.utils.NumberUtil;
+import com.jiangzuoyoupin.utils.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -71,7 +73,7 @@ public class PayService {
                 // 增加用户余额
                 WeChatUser userUpdate = new WeChatUser();
                 userUpdate.setId((Long)jsonObject.get("customWeChatUserId"));
-                userUpdate.setBalance(getDoubleAmount(resMap.get("total_fee")));
+                userUpdate.setBalance(NumberUtil.getDoubleAmount(resMap.get("total_fee")));
                 weChatUserMapper.updateBalance(userUpdate);
             }
         }
@@ -82,7 +84,7 @@ public class PayService {
         return payOrderMapper.insert(payOrder);
     }
 
-    private Double getDoubleAmount(String totalFee){
-        return Double.parseDouble(BigDecimal.valueOf(Long.valueOf(totalFee)).divide(new BigDecimal(100)).toString());
+    public List<WeChatPayOrder> selectWeChatOrderList(WeChatPayOrder param) {
+        return payOrderMapper.selectWeChatOrderList(param);
     }
 }

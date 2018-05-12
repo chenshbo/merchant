@@ -1,11 +1,13 @@
 package com.jiangzuoyoupin.service;
 
 import com.jiangzuoyoupin.domain.ShopBill;
+import com.jiangzuoyoupin.domain.WeChatPayOrder;
 import com.jiangzuoyoupin.domain.WeChatUser;
 import com.jiangzuoyoupin.dto.ShopBillDto;
 import com.jiangzuoyoupin.mapper.ShopBillMapper;
 import com.jiangzuoyoupin.mapper.WeChatUserMapper;
 import com.jiangzuoyoupin.req.ShopIdAndWeChatUserIdReq;
+import com.jiangzuoyoupin.utils.NumberUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -67,7 +69,6 @@ public class BillService {
     }
 
     public int withdrawCash(WeChatPayOrder payOrder) {
-        // TODO 1平台支付成功
         // 更新状态
         ShopBill param = new ShopBill();
         param.setId(payOrder.getShopBillId());
@@ -75,10 +76,11 @@ public class BillService {
         param.setSortStatus(2); // 完成
         shopBillMapper.updateByPrimaryKeySelective(param);
 
+        ShopBill shopBill = shopBillMapper.selectByPrimaryKey(payOrder.getShopBillId());
         // 扣除用户余额
         WeChatUser update = new WeChatUser();
-        update.setId(shopBill.getCustomWeChatUserId());
-        update.setBalance(update.getBalance() - shopBill.getAmount());
+        update.setId(payOrder.getWechatUserId());
+        update.setBalance(-shopBill.getAmount());
         weChatUserMapper.updateByPrimaryKeySelective(update);
 
         return 1;
@@ -88,7 +90,4 @@ public class BillService {
         return shopBillMapper.getBillInfoById(id);
     }
 
-    public static void main(String[] args) {
-        System.out.println(123412/100);
-    }
 }

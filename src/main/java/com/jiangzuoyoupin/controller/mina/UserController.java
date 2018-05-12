@@ -3,29 +3,29 @@ package com.jiangzuoyoupin.controller.mina;
 import com.jiangzuoyoupin.annotation.Auth;
 import com.jiangzuoyoupin.base.WebResult;
 import com.jiangzuoyoupin.controller.common.BaseController;
-import com.jiangzuoyoupin.domain.Fans;
-import com.jiangzuoyoupin.domain.Shop;
-import com.jiangzuoyoupin.domain.Supplier;
-import com.jiangzuoyoupin.domain.WeChatUser;
-import com.jiangzuoyoupin.req.FansRegReq;
-import com.jiangzuoyoupin.req.SendVerifyCodeReq;
-import com.jiangzuoyoupin.req.ShopRegReq;
-import com.jiangzuoyoupin.req.SupplierRegReq;
+import com.jiangzuoyoupin.domain.*;
+import com.jiangzuoyoupin.req.*;
+import com.jiangzuoyoupin.service.PayService;
 import com.jiangzuoyoupin.service.SmsService;
+import com.jiangzuoyoupin.utils.ConvertUtils;
+import com.jiangzuoyoupin.utils.DateUtil;
+import com.jiangzuoyoupin.utils.NumberUtil;
 import com.jiangzuoyoupin.utils.WebResultUtil;
+import com.jiangzuoyoupin.vo.SupplierVO;
+import com.jiangzuoyoupin.vo.WeChatOrderListVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Description: 用户controller
@@ -47,6 +47,9 @@ public class UserController extends BaseController {
 
     @Autowired
     private SmsService smsService;
+
+    @Autowired
+    private PayService payService;
 
     /**
      * 功能模块: 粉丝注册
@@ -162,6 +165,33 @@ public class UserController extends BaseController {
             return WebResultUtil.returnErrMsgResult("发送验证码失败");
         }
         return WebResultUtil.returnResult();
+    }
+
+    @ApiOperation(value = "匠子余额", notes = "根据用户ID查询匠子余额")
+    @GetMapping(value = "/getTotalBalance/{weChatUserId}")
+    public WebResult getTotalBalance(@ApiParam(name = "weChatUserId", value = "用户id", required = true) @PathVariable Long weChatUserId) {
+        WeChatUser weChatUser = userService.getUserInfoById(weChatUserId);
+        if (weChatUser == null) {
+            return WebResultUtil.returnErrMsgResult("用户不存在");
+        }
+        return WebResultUtil.returnResult(weChatUser.getBalance());
+    }
+
+    @ApiOperation(value = "微信账单列表", notes = "根据用户ID查询收入支出列表")
+    @ApiImplicitParam(name = "req", value = "请求对象", dataType = "WeChatOrderQueryReq")
+    @GetMapping(value = "/selectWeChatOrderList")
+    public WebResult<List<WeChatOrderListVO>> selectWeChatOrderList(@RequestBody WeChatOrderQueryReq req) {
+        WeChatPayOrder param = new WeChatPayOrder();
+        param.setWechatUserId(req.getWeChatUserId());
+        param.setOrderType(req.getType());
+        List<WeChatPayOrder> orderList = payService.selectWeChatOrderList(param);
+        List<WeChatOrderListVO> voList = orderList.stream().map(res -> {
+            WeChatOrderListVO vo = new WeChatOrderListVO();
+            vo.setTotalFee(NumberUtil.getDoubleAmount(res.getTotalFee().toString()));
+            vo.setPayTimeEnd(DateUtil.formatYMD(res.getPayTimeEnd()));
+            return vo;
+        }).collect(Collectors.toList());
+        return WebResultUtil.returnResult(voList);
     }
 
 }

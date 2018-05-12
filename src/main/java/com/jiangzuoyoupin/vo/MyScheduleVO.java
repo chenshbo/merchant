@@ -12,6 +12,7 @@ import java.io.Serializable;
  */
 public class MyScheduleVO implements Serializable{
 
+    private static final long serialVersionUID = -3320421962297773556L;
     @ApiModelProperty(value = "用户昵称")
     private String nickName;
 

@@ -13,6 +13,7 @@ import com.jiangzuoyoupin.utils.WebResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,22 +31,19 @@ public class BaseController {
     @Autowired
     private WxPayConfig wxPayConfig;
 
-    @Autowired
-    private IdWorker idWorker;
-
     public WeChatUser getWeChatUserByToken(HttpServletRequest request) {
         String accessToken = request.getHeader("Token");
         return userService.getUserInfoByToken(accessToken);
     }
 
     public JSONObject prepay(Map<String,String> data){
-        WXPay wxpay = new WXPay(wxPayConfig);
-        data.put("trade_type", "JSAPI"); // 交易类型 小程序指定JSAPI
-        data.put("device_info", "WEB"); // 设备号 默认WEB
-        data.put("fee_type", "CNY"); // 标价币种
-        data.put("spbill_create_ip", "47.98.217.177");
-        data.put("notify_url", "https://zjyp.lyhangzhou.top/common/wx/notify");
         try {
+            WXPay wxpay = new WXPay(wxPayConfig);
+            data.put("trade_type", "JSAPI"); // 交易类型 小程序指定JSAPI
+            data.put("device_info", "WEB"); // 设备号 默认WEB
+            data.put("fee_type", "CNY"); // 标价币种
+            data.put("spbill_create_ip", InetAddress.getLocalHost().getHostAddress());
+            data.put("notify_url", "https://zjyp.lyhangzhou.top/common/wx/notify");
             Map<String, String> resp = wxpay.unifiedOrder(data);
             System.out.println(resp);
             String return_code = resp.get("return_code");// SUCCESS/FAIL
@@ -78,10 +76,11 @@ public class BaseController {
             reqData.put("mchid", wxPayConfig.getMchID());
             reqData.put("nonce_str", WXPayUtil.generateNonceStr());
             reqData.put("check_name", "NO_CHECK");
-            reqData.put("spbill_create_ip", "47.98.217.177");
+            reqData.put("spbill_create_ip", InetAddress.getLocalHost().getHostAddress());
             reqData.put("sign", WXPayUtil.generateSignature(reqData, wxPayConfig.getKey(), WXPayConstants.SignType.MD5));
+            System.out.println("mchPay---"+JSONObject.toJSONString(reqData).toString());
             String url = "https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers";
-            String respXml = wxpay.requestWithCert(url, wxpay.fillRequestData(reqData), wxPayConfig.getHttpConnectTimeoutMs(), wxPayConfig.getHttpReadTimeoutMs());
+            String respXml = wxpay.requestWithCert(url, reqData, wxPayConfig.getHttpConnectTimeoutMs(), wxPayConfig.getHttpReadTimeoutMs());
             return wxpay.processResponseXml(respXml);
         } catch (Exception e) {
             e.printStackTrace();

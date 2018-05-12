@@ -5,10 +5,7 @@ import com.jiangzuoyoupin.annotation.Auth;
 import com.jiangzuoyoupin.base.WebResult;
 import com.jiangzuoyoupin.config.WxPayConfig;
 import com.jiangzuoyoupin.controller.common.BaseController;
-import com.jiangzuoyoupin.domain.Shop;
-import com.jiangzuoyoupin.domain.ShopBill;
-import com.jiangzuoyoupin.domain.ShopManager;
-import com.jiangzuoyoupin.domain.WeChatUser;
+import com.jiangzuoyoupin.domain.*;
 import com.jiangzuoyoupin.dto.ShopBillDto;
 import com.jiangzuoyoupin.req.*;
 import com.jiangzuoyoupin.service.BillService;
@@ -226,7 +223,7 @@ public class ManagerController extends BaseController {
         }
         WeChatPayOrder payOrder = new WeChatPayOrder();
         payOrder.setTradeNo(tradeNo);
-        payOrder.setWechatUserId(shopBillDto.getShopOwnerUserId());
+        payOrder.setWechatUserId(shopBillDto.getCustomWeChatUserId());
         payOrder.setOrderType(2);
         payOrder.setShopBillId(shopBillDto.getId());
         payOrder.setTotalFee(totalFee);

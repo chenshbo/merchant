@@ -1,9 +1,10 @@
 package com.jiangzuoyoupin.controller.mina;
 
-import com.github.wxpay.sdk.WXPay;
+import com.alibaba.fastjson.JSONObject;
 import com.jiangzuoyoupin.annotation.Auth;
 import com.jiangzuoyoupin.base.WebResult;
 import com.jiangzuoyoupin.controller.common.BaseController;
+import com.jiangzuoyoupin.domain.WeChatPayOrder;
 import com.jiangzuoyoupin.domain.WeChatUser;
 import com.jiangzuoyoupin.dto.ShopBillDto;
 import com.jiangzuoyoupin.req.ShopIdAndWeChatUserIdReq;
@@ -61,10 +62,10 @@ public class BillListController extends BaseController {
     public WebResult<MyScheduleVO> mySchedule(@RequestBody ShopIdAndWeChatUserIdReq req, HttpServletRequest request) {
         MyScheduleVO vo = new MyScheduleVO();
         WeChatUser weChatUser = getWeChatUserByToken(request);
-        if(weChatUser != null){
+        if (weChatUser != null) {
             vo.setNickName(weChatUser.getNickName());
         }
-        String schedule = billService.getMySchedule(req.getShopId(),req.getWeChatUserId());
+        String schedule = billService.getMySchedule(req.getShopId(), req.getWeChatUserId());
         vo.setSchedule(schedule);
         return WebResultUtil.returnResult(schedule);
     }
@@ -73,8 +74,8 @@ public class BillListController extends BaseController {
     @ApiImplicitParam(name = "req", value = "请求对象", dataType = "ShopIdAndWeChatUserIdReq")
     @PostMapping(value = "/selectMyBillList")
     public WebResult<List<MyBillListVO>> selectMyBillList(@RequestBody ShopIdAndWeChatUserIdReq req) {
-        List<ShopBillDto> billList = billService.selectMyBillList(req.getShopId(),req.getWeChatUserId());
-        return WebResultUtil.returnResult(ConvertUtils.poList2voList(billList,MyBillListVO.class));
+        List<ShopBillDto> billList = billService.selectMyBillList(req.getShopId(), req.getWeChatUserId());
+        return WebResultUtil.returnResult(ConvertUtils.poList2voList(billList, MyBillListVO.class));
     }
 
     /**
@@ -89,7 +90,7 @@ public class BillListController extends BaseController {
     @GetMapping(value = "/my/apply/{id}")
     public WebResult myApply(@ApiParam(name = "id", value = "账单id", required = true) @PathVariable Long id) {
         int count = billService.applyFree(id);
-        if(count == 0){
+        if (count == 0) {
             return WebResultUtil.returnErrMsgResult("申请免单失败");
         }
         return WebResultUtil.returnResult();
@@ -101,27 +102,35 @@ public class BillListController extends BaseController {
         ShopBillDto shopBillDto = billService.getBillInfoById(id);
         String tradeNo = String.valueOf(idWorker.nextId());
         String openId = shopBillDto.getOpenId();
-        Long totalFee = shopBillDto.getAmount().longValue() * 100;
+//        Long totalFee = shopBillDto.getAmount().longValue() * 100;
+        long totalFee = 1;
         Map<String, String> reqData = new HashMap<>();
         reqData.put("desc", "免单提现");// 商品描述
         reqData.put("amount", String.valueOf(totalFee)); // 金额
         reqData.put("openid", openId);
         reqData.put("partner_trade_no", tradeNo); // 商户订单号
         Map<String, String> resMap = mchPay(reqData);
-        if(resMap == null){
+        if (resMap == null) {
             return WebResultUtil.returnErrMsgResult("提现失败");
         }
+        String result_code = resMap.get("result_code");// 业务结果
+        String return_code = resMap.get("return_code");// SUCCESS/FAIL
+        if (!"SUCCESS".equals(return_code)) {
+            System.err.println("微信返回的交易状态不正确（result_code=" + result_code + "）");
+            return WebResultUtil.returnErrMsgResult("提现失败（result_code=" + result_code + "）");
+        }
+        System.out.println("mchPay-res---"+ JSONObject.toJSONString(resMap).toString());
         WeChatPayOrder payOrder = new WeChatPayOrder();
         payOrder.setShopBillId(id);
         payOrder.setTradeNo(tradeNo);
         payOrder.setWechatTradeNo(resMap.get("payment_no"));
         String paymentTime = resMap.get("payment_time");
-        payOrder.setPayTimeEnd(StringUtils.isNotEmpty(paymentTime)? DateUtil.parseYMDHMS(paymentTime) : new Date());
+        payOrder.setPayTimeEnd(StringUtils.isNotEmpty(paymentTime) ? DateUtil.parseYMDHMS(paymentTime) : new Date());
         payOrder.setWechatUserId(shopBillDto.getCustomWeChatUserId());
         payOrder.setOrderType(3);
         payOrder.setTotalFee(totalFee);
         int count = billService.withdrawCash(payOrder);
-        if(count == 0){
+        if (count == 0) {
             return WebResultUtil.returnErrMsgResult("提现失败");
         }
         return WebResultUtil.returnResult();
@@ -131,16 +140,14 @@ public class BillListController extends BaseController {
     @GetMapping(value = "/current/{shopId}")
     public WebResult<List<BillListVO>> selectCurrentList(@ApiParam(name = "shopId", value = "店铺id", required = true) @PathVariable Long shopId) {
         List<ShopBillDto> billList = billService.selectCurrentBillList(shopId);
-        return WebResultUtil.returnResult(ConvertUtils.poList2voList(billList,BillListVO.class));
+        return WebResultUtil.returnResult(ConvertUtils.poList2voList(billList, BillListVO.class));
     }
 
     @ApiOperation(value = "历史免单榜列表", notes = "店铺历史免单榜列表")
     @GetMapping(value = "/free/{shopId}")
     public WebResult selectFreeList(@ApiParam(name = "shopId", value = "店铺id", required = true) @PathVariable Long shopId) {
         List<ShopBillDto> billList = billService.selectFreeBillList(shopId);
-        return WebResultUtil.returnResult(ConvertUtils.poList2voList(billList,BillListVO.class));
+        return WebResultUtil.returnResult(ConvertUtils.poList2voList(billList, BillListVO.class));
     }
-
-
 
 }

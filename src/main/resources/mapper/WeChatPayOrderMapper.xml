@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jiangzuoyoupin.mapper.WeChatPayOrderMapper" >
+  <resultMap id="BaseResultMap" type="com.jiangzuoyoupin.domain.WeChatPayOrder" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="wechat_user_id" property="wechatUserId" jdbcType="BIGINT" />
+    <result column="shop_bill_id" property="shopBillId" jdbcType="BIGINT" />
+    <result column="trade_no" property="tradeNo" jdbcType="VARCHAR" />
+    <result column="wechat_trade_no" property="wechatTradeNo" jdbcType="VARCHAR" />
+    <result column="total_fee" property="totalFee" jdbcType="BIGINT" />
+    <result column="trade_type" property="tradeType" jdbcType="VARCHAR" />
+    <result column="fee_type" property="feeType" jdbcType="VARCHAR" />
+    <result column="pay_time_end" property="payTimeEnd" jdbcType="TIMESTAMP" />
+    <result column="order_type" property="orderType" jdbcType="BIGINT" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, wechat_user_id, shop_bill_id, trade_no, wechat_trade_no, total_fee, trade_type, 
+    fee_type, pay_time_end, order_type, gmt_create, gmt_modified
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_wechat_pay_order
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_wechat_pay_order
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.jiangzuoyoupin.domain.WeChatPayOrder" keyProperty="id" useGeneratedKeys="true">
+    insert into t_wechat_pay_order (wechat_user_id, shop_bill_id,
+      trade_no, wechat_trade_no, total_fee, 
+      trade_type, fee_type, pay_time_end, 
+      order_type, gmt_create, gmt_modified
+      )
+    values (#{id,jdbcType=BIGINT}, #{wechatUserId,jdbcType=BIGINT}, #{shopBillId,jdbcType=BIGINT}, 
+      #{tradeNo,jdbcType=VARCHAR}, #{wechatTradeNo,jdbcType=VARCHAR}, #{totalFee,jdbcType=BIGINT}, 
+      #{tradeType,jdbcType=VARCHAR}, #{feeType,jdbcType=VARCHAR}, #{payTimeEnd,jdbcType=TIMESTAMP}, 
+      #{orderType,jdbcType=BIGINT}, now(),now()
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.jiangzuoyoupin.domain.WeChatPayOrder" >
+    insert into t_wechat_pay_order
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="wechatUserId != null" >
+        wechat_user_id,
+      </if>
+      <if test="shopBillId != null" >
+        shop_bill_id,
+      </if>
+      <if test="tradeNo != null" >
+        trade_no,
+      </if>
+      <if test="wechatTradeNo != null" >
+        wechat_trade_no,
+      </if>
+      <if test="totalFee != null" >
+        total_fee,
+      </if>
+      <if test="tradeType != null" >
+        trade_type,
+      </if>
+      <if test="feeType != null" >
+        fee_type,
+      </if>
+      <if test="payTimeEnd != null" >
+        pay_time_end,
+      </if>
+      <if test="orderType != null" >
+        order_type,
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create,
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="wechatUserId != null" >
+        #{wechatUserId,jdbcType=BIGINT},
+      </if>
+      <if test="shopBillId != null" >
+        #{shopBillId,jdbcType=BIGINT},
+      </if>
+      <if test="tradeNo != null" >
+        #{tradeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="wechatTradeNo != null" >
+        #{wechatTradeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="totalFee != null" >
+        #{totalFee,jdbcType=BIGINT},
+      </if>
+      <if test="tradeType != null" >
+        #{tradeType,jdbcType=VARCHAR},
+      </if>
+      <if test="feeType != null" >
+        #{feeType,jdbcType=VARCHAR},
+      </if>
+      <if test="payTimeEnd != null" >
+        #{payTimeEnd,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orderType != null" >
+        #{orderType,jdbcType=BIGINT},
+      </if>
+      <if test="gmtCreate != null" >
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.jiangzuoyoupin.domain.WeChatPayOrder" >
+    update t_wechat_pay_order
+    <set >
+      <if test="wechatUserId != null" >
+        wechat_user_id = #{wechatUserId,jdbcType=BIGINT},
+      </if>
+      <if test="shopBillId != null" >
+        shop_bill_id = #{shopBillId,jdbcType=BIGINT},
+      </if>
+      <if test="tradeNo != null" >
+        trade_no = #{tradeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="wechatTradeNo != null" >
+        wechat_trade_no = #{wechatTradeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="totalFee != null" >
+        total_fee = #{totalFee,jdbcType=BIGINT},
+      </if>
+      <if test="tradeType != null" >
+        trade_type = #{tradeType,jdbcType=VARCHAR},
+      </if>
+      <if test="feeType != null" >
+        fee_type = #{feeType,jdbcType=VARCHAR},
+      </if>
+      <if test="payTimeEnd != null" >
+        pay_time_end = #{payTimeEnd,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orderType != null" >
+        order_type = #{orderType,jdbcType=BIGINT},
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.jiangzuoyoupin.domain.WeChatPayOrder" >
+    update t_wechat_pay_order
+    set wechat_user_id = #{wechatUserId,jdbcType=BIGINT},
+      shop_bill_id = #{shopBillId,jdbcType=BIGINT},
+      trade_no = #{tradeNo,jdbcType=VARCHAR},
+      wechat_trade_no = #{wechatTradeNo,jdbcType=VARCHAR},
+      total_fee = #{totalFee,jdbcType=BIGINT},
+      trade_type = #{tradeType,jdbcType=VARCHAR},
+      fee_type = #{feeType,jdbcType=VARCHAR},
+      pay_time_end = #{payTimeEnd,jdbcType=TIMESTAMP},
+      order_type = #{orderType,jdbcType=BIGINT},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <update id="updateByTradeNo" parameterType="com.jiangzuoyoupin.domain.WeChatPayOrder" >
+    update t_wechat_pay_order
+    <set >
+      <if test="tradeNo != null" >
+        trade_no = #{tradeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="wechatTradeNo != null" >
+        wechat_trade_no = #{wechatTradeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="totalFee != null" >
+        total_fee = #{totalFee,jdbcType=BIGINT},
+      </if>
+      <if test="tradeType != null" >
+        trade_type = #{tradeType,jdbcType=VARCHAR},
+      </if>
+      <if test="feeType != null" >
+        fee_type = #{feeType,jdbcType=VARCHAR},
+      </if>
+      <if test="payTimeEnd != null" >
+        pay_time_end = #{payTimeEnd,jdbcType=TIMESTAMP},
+      </if>
+      gmt_modified = now()
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="selectWeChatOrderList" parameterType="com.jiangzuoyoupin.domain.WeChatPayOrder" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List" />
+    FROM t_wechat_pay_order
+    WHERE wechat_user_id = #{wechatUserId}
+    AND order_type = #{orderType}
+  </select>
+</mapper>

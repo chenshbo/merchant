@@ -211,13 +211,15 @@
     <result column="custom_mobile_no" property="customMobileNo" jdbcType="VARCHAR" />
     <result column="amount" property="amount" jdbcType="DOUBLE" />
     <result column="bonus_ratio" property="bonusRatio" jdbcType="INTEGER" />
-    <result column="status" property="status" jdbcType="TINYINT" />
-    <result column="sort_status" property="sortStatus" jdbcType="TINYINT" />
+    <result column="status" property="status" jdbcType="BIGINT" />
+    <result column="sort_status" property="sortStatus" jdbcType="BIGINT" />
     <result column="create_wechat_user_id" property="createWeChatUserId" jdbcType="BIGINT" />
     <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
     <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
     <result column="nick_name" property="nickName" jdbcType="VARCHAR" />
     <result column="avatar_url" property="avatarUrl" jdbcType="VARCHAR" />
+    <result column="open_id" property="openId" jdbcType="VARCHAR" />
+    <result column="shopowner_user_id" property="shopOwnerUserId" jdbcType="BIGINT" />
   </resultMap>
   <select id="selectBillList" parameterType="long" resultMap="DtoBaseResultMap">
     SELECT
@@ -276,6 +278,18 @@
     AND t_shop_bill.sort_status != 0
     AND t_shop_bill.custom_wechat_user_id = t_wechat_user.id
     ORDER BY t_shop_bill.gmt_create ASC
+  </select>
+
+  <select id="getBillInfoById" parameterType="long" resultMap="DtoBaseResultMap">
+    SELECT t_shop_bill.id,
+      t_shop_bill.custom_wechat_user_id,
+      t_shop_bill.amount,
+      t_wechat_user.open_id,
+      t_wechat_user.id shopowner_user_id
+    FROM t_shop_bill
+    LEFT JOIN t_shop ON t_shop_bill.shop_id = t_shop.id
+    LEFT JOIN t_wechat_user ON t_shop.wechat_user_id=t_wechat_user.id
+    WHERE t_shop_bill.id = #{id}
   </select>
 
 </mapper>
