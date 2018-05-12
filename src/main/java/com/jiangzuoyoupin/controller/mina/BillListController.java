@@ -1,5 +1,6 @@
 package com.jiangzuoyoupin.controller.mina;
 
+import com.github.wxpay.sdk.WXPay;
 import com.jiangzuoyoupin.annotation.Auth;
 import com.jiangzuoyoupin.base.WebResult;
 import com.jiangzuoyoupin.controller.common.BaseController;
@@ -8,6 +9,8 @@ import com.jiangzuoyoupin.dto.ShopBillDto;
 import com.jiangzuoyoupin.req.ShopIdAndWeChatUserIdReq;
 import com.jiangzuoyoupin.service.BillService;
 import com.jiangzuoyoupin.utils.ConvertUtils;
+import com.jiangzuoyoupin.utils.DateUtil;
+import com.jiangzuoyoupin.utils.IdWorker;
 import com.jiangzuoyoupin.utils.WebResultUtil;
 import com.jiangzuoyoupin.vo.BillListVO;
 import com.jiangzuoyoupin.vo.MyBillListVO;
@@ -16,11 +19,15 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 功能模块: 运营中心controller
@@ -36,6 +43,9 @@ public class BillListController extends BaseController {
 
     @Autowired
     private BillService billService;
+
+    @Autowired
+    private IdWorker idWorker;
 
     /**
      * 功能模块: 保存店铺信息
@@ -88,7 +98,29 @@ public class BillListController extends BaseController {
     @ApiOperation(value = "提现", notes = "提现")
     @GetMapping(value = "/my/withdrawCash/{id}")
     public WebResult myWithdrawCash(@ApiParam(name = "id", value = "账单id", required = true) @PathVariable Long id) {
-        int count = billService.withdrawCash(id);
+        ShopBillDto shopBillDto = billService.getBillInfoById(id);
+        String tradeNo = String.valueOf(idWorker.nextId());
+        String openId = shopBillDto.getOpenId();
+        Long totalFee = shopBillDto.getAmount().longValue() * 100;
+        Map<String, String> reqData = new HashMap<>();
+        reqData.put("desc", "免单提现");// 商品描述
+        reqData.put("amount", String.valueOf(totalFee)); // 金额
+        reqData.put("openid", openId);
+        reqData.put("partner_trade_no", tradeNo); // 商户订单号
+        Map<String, String> resMap = mchPay(reqData);
+        if(resMap == null){
+            return WebResultUtil.returnErrMsgResult("提现失败");
+        }
+        WeChatPayOrder payOrder = new WeChatPayOrder();
+        payOrder.setShopBillId(id);
+        payOrder.setTradeNo(tradeNo);
+        payOrder.setWechatTradeNo(resMap.get("payment_no"));
+        String paymentTime = resMap.get("payment_time");
+        payOrder.setPayTimeEnd(StringUtils.isNotEmpty(paymentTime)? DateUtil.parseYMDHMS(paymentTime) : new Date());
+        payOrder.setWechatUserId(shopBillDto.getCustomWeChatUserId());
+        payOrder.setOrderType(3);
+        payOrder.setTotalFee(totalFee);
+        int count = billService.withdrawCash(payOrder);
         if(count == 0){
             return WebResultUtil.returnErrMsgResult("提现失败");
         }
@@ -108,5 +140,7 @@ public class BillListController extends BaseController {
         List<ShopBillDto> billList = billService.selectFreeBillList(shopId);
         return WebResultUtil.returnResult(ConvertUtils.poList2voList(billList,BillListVO.class));
     }
+
+
 
 }

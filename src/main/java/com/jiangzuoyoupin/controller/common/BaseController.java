@@ -3,6 +3,7 @@ package com.jiangzuoyoupin.controller.common;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.wxpay.sdk.WXPay;
+import com.github.wxpay.sdk.WXPayConstants;
 import com.github.wxpay.sdk.WXPayUtil;
 import com.jiangzuoyoupin.config.WxPayConfig;
 import com.jiangzuoyoupin.domain.WeChatUser;
@@ -68,6 +69,24 @@ public class BaseController {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public Map<String, String> mchPay(Map<String, String> reqData){
+        try {
+            WXPay wxpay = new WXPay(wxPayConfig);
+            reqData.put("mch_appid", wxPayConfig.getAppID());
+            reqData.put("mchid", wxPayConfig.getMchID());
+            reqData.put("nonce_str", WXPayUtil.generateNonceStr());
+            reqData.put("check_name", "NO_CHECK");
+            reqData.put("spbill_create_ip", "47.98.217.177");
+            reqData.put("sign", WXPayUtil.generateSignature(reqData, wxPayConfig.getKey(), WXPayConstants.SignType.MD5));
+            String url = "https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers";
+            String respXml = wxpay.requestWithCert(url, wxpay.fillRequestData(reqData), wxPayConfig.getHttpConnectTimeoutMs(), wxPayConfig.getHttpReadTimeoutMs());
+            return wxpay.processResponseXml(respXml);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

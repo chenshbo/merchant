@@ -66,12 +66,11 @@ public class BillService {
         return shopBillMapper.selectFreeBillList(shopId);
     }
 
-    public int withdrawCash(Long id) {
-        ShopBill shopBill = shopBillMapper.selectByPrimaryKey(id);
+    public int withdrawCash(WeChatPayOrder payOrder) {
         // TODO 1平台支付成功
         // 更新状态
         ShopBill param = new ShopBill();
-        param.setId(id);
+        param.setId(payOrder.getShopBillId());
         param.setStatus(4); // 完成
         param.setSortStatus(2); // 完成
         shopBillMapper.updateByPrimaryKeySelective(param);
@@ -80,25 +79,6 @@ public class BillService {
         WeChatUser update = new WeChatUser();
         update.setId(shopBill.getCustomWeChatUserId());
         update.setBalance(update.getBalance() - shopBill.getAmount());
-        weChatUserMapper.updateByPrimaryKeySelective(update);
-
-        return 1;
-    }
-
-    public int transfer(Long id) {
-        ShopBill shopBill = shopBillMapper.selectByPrimaryKey(id);
-        // TODO 1店铺转账给平台 shopBill.getShopId()
-        // 2更新状态
-        ShopBill param = new ShopBill();
-        param.setId(id);
-        param.setStatus(3); // 提现
-        param.setSortStatus(2); // 完成
-        shopBillMapper.updateByPrimaryKeySelective(param);
-
-        // 增加用户余额
-        WeChatUser update = new WeChatUser();
-        update.setId(shopBill.getCustomWeChatUserId());
-        update.setBalance(update.getBalance() + shopBill.getAmount());
         weChatUserMapper.updateByPrimaryKeySelective(update);
 
         return 1;
