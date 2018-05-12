@@ -1,14 +1,14 @@
 package com.jiangzuoyoupin.controller.mina;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.github.wxpay.sdk.WXPay;
-import com.github.wxpay.sdk.WXPayUtil;
 import com.jiangzuoyoupin.annotation.Auth;
 import com.jiangzuoyoupin.base.WebResult;
 import com.jiangzuoyoupin.config.WxPayConfig;
 import com.jiangzuoyoupin.controller.common.BaseController;
-import com.jiangzuoyoupin.domain.*;
+import com.jiangzuoyoupin.domain.Shop;
+import com.jiangzuoyoupin.domain.ShopBill;
+import com.jiangzuoyoupin.domain.ShopManager;
+import com.jiangzuoyoupin.domain.WeChatUser;
 import com.jiangzuoyoupin.dto.ShopBillDto;
 import com.jiangzuoyoupin.req.*;
 import com.jiangzuoyoupin.service.BillService;
@@ -117,15 +117,25 @@ public class ManagerController extends BaseController {
             if(user == null){
                 return WebResultUtil.returnErrMsgResult("用户不存在");
             }
+            String tradeNo = String.valueOf(idWorker.nextId());
             Map<String, String> data = new HashMap<>();
             data.put("body", "功能开通-申请开通模块权限");// 商品描述
             data.put("total_fee", String.valueOf(billPermissionAmount)); // 金额
             data.put("openid", user.getOpenId());
-            data.put("out_trade_no", String.valueOf(idWorker.nextId())); // 商户订单号
-            data.put("attach", "order_type=1");
+            data.put("out_trade_no", tradeNo); // 商户订单号
+            data.put("attach", "{\"order_type\":1}");
             JSONObject jsonObject = prepay(data);
             if(jsonObject == null){
                 return WebResultUtil.returnErrMsgResult("预下单失败");
+            }
+            WeChatPayOrder payOrder = new WeChatPayOrder();
+            payOrder.setTradeNo(tradeNo);
+            payOrder.setWechatUserId(req.getWeChatUserId());
+            payOrder.setOrderType(1);
+            payOrder.setTotalFee(billPermissionAmount);
+            int count = payService.addPayOrder(payOrder);
+            if(count == 0){
+                return WebResultUtil.returnErrMsgResult("转账失败");
             }
             return WebResultUtil.returnResult(jsonObject);
         }else{

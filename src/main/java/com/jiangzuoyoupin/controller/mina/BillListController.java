@@ -85,15 +85,6 @@ public class BillListController extends BaseController {
         return WebResultUtil.returnResult();
     }
 
-    /**
-     * 功能描述: TODO
-     *
-     * @param
-     * @return: com.jiangzuoyoupin.base.WebResult
-     * @since: 1.0.0
-     * @author: chenshangbo
-     * @date: 2018-04-27 10:51:21
-     */
     @ApiOperation(value = "提现", notes = "提现")
     @GetMapping(value = "/my/withdrawCash/{id}")
     public WebResult myWithdrawCash(@ApiParam(name = "id", value = "账单id", required = true) @PathVariable Long id) {
