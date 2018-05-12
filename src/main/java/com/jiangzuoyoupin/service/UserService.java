@@ -54,17 +54,17 @@ public class UserService {
     @Value("${images.path}")
     private String imagesPath;
 
-    public boolean checkLoginToken(String accessToken){
+    public boolean checkLoginToken(String accessToken) {
 
         LoginToken params = new LoginToken();
         params.setAccessToken(accessToken);
         LoginToken result = loginTokenMapper.getByParams(params);
         // 不存在
-        if(result == null){
+        if (result == null) {
             return false;
         }
         // 已过期
-        if(new Date().after(result.getAccessTokenExpires())){
+        if (new Date().after(result.getAccessTokenExpires())) {
             return false;
         }
         return true;
@@ -88,34 +88,34 @@ public class UserService {
         Long shopId = 0l;
         int isOpenPermissions = 0;
         // openId存在 更新数据
-        if(byParams != null){
-            if(StringUtils.isNotEmpty(byParams.getMobileNo())){
+        if (byParams != null) {
+            if (StringUtils.isNotEmpty(byParams.getMobileNo())) {
                 role = 1;
             }
             wechat.setId(byParams.getId());
 //            result = weChatUserMapper.updateByPrimaryKeySelective(wechat);
             result = 1;
             Shop shop = shopMapper.selectByWeChatUserId(byParams.getId());
-            if(shop != null){
+            if (shop != null) {
                 role = 2;
                 shopId = shop.getId();
                 isOpenPermissions = shop.getIsOpenPermissions();
-            }else {
+            } else {
                 ShopManager manager = shopManagerMapper.selectByWeChatUserId(byParams.getId());
                 if (manager != null) {
                     role = 3;
                     shopId = manager.getShopId();
                     Shop managerShop = shopMapper.selectByPrimaryKey(manager.getShopId());
-                    if(managerShop != null){
+                    if (managerShop != null) {
                         isOpenPermissions = managerShop.getIsOpenPermissions();
                     }
                 }
             }
-        }else{
+        } else {
             result = weChatUserMapper.insert(wechat);
         }
         // 店铺id为空
-        if(shopId.equals(0L)){
+        if (shopId.equals(0L)) {
             List<Shop> shopList = shopMapper.selectAll();
             Integer random = NumberUtil.getRandomByRange(shopList.size());
             shopId = shopList.get(random.intValue()).getId();
@@ -169,7 +169,7 @@ public class UserService {
      */
     public int registerSupplier(Supplier supplier) {
         int count = supplierMapper.insert(supplier);
-        if(count > 0){
+        if (count > 0) {
             updateWeChatUserMobileNo(supplier.getWechatUserId(), supplier.getMobileNo());
         }
         return count;
@@ -185,7 +185,7 @@ public class UserService {
      */
     public Long registerShop(Shop shop) {
         int count = shopMapper.insert(shop);
-        if(count > 0){
+        if (count > 0) {
             updateWeChatUserMobileNo(shop.getWechatUserId(), shop.getMobileNo());
             String qrCode = createQrCode(path, shop.getId());
             Shop update = new Shop();
@@ -197,23 +197,23 @@ public class UserService {
     }
 
     public String createQrCode(String path, Long id) {
-        String getTokenUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="+wxAppId+"&secret="+wxAppSecret;
+        String getTokenUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + wxAppId + "&secret=" + wxAppSecret;
         String tokenInfo = HttpUtil.doGet(getTokenUrl);
         JSONObject tokenJson = JSONObject.parseObject(tokenInfo);
         if (!tokenJson.containsKey("errcode")) {
             String access_token = tokenJson.getString("access_token");// 接口调用凭证
-            String getQrCodeUrl = "https://api.weixin.qq.com/wxa/getwxacode?access_token="+access_token;
-            String params = "{\"path\":\""+path+id+"\",\"width\":430}";
+            String getQrCodeUrl = "https://api.weixin.qq.com/wxa/getwxacode?access_token=" + access_token;
+            String params = "{\"path\":\"" + path + id + "\",\"width\":430}";
             byte[] qrCodeInfo = null;
-            String newFileName = "qr"+id+".png";
+            String newFileName = "qr" + id + ".png";
             try {
-                qrCodeInfo = HttpUtil.getByteByPost(getQrCodeUrl,params);
+                qrCodeInfo = HttpUtil.getByteByPost(getQrCodeUrl, params);
                 try {
                     File targetFile = new File(webUploadPath + imagesPath);
-                    if(!targetFile.exists()){
+                    if (!targetFile.exists()) {
                         targetFile.mkdirs();
                     }
-                    FileOutputStream out = new FileOutputStream(webUploadPath + imagesPath + "/" +newFileName);
+                    FileOutputStream out = new FileOutputStream(webUploadPath + imagesPath + "/" + newFileName);
                     out.write(qrCodeInfo);
                     out.flush();
                     out.close();
@@ -222,8 +222,8 @@ public class UserService {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return imagesPath+"/"+newFileName;
-        }else{
+            return imagesPath + "/" + newFileName;
+        } else {
             return "";
         }
     }
@@ -244,7 +244,7 @@ public class UserService {
         return weChatUserMapper.updateMobileNo(params);
     }
 
-    public WeChatUser getWechatUserByMobileNo(String customMobileNo){
+    public WeChatUser getWechatUserByMobileNo(String customMobileNo) {
         WeChatUser params = new WeChatUser();
         params.setMobileNo(customMobileNo);
         return weChatUserMapper.getByParams(params);

@@ -179,7 +179,7 @@ public class UserController extends BaseController {
 
     @ApiOperation(value = "微信账单列表", notes = "根据用户ID查询收入支出列表")
     @ApiImplicitParam(name = "req", value = "请求对象", dataType = "WeChatOrderQueryReq")
-    @GetMapping(value = "/selectWeChatOrderList")
+    @PostMapping(value = "/selectWeChatOrderList")
     public WebResult<List<WeChatOrderListVO>> selectWeChatOrderList(@RequestBody WeChatOrderQueryReq req) {
         WeChatPayOrder param = new WeChatPayOrder();
         param.setWechatUserId(req.getWeChatUserId());

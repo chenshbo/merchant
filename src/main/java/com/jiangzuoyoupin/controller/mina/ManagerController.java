@@ -74,7 +74,7 @@ public class ManagerController extends BaseController {
     @ApiOperation(value = "店铺信息-保存", notes = "保存店铺信息")
     @ApiImplicitParam(name = "req", value = "店铺保存对象", dataType = "ShopInfoSaveReq")
     @PostMapping(value = "/saveShopInfo")
-    public WebResult saveShopInfo(@RequestBody ShopInfoSaveReq req,HttpServletRequest request) {
+    public WebResult saveShopInfo(@RequestBody ShopInfoSaveReq req, HttpServletRequest request) {
         WeChatUser weChatUser = getWeChatUserByToken(request);
         if (weChatUser == null) {
             return WebResultUtil.returnErrMsgResult("登录信息失效，请重新登录");
@@ -96,10 +96,10 @@ public class ManagerController extends BaseController {
         if (shop == null) {
             WebResultUtil.returnErrMsgResult("该店铺不存在");
         }
-        if(StringUtils.isNotEmpty(shop.getBusinessLicenseImage())){
+        if (StringUtils.isNotEmpty(shop.getBusinessLicenseImage())) {
             shop.setBusinessLicenseImage(rootUrl + shop.getBusinessLicenseImage());
         }
-        if(StringUtils.isNotEmpty(shop.getQrCodeImg())){
+        if (StringUtils.isNotEmpty(shop.getQrCodeImg())) {
             shop.setQrCodeImg(rootUrl + shop.getQrCodeImg());
         }
         return WebResultUtil.returnResult(shop);
@@ -109,9 +109,9 @@ public class ManagerController extends BaseController {
     @ApiImplicitParam(name = "req", value = "申请开通功能请求对象", dataType = "ModuleApplyReq")
     @PostMapping(value = "/applyOpenPermissions")
     public WebResult applyOpenPermissions(@RequestBody ModuleApplyReq req) {
-        if(req.getApplyType().intValue() == 1){
+        if (req.getApplyType().intValue() == 1) {
             WeChatUser user = userService.getUserInfoById(req.getWeChatUserId());
-            if(user == null){
+            if (user == null) {
                 return WebResultUtil.returnErrMsgResult("用户不存在");
             }
             String tradeNo = String.valueOf(idWorker.nextId());
@@ -122,7 +122,7 @@ public class ManagerController extends BaseController {
             data.put("out_trade_no", tradeNo); // 商户订单号
             data.put("attach", "{\"order_type\":1}");
             JSONObject jsonObject = prepay(data);
-            if(jsonObject == null){
+            if (jsonObject == null) {
                 return WebResultUtil.returnErrMsgResult("预下单失败");
             }
             WeChatPayOrder payOrder = new WeChatPayOrder();
@@ -131,17 +131,17 @@ public class ManagerController extends BaseController {
             payOrder.setOrderType(1);
             payOrder.setTotalFee(billPermissionAmount);
             int count = payService.addPayOrder(payOrder);
-            if(count == 0){
+            if (count == 0) {
                 return WebResultUtil.returnErrMsgResult("转账失败");
             }
             return WebResultUtil.returnResult(jsonObject);
-        }else{
-            if(!managerService.checkInvitationCode(req.getInvitationCode())){
+        } else {
+            if (!managerService.checkInvitationCode(req.getInvitationCode())) {
                 return WebResultUtil.returnErrMsgResult("邀请码已失效");
             }
         }
-        int count = managerService.applyOpenPermissions(req.getShopId(),req.getInvitationCode());
-        if(count == 0){
+        int count = managerService.applyOpenPermissions(req.getShopId(), req.getInvitationCode());
+        if (count == 0) {
             return WebResultUtil.returnErrMsgResult("开通失败");
         }
         return WebResultUtil.returnResult();
@@ -165,16 +165,16 @@ public class ManagerController extends BaseController {
             return WebResultUtil.returnErrMsgResult("登录信息失效，请重新登录");
         }
         WeChatUser fans = userService.getWechatUserByMobileNo(req.getCustomMobileNo());
-        if(fans == null){
+        if (fans == null) {
             return WebResultUtil.returnErrMsgResult("该客户还未注册，请注册再试");
         }
         ShopBill shopBill = new ShopBill();
-        BeanUtils.copyProperties(req,shopBill);
+        BeanUtils.copyProperties(req, shopBill);
         shopBill.setCreateWeChatUserId(weChatUser.getId());
         shopBill.setCustomWeChatUserId(fans.getId());
 
         int count = managerService.saveBill(shopBill);
-        if(count == 0){
+        if (count == 0) {
             return WebResultUtil.returnErrMsgResult("保存幸福账单失败");
         }
         return WebResultUtil.returnResult();
@@ -184,21 +184,21 @@ public class ManagerController extends BaseController {
     @GetMapping(value = "/getSaleTotalBill/{shopId}")
     public WebResult<ShopBillTotalVO> getSaleTotalAmount(@ApiParam(name = "shopId", value = "店铺id", required = true) @PathVariable Long shopId) {
         ShopBillDto result = managerService.getSaleTotalAmount(shopId);
-        return WebResultUtil.returnResult(ConvertUtils.convert2vo(result,ShopBillTotalVO.class));
+        return WebResultUtil.returnResult(ConvertUtils.convert2vo(result, ShopBillTotalVO.class));
     }
 
     @ApiOperation(value = "幸福账单-查询账单列表", notes = "根据shopId查询总销售额和奖金池信息")
     @GetMapping(value = "/selectBillList/{shopId}")
     public WebResult<List<ShopBillListVO>> selectBillList(@ApiParam(name = "shopId", value = "店铺id", required = true) @PathVariable Long shopId) {
         List<ShopBillDto> list = managerService.selectBillList(shopId);
-        return WebResultUtil.returnResult(ConvertUtils.poList2voList(list,ShopBillListVO.class));
+        return WebResultUtil.returnResult(ConvertUtils.poList2voList(list, ShopBillListVO.class));
     }
 
     @ApiOperation(value = "幸福账单-审核账单", notes = "审核账单")
     @GetMapping(value = "/checkBill/{id}")
     public WebResult checkBill(@ApiParam(name = "id", value = "账单id", required = true) @PathVariable Long id) {
         int count = managerService.checkBill(id);
-        if(count == 0){
+        if (count == 0) {
             return WebResultUtil.returnErrMsgResult("审核账单失败");
         }
         return WebResultUtil.returnResult();
@@ -216,9 +216,9 @@ public class ManagerController extends BaseController {
         data.put("total_fee", String.valueOf(totalFee)); // 金额
         data.put("openid", openId);
         data.put("out_trade_no", tradeNo); // 商户订单号
-        data.put("attach", "{\"orderType\":2\"shopBillId\":" + shopBillDto.getId() + ",\"customWeChatUserId\":"+shopBillDto.getCustomWeChatUserId()+"}");
+        data.put("attach", "{\"orderType\":2\"shopBillId\":" + shopBillDto.getId() + ",\"customWeChatUserId\":" + shopBillDto.getCustomWeChatUserId() + "}");
         JSONObject jsonObject = prepay(data);
-        if(jsonObject == null){
+        if (jsonObject == null) {
             return WebResultUtil.returnErrMsgResult("预下单失败");
         }
         WeChatPayOrder payOrder = new WeChatPayOrder();
@@ -228,7 +228,7 @@ public class ManagerController extends BaseController {
         payOrder.setShopBillId(shopBillDto.getId());
         payOrder.setTotalFee(totalFee);
         int count = payService.addPayOrder(payOrder);
-        if(count == 0){
+        if (count == 0) {
             return WebResultUtil.returnErrMsgResult("转账失败");
         }
         return WebResultUtil.returnResult(jsonObject);
@@ -239,18 +239,18 @@ public class ManagerController extends BaseController {
     @PostMapping(value = "/addManager")
     public WebResult addManager(@RequestBody ManagerAddReq req) {
         WeChatUser fans = userService.getWechatUserByMobileNo(req.getMobileNo());
-        if(fans == null){
+        if (fans == null) {
             return WebResultUtil.returnErrMsgResult("该客户还未注册，请注册再试");
         }
         // 判断是否被注册
-        if(managerService.checkManagerExist(fans.getId())){
+        if (managerService.checkManagerExist(fans.getId())) {
             return WebResultUtil.returnErrMsgResult("该客户已注册店主或者已被其他店主注册");
         }
         ShopManager manager = new ShopManager();
         manager.setShopId(req.getShopId());
         manager.setWechatUserId(fans.getId());
         int count = managerService.addManager(manager);
-        if(count == 0){
+        if (count == 0) {
             return WebResultUtil.returnErrMsgResult("邀请匠探失败");
         }
         return WebResultUtil.returnResult();
@@ -260,7 +260,7 @@ public class ManagerController extends BaseController {
     @GetMapping(value = "/selectManagerList/{shopId}")
     public WebResult<ShopManagerListVO> selectManagerList(@ApiParam(name = "shopId", value = "店铺id", required = true) @PathVariable Long shopId) {
         List<ShopManager> managerList = managerService.selectManagerList(shopId);
-        return WebResultUtil.returnResult(ConvertUtils.poList2voList(managerList,ShopManagerListVO.class));
+        return WebResultUtil.returnResult(ConvertUtils.poList2voList(managerList, ShopManagerListVO.class));
     }
 
     @ApiOperation(value = "匠探团队-删除", notes = "删除店铺匠探")
@@ -268,7 +268,7 @@ public class ManagerController extends BaseController {
     @PostMapping(value = "/delManager")
     public WebResult delManager(@RequestBody IdReq req) {
         int count = managerService.delManager(req.getId());
-        if(count == 0){
+        if (count == 0) {
             return WebResultUtil.returnErrMsgResult("删除匠探失败");
         }
         return WebResultUtil.returnResult();
