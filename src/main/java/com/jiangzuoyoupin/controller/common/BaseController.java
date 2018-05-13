@@ -69,7 +69,7 @@ public class BaseController {
         }
     }
 
-    public Map<String, String> mchPay(Map<String, String> reqData){
+    public Map<String, String> mchPay2Wallet(Map<String, String> reqData){
         try {
             WXPay wxpay = new WXPay(wxPayConfig);
             reqData.put("mch_appid", wxPayConfig.getAppID());
@@ -78,10 +78,26 @@ public class BaseController {
             reqData.put("check_name", "NO_CHECK");
             reqData.put("spbill_create_ip", InetAddress.getLocalHost().getHostAddress());
             reqData.put("sign", WXPayUtil.generateSignature(reqData, wxPayConfig.getKey(), WXPayConstants.SignType.MD5));
-            System.out.println("mchPay---"+JSONObject.toJSONString(reqData).toString());
+            System.out.println("mchPay2Wallet---"+JSONObject.toJSONString(reqData).toString());
             String url = "https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers";
             String respXml = wxpay.requestWithCert(url, reqData, wxPayConfig.getHttpConnectTimeoutMs(), wxPayConfig.getHttpReadTimeoutMs());
             return wxpay.processResponseXml(respXml);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public Map<String, String> mchPay2Card(Map<String, String> reqData){
+        try {
+            WXPay wxpay = new WXPay(wxPayConfig);
+            reqData.put("mch_id", wxPayConfig.getMchID());
+            reqData.put("nonce_str", WXPayUtil.generateNonceStr());
+            reqData.put("sign", WXPayUtil.generateSignature(reqData, wxPayConfig.getKey(), WXPayConstants.SignType.MD5));
+            System.out.println("mchPay2Card---"+JSONObject.toJSONString(reqData).toString());
+            String url = "https://api.mch.weixin.qq.com/mmpaysptrans/pay_bank";
+            String respXml = wxpay.requestWithCert(url, reqData, wxPayConfig.getHttpConnectTimeoutMs(), wxPayConfig.getHttpReadTimeoutMs());
+            return WXPayUtil.xmlToMap(respXml);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -13,6 +13,7 @@ import com.jiangzuoyoupin.service.ManagerService;
 import com.jiangzuoyoupin.service.PayService;
 import com.jiangzuoyoupin.utils.ConvertUtils;
 import com.jiangzuoyoupin.utils.IdWorker;
+import com.jiangzuoyoupin.utils.NumberUtil;
 import com.jiangzuoyoupin.utils.WebResultUtil;
 import com.jiangzuoyoupin.vo.ShopBillListVO;
 import com.jiangzuoyoupin.vo.ShopBillTotalVO;
@@ -120,7 +121,7 @@ public class ManagerController extends BaseController {
             data.put("total_fee", String.valueOf(billPermissionAmount)); // 金额
             data.put("openid", user.getOpenId());
             data.put("out_trade_no", tradeNo); // 商户订单号
-            data.put("attach", "{\"order_type\":1}");
+            data.put("attach", "{\"orderType\":1}");
             JSONObject jsonObject = prepay(data);
             if (jsonObject == null) {
                 return WebResultUtil.returnErrMsgResult("预下单失败");
@@ -210,13 +211,13 @@ public class ManagerController extends BaseController {
         ShopBillDto shopBillDto = billService.getBillInfoById(id);
         String tradeNo = String.valueOf(idWorker.nextId());
         String openId = shopBillDto.getOpenId();
-        Long totalFee = shopBillDto.getAmount().longValue() * 100;
+        Long totalFee = NumberUtil.getFenAmount(shopBillDto.getAmount());
         Map<String, String> data = new HashMap<>();
         data.put("body", "幸福账单-转账");// 商品描述
         data.put("total_fee", String.valueOf(totalFee)); // 金额
         data.put("openid", openId);
         data.put("out_trade_no", tradeNo); // 商户订单号
-        data.put("attach", "{\"orderType\":2\"shopBillId\":" + shopBillDto.getId() + ",\"customWeChatUserId\":" + shopBillDto.getCustomWeChatUserId() + "}");
+        data.put("attach", "{\"orderType\":2,\"shopBillId\":" + shopBillDto.getId() + ",\"customWeChatUserId\":" + shopBillDto.getCustomWeChatUserId() + "}");
         JSONObject jsonObject = prepay(data);
         if (jsonObject == null) {
             return WebResultUtil.returnErrMsgResult("预下单失败");

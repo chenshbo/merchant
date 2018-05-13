@@ -20,6 +20,9 @@ public class WeChatOrderListVO implements Serializable {
     @ApiModelProperty(value = "时间")
     private String payTimeEnd;
 
+    @ApiModelProperty(value = "2转账3提现")
+    private Integer orderType;
+
     public Double getTotalFee() {
         return totalFee;
     }
@@ -34,5 +37,13 @@ public class WeChatOrderListVO implements Serializable {
 
     public void setPayTimeEnd(String payTimeEnd) {
         this.payTimeEnd = payTimeEnd;
+    }
+
+    public Integer getOrderType() {
+        return orderType;
+    }
+
+    public void setOrderType(Integer orderType) {
+        this.orderType = orderType;
     }
 }

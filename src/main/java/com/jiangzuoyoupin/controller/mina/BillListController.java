@@ -8,11 +8,9 @@ import com.jiangzuoyoupin.domain.WeChatPayOrder;
 import com.jiangzuoyoupin.domain.WeChatUser;
 import com.jiangzuoyoupin.dto.ShopBillDto;
 import com.jiangzuoyoupin.req.ShopIdAndWeChatUserIdReq;
+import com.jiangzuoyoupin.req.WithdrawCash2CardReq;
 import com.jiangzuoyoupin.service.BillService;
-import com.jiangzuoyoupin.utils.ConvertUtils;
-import com.jiangzuoyoupin.utils.DateUtil;
-import com.jiangzuoyoupin.utils.IdWorker;
-import com.jiangzuoyoupin.utils.WebResultUtil;
+import com.jiangzuoyoupin.utils.*;
 import com.jiangzuoyoupin.vo.BillListVO;
 import com.jiangzuoyoupin.vo.MyBillListVO;
 import com.jiangzuoyoupin.vo.MyScheduleVO;
@@ -96,9 +94,9 @@ public class BillListController extends BaseController {
         return WebResultUtil.returnResult();
     }
 
-    @ApiOperation(value = "提现", notes = "提现")
-    @GetMapping(value = "/my/withdrawCash/{id}")
-    public WebResult myWithdrawCash(@ApiParam(name = "id", value = "账单id", required = true) @PathVariable Long id) {
+    @ApiOperation(value = "提现到微信零钱包", notes = "提现到微信零钱包")
+    @GetMapping(value = "/my/withdrawCash2Wallet/{id}")
+    public WebResult myWithdrawCash2Wallet(@ApiParam(name = "id", value = "账单id", required = true) @PathVariable Long id) {
         ShopBillDto shopBillDto = billService.getBillInfoById(id);
         String tradeNo = String.valueOf(idWorker.nextId());
         String openId = shopBillDto.getOpenId();
@@ -109,7 +107,7 @@ public class BillListController extends BaseController {
         reqData.put("amount", String.valueOf(totalFee)); // 金额
         reqData.put("openid", openId);
         reqData.put("partner_trade_no", tradeNo); // 商户订单号
-        Map<String, String> resMap = mchPay(reqData);
+        Map<String, String> resMap = mchPay2Wallet(reqData);
         if (resMap == null) {
             return WebResultUtil.returnErrMsgResult("提现失败");
         }
@@ -132,6 +130,50 @@ public class BillListController extends BaseController {
         int count = billService.withdrawCash(payOrder);
         if (count == 0) {
             return WebResultUtil.returnErrMsgResult("提现失败");
+        }
+        return WebResultUtil.returnResult();
+    }
+
+    @ApiOperation(value = "提现到银行卡", notes = "提现到银行卡")
+    @ApiImplicitParam(name = "req", value = "请求对象", dataType = "WithdrawCash2CardReq")
+    @PostMapping(value = "/my/withdrawCash2Card")
+    public WebResult myWithdrawCash2Card(@RequestBody WithdrawCash2CardReq req) {
+        ShopBillDto shopBillDto = billService.getBillInfoById(req.getShopBillId());
+        String tradeNo = String.valueOf(idWorker.nextId());
+//        Long totalFee = shopBillDto.getAmount().longValue() * 98;
+        long totalFee = 1;
+        Map<String, String> reqData = new HashMap<>();
+        reqData.put("desc", "免单提现");// 付款说明
+        reqData.put("amount", String.valueOf(totalFee)); // 付款金额
+        reqData.put("partner_trade_no", tradeNo); // 商户订单号
+        reqData.put("enc_bank_no", RSAUtils.encrypt(req.getEncBankNo()));
+        reqData.put("enc_true_name", RSAUtils.encrypt(req.getEncTrueName()));
+        reqData.put("bank_code", req.getBankCode());
+        Map<String, String> resMap = mchPay2Card(reqData);
+        if (resMap == null) {
+            return WebResultUtil.returnErrMsgResult("提现失败，微信支付发生错误");
+        }
+        String result_code = resMap.get("result_code");// 业务结果
+        String return_code = resMap.get("return_code");// SUCCESS/FAIL
+        if (!"SUCCESS".equals(return_code)) {
+            System.err.println("微信返回的交易状态不正确（result_code=" + result_code + "）");
+            return WebResultUtil.returnErrMsgResult("提现失败（result_code=" + result_code + "）");
+        }
+        System.out.println("mchPay-res---"+ JSONObject.toJSONString(resMap).toString());
+        WeChatPayOrder payOrder = new WeChatPayOrder();
+        payOrder.setShopBillId(req.getShopBillId());
+        payOrder.setTradeNo(tradeNo);
+        payOrder.setWechatTradeNo(resMap.get("payment_no"));
+        String paymentTime = resMap.get("payment_time");
+        int cmmsAmt = Integer.parseInt(resMap.get("cmms_amt"));
+        System.out.println("手续费金额:"+cmmsAmt);
+        payOrder.setPayTimeEnd(StringUtils.isNotEmpty(paymentTime) ? DateUtil.parseYMDHMS(paymentTime) : new Date());
+        payOrder.setWechatUserId(shopBillDto.getCustomWeChatUserId());
+        payOrder.setOrderType(3);
+        payOrder.setTotalFee(totalFee);
+        int count = billService.withdrawCash(payOrder);
+        if (count == 0) {
+            return WebResultUtil.returnErrMsgResult("提现失败，更新账户余额错误");
         }
         return WebResultUtil.returnResult();
     }

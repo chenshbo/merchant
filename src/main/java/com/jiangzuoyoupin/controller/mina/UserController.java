@@ -187,8 +187,9 @@ public class UserController extends BaseController {
         List<WeChatPayOrder> orderList = payService.selectWeChatOrderList(param);
         List<WeChatOrderListVO> voList = orderList.stream().map(res -> {
             WeChatOrderListVO vo = new WeChatOrderListVO();
-            vo.setTotalFee(NumberUtil.getDoubleAmount(res.getTotalFee().toString()));
+            vo.setTotalFee(NumberUtil.getYuanAmount(res.getTotalFee().toString()));
             vo.setPayTimeEnd(DateUtil.formatYMD(res.getPayTimeEnd()));
+            vo.setOrderType(res.getOrderType());
             return vo;
         }).collect(Collectors.toList());
         return WebResultUtil.returnResult(voList);

@@ -32,13 +32,11 @@
   <insert id="insert" parameterType="com.jiangzuoyoupin.domain.WeChatPayOrder" keyProperty="id" useGeneratedKeys="true">
     insert into t_wechat_pay_order (wechat_user_id, shop_bill_id,
       trade_no, wechat_trade_no, total_fee, 
-      trade_type, fee_type, pay_time_end, 
-      order_type, gmt_create, gmt_modified
+      pay_time_end,order_type, gmt_create, gmt_modified
       )
-    values (#{id,jdbcType=BIGINT}, #{wechatUserId,jdbcType=BIGINT}, #{shopBillId,jdbcType=BIGINT}, 
+    values (#{wechatUserId,jdbcType=BIGINT}, #{shopBillId,jdbcType=BIGINT},
       #{tradeNo,jdbcType=VARCHAR}, #{wechatTradeNo,jdbcType=VARCHAR}, #{totalFee,jdbcType=BIGINT}, 
-      #{tradeType,jdbcType=VARCHAR}, #{feeType,jdbcType=VARCHAR}, #{payTimeEnd,jdbcType=TIMESTAMP}, 
-      #{orderType,jdbcType=BIGINT}, now(),now()
+       #{payTimeEnd,jdbcType=TIMESTAMP}, #{orderType,jdbcType=BIGINT}, now(),now()
       )
   </insert>
   <insert id="insertSelective" parameterType="com.jiangzuoyoupin.domain.WeChatPayOrder" >
@@ -198,7 +196,7 @@
       </if>
       gmt_modified = now()
     </set>
-    where id = #{id,jdbcType=BIGINT}
+    where trade_no = #{tradeNo,jdbcType=VARCHAR}
   </update>
 
   <select id="selectWeChatOrderList" parameterType="com.jiangzuoyoupin.domain.WeChatPayOrder" resultMap="BaseResultMap">

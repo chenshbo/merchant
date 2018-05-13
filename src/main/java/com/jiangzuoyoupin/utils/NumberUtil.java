@@ -94,8 +94,12 @@ public class NumberUtil {
 
     }
 
-    public static Double getDoubleAmount(String totalFee){
+    public static Double getYuanAmount(String totalFee){
         return Double.parseDouble(BigDecimal.valueOf(Long.valueOf(totalFee)).divide(new BigDecimal(100)).toString());
+    }
+
+    public static Long getFenAmount(Double totalFee){
+        return (long)(totalFee*100);
     }
 
 
@@ -105,8 +109,10 @@ public class NumberUtil {
             System.out.println(getVerifyCode());
         }
 
-        System.out.printf(",A,B".substring(1,",A,B".length()));
+//        System.out.printf(",A,B".substring(1,",A,B".length()));
 //        System.out.println(versionCompare("1.1.24", "1.1.24.1"));
+
+        System.out.println(getFenAmount(0.12));
     }
 
 

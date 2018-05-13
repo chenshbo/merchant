@@ -74,16 +74,16 @@ public class BillService {
         param.setId(payOrder.getShopBillId());
         param.setStatus(4); // 完成
         param.setSortStatus(2); // 完成
-        shopBillMapper.updateByPrimaryKeySelective(param);
-
-        ShopBill shopBill = shopBillMapper.selectByPrimaryKey(payOrder.getShopBillId());
-        // 扣除用户余额
-        WeChatUser update = new WeChatUser();
-        update.setId(payOrder.getWechatUserId());
-        update.setBalance(-shopBill.getAmount());
-        weChatUserMapper.updateByPrimaryKeySelective(update);
-
-        return 1;
+        int count = shopBillMapper.updateByPrimaryKeySelective(param);
+        if(count > 0) {
+            ShopBill shopBill = shopBillMapper.selectByPrimaryKey(payOrder.getShopBillId());
+            // 扣除用户余额
+            WeChatUser update = new WeChatUser();
+            update.setId(payOrder.getWechatUserId());
+            update.setBalance(-shopBill.getAmount());
+            weChatUserMapper.updateByPrimaryKeySelective(update);
+        }
+        return count;
     }
 
     public ShopBillDto getBillInfoById(Long id) {

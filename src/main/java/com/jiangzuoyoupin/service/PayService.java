@@ -49,6 +49,7 @@ public class PayService {
         int count = payOrderMapper.updateByTradeNo(update);
         String attach = resMap.get("attach");//商家数据包
         JSONObject jsonObject = JSONObject.parseObject(attach);
+        System.out.println("attach:"+jsonObject.toJSONString());
         // 功能开通
         if(count > 0 ) {
             if (jsonObject.get("orderType").equals(1)) {
@@ -65,15 +66,15 @@ public class PayService {
                 }
             }else if(jsonObject.get("orderType").equals(2)){
                 ShopBill param = new ShopBill();
-                param.setId((Long)jsonObject.get("shopBillId"));
+                param.setId(((Integer)jsonObject.get("shopBillId")).longValue());
                 param.setStatus(3); // 提现
-                param.setSortStatus(2); // 完成
+                param.setSortStatus(1); // 完成
                 shopBillMapper.updateByPrimaryKeySelective(param);
 
                 // 增加用户余额
                 WeChatUser userUpdate = new WeChatUser();
-                userUpdate.setId((Long)jsonObject.get("customWeChatUserId"));
-                userUpdate.setBalance(NumberUtil.getDoubleAmount(resMap.get("total_fee")));
+                userUpdate.setId(((Integer)jsonObject.get("customWeChatUserId")).longValue());
+                userUpdate.setBalance(NumberUtil.getYuanAmount(resMap.get("total_fee")));
                 weChatUserMapper.updateBalance(userUpdate);
             }
         }

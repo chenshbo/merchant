@@ -3,6 +3,7 @@ package com.jiangzuoyoupin.controller.common;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.wxpay.sdk.WXPay;
+import com.github.wxpay.sdk.WXPayConstants;
 import com.github.wxpay.sdk.WXPayUtil;
 import com.jiangzuoyoupin.annotation.Auth;
 import com.jiangzuoyoupin.base.WebResult;
@@ -193,7 +194,7 @@ public class WxController {
         }
         WXPay wxpay = new WXPay(wxPayConfig);
         // 验证签名
-        if (wxpay.isPayResultNotifySignatureValid(map)) {
+        if (!wxpay.isPayResultNotifySignatureValid(map)) {
             System.err.println("签名不一致！");
             return setXml("FAIL", "签名不一致！");
         }else {
@@ -228,6 +229,23 @@ public class WxController {
         parameters.put("return_msg", return_msg);
         return "<xml><return_code><![CDATA[" + return_code + "]]>" +
                 "</return_code><return_msg><![CDATA[" + return_msg + "]]></return_msg></xml>";
+    }
+
+
+
+    @GetMapping(value = "/getPublicKey")
+    @ResponseBody
+    public void getPublicKey(HttpServletRequest request) throws Exception {
+        WXPay pay = new WXPay(wxPayConfig);
+        Map<String, String> reqData = new HashMap<>();
+        reqData.put("mch_id", wxPayConfig.getMchID());
+        reqData.put("nonce_str", WXPayUtil.generateNonceStr());
+        reqData.put("sign_type", "MD5");
+        reqData.put("sign", WXPayUtil.generateSignature(reqData, wxPayConfig.getKey(), WXPayConstants.SignType.MD5));
+        String response = pay.requestWithCert("https://fraud.mch.weixin.qq.com/risk/getpublickey",reqData,wxPayConfig.getHttpConnectTimeoutMs(), wxPayConfig.getHttpReadTimeoutMs());
+        System.out.println(response);
+        Map<String, String> resMap = WXPayUtil.xmlToMap(response);
+        System.out.println(resMap);
     }
 
 }

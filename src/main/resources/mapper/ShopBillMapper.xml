@@ -186,7 +186,7 @@
   <select id="getSaleTotalAmount" parameterType="long" resultType="com.jiangzuoyoupin.dto.ShopBillDto">
     SELECT a.totalAmount, (a.total_reward - b.full_amount) totalReward FROM
     (SELECT IFNULL(SUM(amount),0.00) totalAmount,IFNULL(SUM(reward),0.00) total_reward FROM t_shop_bill WHERE shop_id = #{shopId}) a,
-    (SELECT IFNULL(SUM(amount),0.00) full_amount FROM t_shop_bill WHERE shop_id = #{shopId} AND sort_status = 3) b
+    (SELECT IFNULL(SUM(amount),0.00) full_amount FROM t_shop_bill WHERE shop_id = #{shopId} AND sort_status in (1,2)) b
   </select>
 
   <!-- 更新最早记录的排序状态为达标 -->
@@ -195,9 +195,9 @@
     WHERE shop_id = #{shopId}
     <![CDATA[
     AND amount <= (
-      SELECT a.total_reward - b.full_amount FROM
+      SELECT a.total_reward - b.full_reward_amount FROM
       (SELECT IFNULL(SUM(reward),0.00) total_reward FROM t_shop_bill WHERE shop_id = #{shopId}) a,
-      (SELECT IFNULL(SUM(amount),0.00) full_amount FROM t_shop_bill WHERE shop_id = #{shopId} AND sort_status = 1 ) b
+      (SELECT IFNULL(SUM(amount),0.00) full_reward_amount FROM t_shop_bill WHERE shop_id = #{shopId} AND sort_status in (1,2) ) b
     )
     ]]>
     ORDER BY gmt_create ASC LIMIT 1
