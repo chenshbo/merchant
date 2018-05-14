@@ -13,7 +13,7 @@
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, open_id, mobile_no, nick_name, avatar_url, gender, balance, gmt_create, gmt_modified
+    id, open_id, mobile_no, nick_name, avatar_url, gender, ifnull(balance,0.00), gmt_create, gmt_modified
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 

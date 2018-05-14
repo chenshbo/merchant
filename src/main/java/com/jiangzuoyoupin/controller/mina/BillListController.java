@@ -13,6 +13,7 @@ import com.jiangzuoyoupin.service.BillService;
 import com.jiangzuoyoupin.utils.*;
 import com.jiangzuoyoupin.vo.BillListVO;
 import com.jiangzuoyoupin.vo.MyBillListVO;
+import com.jiangzuoyoupin.vo.MyBillTotalVO;
 import com.jiangzuoyoupin.vo.MyScheduleVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -94,6 +95,7 @@ public class BillListController extends BaseController {
         return WebResultUtil.returnResult();
     }
 
+    @Deprecated
     @ApiOperation(value = "提现到微信零钱包", notes = "提现到微信零钱包")
     @GetMapping(value = "/my/withdrawCash2Wallet/{id}")
     public WebResult myWithdrawCash2Wallet(@ApiParam(name = "id", value = "账单id", required = true) @PathVariable Long id) {
@@ -104,7 +106,7 @@ public class BillListController extends BaseController {
         long totalFee = 1;
         Map<String, String> reqData = new HashMap<>();
         reqData.put("desc", "免单提现");// 商品描述
-        reqData.put("amount", String.valueOf(totalFee)); // 金额
+        reqData.put("amount", String.valueOf(totalFee*0.98)); // 金额
         reqData.put("openid", openId);
         reqData.put("partner_trade_no", tradeNo); // 商户订单号
         Map<String, String> resMap = mchPay2Wallet(reqData);
@@ -141,10 +143,9 @@ public class BillListController extends BaseController {
         ShopBillDto shopBillDto = billService.getBillInfoById(req.getShopBillId());
         String tradeNo = String.valueOf(idWorker.nextId());
 //        Long totalFee = shopBillDto.getAmount().longValue() * 98;
-        long totalFee = 1;
         Map<String, String> reqData = new HashMap<>();
         reqData.put("desc", "免单提现");// 付款说明
-        reqData.put("amount", String.valueOf(totalFee)); // 付款金额
+        reqData.put("amount", String.valueOf(NumberUtil.getWeChatFenAmount(1.00))); // 付款金额
         reqData.put("partner_trade_no", tradeNo); // 商户订单号
         reqData.put("enc_bank_no", RSAUtils.encrypt(req.getEncBankNo()));
         reqData.put("enc_true_name", RSAUtils.encrypt(req.getEncTrueName()));
@@ -170,7 +171,7 @@ public class BillListController extends BaseController {
         payOrder.setPayTimeEnd(StringUtils.isNotEmpty(paymentTime) ? DateUtil.parseYMDHMS(paymentTime) : new Date());
         payOrder.setWechatUserId(shopBillDto.getCustomWeChatUserId());
         payOrder.setOrderType(3);
-        payOrder.setTotalFee(totalFee);
+        payOrder.setTotalFee(NumberUtil.getFenAmount(shopBillDto.getAmount()));
         int count = billService.withdrawCash(payOrder);
         if (count == 0) {
             return WebResultUtil.returnErrMsgResult("提现失败，更新账户余额错误");
@@ -190,6 +191,22 @@ public class BillListController extends BaseController {
     public WebResult selectFreeList(@ApiParam(name = "shopId", value = "店铺id", required = true) @PathVariable Long shopId) {
         List<ShopBillDto> billList = billService.selectFreeBillList(shopId);
         return WebResultUtil.returnResult(ConvertUtils.poList2voList(billList, BillListVO.class));
+    }
+
+    @ApiOperation(value = "我的消费总额", notes = "查询我的消费总额")
+    @ApiImplicitParam(name = "req", value = "请求对象", dataType = "ShopIdAndWeChatUserIdReq")
+    @PostMapping(value = "/my/totalAmount")
+    public WebResult<MyBillTotalVO> myTotalAmount(@RequestBody ShopIdAndWeChatUserIdReq req) {
+        MyBillTotalVO vo = new MyBillTotalVO();
+        vo.setTotalAmount(billService.getWaitingTotalAmount(req.getShopId(), req.getWeChatUserId()));
+        vo.setFreeCount(billService.getWaitingCount(req.getShopId(), req.getWeChatUserId()));
+        return WebResultUtil.returnResult(vo);
+    }
+
+    public static void main(String[] args) {
+        Double a = 20.10;
+        Long fenAmount = NumberUtil.getWeChatFenAmount(a.doubleValue());
+        System.out.println(fenAmount);
     }
 
 }

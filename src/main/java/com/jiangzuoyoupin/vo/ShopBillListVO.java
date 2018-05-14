@@ -25,6 +25,10 @@ public class ShopBillListVO implements Serializable{
     private String customName;
     @ApiModelProperty(value = "消费金额")
     private Double amount;
+    @ApiModelProperty(value = "奖金池比例")
+    private Integer bonusRatio;
+    @ApiModelProperty(value = "奖金池金额")
+    private Double reward;
     @ApiModelProperty(value = "账单状态，0待审核1审核通过2转账3提现4完成")
     private Integer status;
     @ApiModelProperty(value = "排序状态，0待位1达标2完成")
@@ -94,5 +98,21 @@ public class ShopBillListVO implements Serializable{
 
     public void setGmtModified(Date gmtModified) {
         this.gmtModified = gmtModified;
+    }
+
+    public Integer getBonusRatio() {
+        return bonusRatio;
+    }
+
+    public void setBonusRatio(Integer bonusRatio) {
+        this.bonusRatio = bonusRatio;
+    }
+
+    public Double getReward() {
+        return reward;
+    }
+
+    public void setReward(Double reward) {
+        this.reward = reward;
     }
 }

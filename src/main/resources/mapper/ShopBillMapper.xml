@@ -228,6 +228,8 @@
       custom_wechat_user_id,
       custom_name,
       amount,
+      bonus_ratio,
+      reward,
       status,
       sort_status,
       create_wechat_user_id,
@@ -290,6 +292,12 @@
     LEFT JOIN t_shop ON t_shop_bill.shop_id = t_shop.id
     LEFT JOIN t_wechat_user ON t_shop.wechat_user_id=t_wechat_user.id
     WHERE t_shop_bill.id = #{id}
+  </select>
+
+  <select id="getWaitingTotalAmount" resultType="double">
+    SELECT ifnull(SUM(amount),0.00) total_amount FROM t_shop_bill WHERE shop_id = #{shopId}
+    AND custom_wechat_user_id = #{weChatUserId}
+    AND sort_status = 0
   </select>
 
 </mapper>

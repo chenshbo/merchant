@@ -81,7 +81,7 @@ public class BillService {
             WeChatUser update = new WeChatUser();
             update.setId(payOrder.getWechatUserId());
             update.setBalance(-shopBill.getAmount());
-            weChatUserMapper.updateByPrimaryKeySelective(update);
+            weChatUserMapper.updateBalance(update);
         }
         return count;
     }
@@ -90,4 +90,22 @@ public class BillService {
         return shopBillMapper.getBillInfoById(id);
     }
 
+    public Double getWaitingTotalAmount(Long shopId, Long weChatUserId) {
+        return shopBillMapper.getWaitingTotalAmount(shopId,weChatUserId);
+    }
+
+    public int getWaitingCount(Long shopId, Long weChatUserId) {
+        List<ShopBillDto> billList = shopBillMapper.selectBillList(shopId);
+        int count = 0;
+        for(int i = 0;i < billList.size();i++){
+            if(billList.get(i).getSortStatus().equals(0)){
+                count ++;
+                if(billList.get(i).getCustomWeChatUserId().equals(weChatUserId)){
+                    break;
+                }
+            }
+        }
+        count--;
+        return count;
+    }
 }

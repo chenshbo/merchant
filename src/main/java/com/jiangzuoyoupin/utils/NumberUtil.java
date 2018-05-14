@@ -7,6 +7,9 @@ import java.util.regex.Pattern;
 
 public class NumberUtil {
 
+    // 提现手续费 2%
+    private static int withdrawFees = 2;
+
     // 整数四舍五入
     public static int round(int width) {
         return Math.round(((float) width) / 10) * 10;
@@ -100,6 +103,10 @@ public class NumberUtil {
 
     public static Long getFenAmount(Double totalFee){
         return (long)(totalFee*100);
+    }
+
+    public static Long getWeChatFenAmount(Double totalFee){
+        return (long)(totalFee*(100-withdrawFees));
     }
 
 

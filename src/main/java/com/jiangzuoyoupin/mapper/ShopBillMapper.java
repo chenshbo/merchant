@@ -32,4 +32,6 @@ public interface ShopBillMapper {
     List<ShopBillDto> selectFreeBillList(@Param("shopId")Long shopId);
 
     ShopBillDto getBillInfoById(Long id);
+
+    Double getWaitingTotalAmount(@Param("shopId") Long shopId, @Param("weChatUserId") Long weChatUserId);
 }
