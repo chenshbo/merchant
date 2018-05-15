@@ -185,22 +185,17 @@
   <!-- 查询总金额和奖金池 -->
   <select id="getSaleTotalAmount" parameterType="long" resultType="com.jiangzuoyoupin.dto.ShopBillDto">
     SELECT a.totalAmount, (a.total_reward - b.full_amount) totalReward FROM
-    (SELECT IFNULL(SUM(amount),0.00) totalAmount,IFNULL(SUM(reward),0.00) total_reward FROM t_shop_bill WHERE shop_id = #{shopId}) a,
-    (SELECT IFNULL(SUM(amount),0.00) full_amount FROM t_shop_bill WHERE shop_id = #{shopId} AND sort_status in (1,2)) b
+    (SELECT IFNULL(SUM(amount),0.00) totalAmount,IFNULL(SUM(reward),0.00) total_reward FROM t_shop_bill WHERE shop_id = #{shopId} AND status != 0) a,
+    (SELECT IFNULL(SUM(amount),0.00) full_amount FROM t_shop_bill WHERE shop_id = #{shopId} AND sort_status in (1,2) AND status != 0) b
   </select>
 
-  <!-- 更新最早记录的排序状态为达标 -->
-  <update id="updateEarliestSortStatus" parameterType="long">
-    UPDATE t_shop_bill SET sort_status = 1
-    WHERE shop_id = #{shopId}
-    <![CDATA[
-    AND amount <= (
-      SELECT a.total_reward - b.full_reward_amount FROM
-      (SELECT IFNULL(SUM(reward),0.00) total_reward FROM t_shop_bill WHERE shop_id = #{shopId}) a,
-      (SELECT IFNULL(SUM(amount),0.00) full_reward_amount FROM t_shop_bill WHERE shop_id = #{shopId} AND sort_status in (1,2) ) b
-    )
-    ]]>
-    ORDER BY gmt_create ASC LIMIT 1
+  <!-- 更新排序状态为达标 -->
+  <update id="updateSortStatus" parameterType="long">
+    UPDATE t_shop_bill SET sort_status = 1 ,gmt_modified = now()
+    WHERE id in
+    <foreach collection="updateIds" item="id" index="index" open="(" close=")" separator=",">
+      #{id}
+    </foreach>
   </update>
 
   <resultMap id="DtoBaseResultMap" type="com.jiangzuoyoupin.dto.ShopBillDto" >
@@ -240,11 +235,14 @@
     ORDER BY gmt_create ASC
   </select>
 
-  <select id="getFirst" resultMap="BaseResultMap" parameterType="java.lang.Long">
+  <select id="getFirst" resultMap="BaseResultMap">
     SELECT
     <include refid="Base_Column_List" />
     FROM t_shop_bill
     WHERE shop_id = #{shopId}
+    AND custom_wechat_user_id = #{weChatUserId}
+    AND sort_status = 0
+    AND status != 0
     ORDER BY gmt_create ASC
     limit 1
   </select>
@@ -266,6 +264,7 @@
     FROM t_shop_bill,t_wechat_user
     WHERE t_shop_bill.shop_id = #{shopId}
     AND t_shop_bill.sort_status = 0
+    AND t_shop_bill.status != 0
     AND t_shop_bill.custom_wechat_user_id = t_wechat_user.id
     ORDER BY t_shop_bill.gmt_create ASC
   </select>
@@ -278,6 +277,7 @@
     FROM t_shop_bill,t_wechat_user
     WHERE t_shop_bill.shop_id = #{shopId}
     AND t_shop_bill.sort_status != 0
+    AND t_shop_bill.status != 0
     AND t_shop_bill.custom_wechat_user_id = t_wechat_user.id
     ORDER BY t_shop_bill.gmt_create ASC
   </select>
@@ -298,6 +298,33 @@
     SELECT ifnull(SUM(amount),0.00) total_amount FROM t_shop_bill WHERE shop_id = #{shopId}
     AND custom_wechat_user_id = #{weChatUserId}
     AND sort_status = 0
+    AND status != 0
+  </select>
+
+  <select id="selectWaitingBillList" parameterType="long" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List" />
+    FROM t_shop_bill
+    WHERE shop_id = #{shopId} and status != 0 and sort_status = 0
+    ORDER BY gmt_create ASC
+  </select>
+
+  <select id="selectShopBillList" parameterType="long" resultMap="DtoBaseResultMap">
+    SELECT
+      id,
+      shop_id,
+      custom_wechat_user_id,
+      custom_name,
+      amount,
+      bonus_ratio,
+      reward,
+      status,
+      sort_status,
+      create_wechat_user_id,
+      gmt_create,
+      gmt_modified
+    FROM t_shop_bill
+    WHERE shop_id = #{shopId}
+    ORDER BY status ASC,gmt_create ASC
   </select>
 
 </mapper>

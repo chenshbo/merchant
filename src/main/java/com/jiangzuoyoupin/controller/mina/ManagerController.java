@@ -191,7 +191,7 @@ public class ManagerController extends BaseController {
     @ApiOperation(value = "幸福账单-查询账单列表", notes = "根据shopId查询总销售额和奖金池信息")
     @GetMapping(value = "/selectBillList/{shopId}")
     public WebResult<List<ShopBillListVO>> selectBillList(@ApiParam(name = "shopId", value = "店铺id", required = true) @PathVariable Long shopId) {
-        List<ShopBillDto> list = managerService.selectBillList(shopId);
+        List<ShopBillDto> list = managerService.selectShopBillList(shopId);
         return WebResultUtil.returnResult(ConvertUtils.poList2voList(list, ShopBillListVO.class));
     }
 

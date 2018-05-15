@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -63,8 +64,21 @@ public class ManagerService {
         bill.setSortStatus(0);// 待位
         int count = shopBillMapper.insert(bill);
         if (count > 0) {
-            // 更新上一条账单状态和排序状态
-            shopBillMapper.updateEarliestSortStatus(bill.getShopId());
+            List<Long> updateIds = new ArrayList<>();
+            ShopBillDto total = shopBillMapper.getSaleTotalAmount(bill.getShopId());
+            Double totalReward = total.getTotalReward();
+            List<ShopBill> updateList = shopBillMapper.selectWaitingBillList(bill.getShopId());
+            for (ShopBill shopBill : updateList) {
+                if (shopBill.getAmount() > totalReward) {
+                    break;
+                }
+                totalReward = totalReward - shopBill.getAmount();
+                updateIds.add(shopBill.getId());
+            }
+            // 更新前面账单状态和排序状态
+            if(!updateIds.isEmpty()) {
+                shopBillMapper.updateSortStatus(updateIds);
+            }
         }
         return count;
     }
@@ -86,18 +100,6 @@ public class ManagerService {
             dto.setFreeCount(0);
         }
         return dto;
-    }
-
-    /**
-     * 功能模块: 查询当前店铺总账单
-     *
-     * @param shopId
-     * @return com.jiangzuoyoupin.dto.ShopBillDto
-     * @author chenshangbo
-     * @date 2018-05-05 23:31:04
-     */
-    public List<ShopBillDto> selectBillList(Long shopId) {
-        return shopBillMapper.selectBillList(shopId);
     }
 
     public int checkBill(Long id) {
@@ -173,5 +175,9 @@ public class ManagerService {
             invitationCodeMapper.updateByCode(invitationCode);
         }
         return count;
+    }
+
+    public List<ShopBillDto> selectShopBillList(Long shopId) {
+        return shopBillMapper.selectShopBillList(shopId);
     }
 }

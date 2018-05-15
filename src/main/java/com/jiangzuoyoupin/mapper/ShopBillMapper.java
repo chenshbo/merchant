@@ -21,11 +21,13 @@ public interface ShopBillMapper {
 
     ShopBillDto getSaleTotalAmount(@Param("shopId") Long shopId);
 
-    int updateEarliestSortStatus(@Param("shopId") Long shopId);
+    int updateSortStatus(@Param("updateIds") List<Long> updateIds);
 
     List<ShopBillDto> selectBillList(@Param("shopId") Long shopId);
 
-    ShopBill getFirst(@Param("shopId")Long shopId);
+    List<ShopBillDto> selectShopBillList(@Param("shopId") Long shopId);
+
+    ShopBill getFirst(@Param("shopId")Long shopId, @Param("weChatUserId") Long weChatUserId);
 
     List<ShopBillDto> selectCurrBillList(@Param("shopId")Long shopId);
 
@@ -34,4 +36,6 @@ public interface ShopBillMapper {
     ShopBillDto getBillInfoById(Long id);
 
     Double getWaitingTotalAmount(@Param("shopId") Long shopId, @Param("weChatUserId") Long weChatUserId);
+
+    List<ShopBill> selectWaitingBillList(@Param("shopId") Long shopId);
 }

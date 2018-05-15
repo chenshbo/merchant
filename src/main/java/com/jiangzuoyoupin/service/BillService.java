@@ -6,13 +6,12 @@ import com.jiangzuoyoupin.domain.WeChatUser;
 import com.jiangzuoyoupin.dto.ShopBillDto;
 import com.jiangzuoyoupin.mapper.ShopBillMapper;
 import com.jiangzuoyoupin.mapper.WeChatUserMapper;
-import com.jiangzuoyoupin.req.ShopIdAndWeChatUserIdReq;
-import com.jiangzuoyoupin.utils.NumberUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 功能模块: 账单service
@@ -30,13 +29,13 @@ public class BillService {
     private WeChatUserMapper weChatUserMapper;
 
     public String getMySchedule(Long shopId, Long weChatUserId) {
-        ShopBill first = shopBillMapper.getFirst(shopId);
+        ShopBill first = shopBillMapper.getFirst(shopId,weChatUserId);
         if (first == null || !first.getCustomWeChatUserId().equals(weChatUserId)) {
-            return "0.00";
+            return "100";
         }
         ShopBillDto saleTotalAmount = shopBillMapper.getSaleTotalAmount(shopId);
         if (saleTotalAmount == null || saleTotalAmount.getTotalReward().equals(0.00)) {
-            return "0.00";
+            return "0";
         }
         return String.format("%.2f", saleTotalAmount.getTotalReward() / first.getAmount() * 100).toString();
     }
@@ -44,9 +43,9 @@ public class BillService {
     public List<ShopBillDto> selectMyBillList(Long shopId, Long weChatUserId) {
         List<ShopBillDto> billList = shopBillMapper.selectBillList(shopId);
         List<ShopBillDto> resList = new ArrayList<>();
-        for(int i = 0;i < billList.size();i++){
-            if(billList.get(i).getCustomWeChatUserId().equals(weChatUserId)){
-                billList.get(i).setRank(i+1);
+        for (int i = 0; i < billList.size(); i++) {
+            if (billList.get(i).getCustomWeChatUserId().equals(weChatUserId)) {
+                billList.get(i).setRank(i + 1);
                 resList.add(billList.get(i));
             }
         }
@@ -75,7 +74,7 @@ public class BillService {
         param.setStatus(4); // 完成
         param.setSortStatus(2); // 完成
         int count = shopBillMapper.updateByPrimaryKeySelective(param);
-        if(count > 0) {
+        if (count > 0) {
             ShopBill shopBill = shopBillMapper.selectByPrimaryKey(payOrder.getShopBillId());
             // 扣除用户余额
             WeChatUser update = new WeChatUser();
@@ -91,21 +90,26 @@ public class BillService {
     }
 
     public Double getWaitingTotalAmount(Long shopId, Long weChatUserId) {
-        return shopBillMapper.getWaitingTotalAmount(shopId,weChatUserId);
+        return shopBillMapper.getWaitingTotalAmount(shopId, weChatUserId);
     }
 
     public int getWaitingCount(Long shopId, Long weChatUserId) {
-        List<ShopBillDto> billList = shopBillMapper.selectBillList(shopId);
+        List<ShopBill> waitingBillList = shopBillMapper.selectWaitingBillList(shopId);
         int count = 0;
-        for(int i = 0;i < billList.size();i++){
-            if(billList.get(i).getSortStatus().equals(0)){
-                count ++;
-                if(billList.get(i).getCustomWeChatUserId().equals(weChatUserId)){
-                    break;
-                }
+        for (int i = 0; i < waitingBillList.size(); i++) {
+            if (waitingBillList.get(i).getCustomWeChatUserId().equals(weChatUserId)) {
+                count = i+1;
+                break;
             }
         }
-        count--;
-        return count;
+        List<ShopBill> collect = waitingBillList.stream()
+                .filter(shopBill -> shopBill.getCustomWeChatUserId().equals(weChatUserId))
+                .collect(Collectors.toList());
+        if(!collect.isEmpty()){
+            count = count - 1;
+        }else{
+            count = waitingBillList.size();
+        }
+        return count < 0 ? 0 : count;
     }
 }
