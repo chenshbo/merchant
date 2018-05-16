@@ -145,7 +145,7 @@ public class BillListController extends BaseController {
 //        Long totalFee = shopBillDto.getAmount().longValue() * 98;
         Map<String, String> reqData = new HashMap<>();
         reqData.put("desc", "免单提现");// 付款说明
-        reqData.put("amount", String.valueOf(NumberUtil.getWeChatFenAmount(1.00))); // 付款金额
+        reqData.put("amount", String.valueOf(NumberUtil.getWeChatFenAmount(shopBillDto.getAmount()))); // 付款金额
         reqData.put("partner_trade_no", tradeNo); // 商户订单号
         reqData.put("enc_bank_no", RSAUtils.encrypt(req.getEncBankNo()));
         reqData.put("enc_true_name", RSAUtils.encrypt(req.getEncTrueName()));
