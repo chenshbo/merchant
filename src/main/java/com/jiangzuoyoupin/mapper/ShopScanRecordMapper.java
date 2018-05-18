@@ -17,4 +17,6 @@ public interface ShopScanRecordMapper {
     List<ShopScanRecord> selectByParams(ShopScanRecord record);
 
     int updateCollectStatus(ShopScanRecord scanRecord);
+
+    ShopScanRecord getLatestRecord(@Param("weChatUserId") Long weChatUserId);
 }

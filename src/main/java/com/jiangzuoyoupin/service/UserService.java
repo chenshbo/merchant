@@ -42,6 +42,9 @@ public class UserService {
     private ShopMapper shopMapper;
 
     @Autowired
+    private ShopScanRecordMapper scanRecordMapper;
+
+    @Autowired
     private LoginTokenMapper loginTokenMapper;
 
     private static String path = "pages/index?id=";
@@ -116,9 +119,12 @@ public class UserService {
         }
         // 店铺id为空
         if (shopId.equals(0L)) {
-            List<Shop> shopList = shopMapper.selectAll();
-            Integer random = NumberUtil.getRandomByRange(shopList.size());
-            shopId = shopList.get(random.intValue()).getId();
+            ShopScanRecord record = scanRecordMapper.getLatestRecord(wechat.getId());
+            if(record == null){
+                shopId = 1l;
+            }else{
+                shopId = record.getShopId();
+            }
         }
         if (result > 0) {
             // 之前的token无效

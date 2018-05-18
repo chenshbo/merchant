@@ -27,7 +27,7 @@ public interface ShopBillMapper {
 
     List<ShopBillDto> selectShopBillList(@Param("shopId") Long shopId);
 
-    ShopBill getFirst(@Param("shopId")Long shopId, @Param("weChatUserId") Long weChatUserId);
+    ShopBill getFirst(@Param("shopId")Long shopId);
 
     List<ShopBillDto> selectCurrBillList(@Param("shopId")Long shopId);
 

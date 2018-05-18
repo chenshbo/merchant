@@ -138,7 +138,7 @@ public class ManagerController extends BaseController {
             return WebResultUtil.returnResult(jsonObject);
         } else {
             if (!managerService.checkInvitationCode(req.getInvitationCode())) {
-                return WebResultUtil.returnErrMsgResult("邀请码已失效");
+                return WebResultUtil.returnErrMsgResult("邀请码不存在或已失效");
             }
         }
         int count = managerService.applyOpenPermissions(req.getShopId(), req.getInvitationCode());

@@ -29,7 +29,7 @@ public class BillService {
     private WeChatUserMapper weChatUserMapper;
 
     public String getMySchedule(Long shopId, Long weChatUserId) {
-        ShopBill first = shopBillMapper.getFirst(shopId,weChatUserId);
+        ShopBill first = shopBillMapper.getFirst(shopId);
         if (first == null || !first.getCustomWeChatUserId().equals(weChatUserId)) {
             return "100";
         }

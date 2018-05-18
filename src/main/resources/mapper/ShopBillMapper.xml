@@ -235,12 +235,11 @@
     ORDER BY gmt_create ASC
   </select>
 
-  <select id="getFirst" resultMap="BaseResultMap">
+  <select id="getFirst" resultMap="BaseResultMap" parameterType="long">
     SELECT
     <include refid="Base_Column_List" />
     FROM t_shop_bill
     WHERE shop_id = #{shopId}
-    AND custom_wechat_user_id = #{weChatUserId}
     AND sort_status = 0
     AND status != 0
     ORDER BY gmt_create ASC
