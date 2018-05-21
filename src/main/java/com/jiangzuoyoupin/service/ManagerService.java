@@ -55,12 +55,12 @@ public class ManagerService {
      * @date 2018-05-05 23:30:46
      */
     public int saveBill(ShopBill bill) {
-        Shop shop = shopMapper.selectByPrimaryKey(bill.getShopId());
-        if (shop.getWechatUserId().equals(bill.getCreateWeChatUserId())) {
-            bill.setStatus(1);
-        } else {
+//        Shop shop = shopMapper.selectByPrimaryKey(bill.getShopId());
+//        if (shop.getWechatUserId().equals(bill.getCreateWeChatUserId())) {
+//            bill.setStatus(1);
+//        } else {
             bill.setStatus(0);
-        }
+//        }
         bill.setSortStatus(0);// 待位
         int count = shopBillMapper.insert(bill);
         if (count > 0) {
