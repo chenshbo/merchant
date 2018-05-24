@@ -64,20 +64,22 @@ public class ManagerService {
         bill.setSortStatus(0);// 待位
         int count = shopBillMapper.insert(bill);
         if (count > 0) {
-            List<Long> updateIds = new ArrayList<>();
             ShopBillDto total = shopBillMapper.getSaleTotalAmount(bill.getShopId());
             Double totalReward = total.getTotalReward();
             List<ShopBill> updateList = shopBillMapper.selectWaitingBillList(bill.getShopId());
-            for (ShopBill shopBill : updateList) {
-                if (shopBill.getAmount() > totalReward) {
-                    break;
+            if(!updateList.isEmpty()){
+                List<Long> updateIds = new ArrayList<>();
+                for (ShopBill shopBill : updateList) {
+                    if (shopBill.getAmount() > totalReward) {
+                        break;
+                    }
+                    totalReward = totalReward - shopBill.getAmount();
+                    updateIds.add(shopBill.getId());
                 }
-                totalReward = totalReward - shopBill.getAmount();
-                updateIds.add(shopBill.getId());
-            }
-            // 更新前面账单状态和排序状态
-            if(!updateIds.isEmpty()) {
-                shopBillMapper.updateSortStatus(updateIds);
+                // 更新前面账单状态和排序状态
+                if(!updateIds.isEmpty()) {
+                    shopBillMapper.updateSortStatus(updateIds);
+                }
             }
         }
         return count;
