@@ -55,33 +55,28 @@ public class ManagerService {
      * @date 2018-05-05 23:30:46
      */
     public int saveBill(ShopBill bill) {
-//        Shop shop = shopMapper.selectByPrimaryKey(bill.getShopId());
-//        if (shop.getWechatUserId().equals(bill.getCreateWeChatUserId())) {
-//            bill.setStatus(1);
-//        } else {
-            bill.setStatus(0);
-//        }
+        bill.setStatus(0);
         bill.setSortStatus(0);// 待位
         int count = shopBillMapper.insert(bill);
-        if (count > 0) {
-            ShopBillDto total = shopBillMapper.getSaleTotalAmount(bill.getShopId());
-            Double totalReward = total.getTotalReward();
-            List<ShopBill> updateList = shopBillMapper.selectWaitingBillList(bill.getShopId());
-            if(!updateList.isEmpty()){
-                List<Long> updateIds = new ArrayList<>();
-                for (ShopBill shopBill : updateList) {
-                    if (shopBill.getAmount() > totalReward) {
-                        break;
-                    }
-                    totalReward = totalReward - shopBill.getAmount();
-                    updateIds.add(shopBill.getId());
-                }
-                // 更新前面账单状态和排序状态
-                if(!updateIds.isEmpty()) {
-                    shopBillMapper.updateSortStatus(updateIds);
-                }
-            }
-        }
+//        if (count > 0) {
+//            ShopBillDto total = shopBillMapper.getSaleTotalAmount(bill.getShopId());
+//            Double totalReward = total.getTotalReward();
+//            List<ShopBill> updateList = shopBillMapper.selectWaitingBillList(bill.getShopId());
+//            if(!updateList.isEmpty()){
+//                List<Long> updateIds = new ArrayList<>();
+//                for (ShopBill shopBill : updateList) {
+//                    if (shopBill.getAmount() > totalReward) {
+//                        break;
+//                    }
+//                    totalReward = totalReward - shopBill.getAmount();
+//                    updateIds.add(shopBill.getId());
+//                }
+//                // 更新前面账单状态和排序状态
+//                if(!updateIds.isEmpty()) {
+//                    shopBillMapper.updateSortStatus(updateIds);
+//                }
+//            }
+//        }
         return count;
     }
 
@@ -108,7 +103,29 @@ public class ManagerService {
         ShopBill param = new ShopBill();
         param.setId(id);
         param.setStatus(1);
-        return shopBillMapper.updateByPrimaryKeySelective(param);
+        int count = shopBillMapper.updateByPrimaryKeySelective(param);
+        // 审核通过 更新前面账单的排位状态
+        if(count > 0){
+            ShopBill bill = shopBillMapper.selectByPrimaryKey(id);
+            ShopBillDto total = shopBillMapper.getSaleTotalAmount(bill.getShopId());
+            Double totalReward = total.getTotalReward();
+            List<ShopBill> updateList = shopBillMapper.selectWaitingBillList(bill.getShopId());
+            if(!updateList.isEmpty()){
+                List<Long> updateIds = new ArrayList<>();
+                for (ShopBill shopBill : updateList) {
+                    if (shopBill.getAmount() > totalReward) {
+                        break;
+                    }
+                    totalReward = totalReward - shopBill.getAmount();
+                    updateIds.add(shopBill.getId());
+                }
+                // 更新前面账单状态和排序状态
+                if(!updateIds.isEmpty()) {
+                    shopBillMapper.updateSortStatus(updateIds);
+                }
+            }
+        }
+        return count;
     }
 
     /**
