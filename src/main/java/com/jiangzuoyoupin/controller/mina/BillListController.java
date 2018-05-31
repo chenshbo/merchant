@@ -141,6 +141,10 @@ public class BillListController extends BaseController {
     @PostMapping(value = "/my/withdrawCash2Card")
     public WebResult myWithdrawCash2Card(@RequestBody WithdrawCash2CardReq req) {
         ShopBillDto shopBillDto = billService.getBillInfoById(req.getShopBillId());
+        WeChatUser weChatUser = userService.getUserInfoById(req.getWeChatUserId());
+        if(weChatUser != null && weChatUser.getBalance() < shopBillDto.getAmount()){
+            return WebResultUtil.returnErrMsgResult("匠子余额不足");
+        }
         String tradeNo = String.valueOf(idWorker.nextId());
 //        Long totalFee = shopBillDto.getAmount().longValue() * 98;
         Map<String, String> reqData = new HashMap<>();
