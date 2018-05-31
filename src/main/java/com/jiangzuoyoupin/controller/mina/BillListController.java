@@ -106,7 +106,7 @@ public class BillListController extends BaseController {
         long totalFee = 1;
         Map<String, String> reqData = new HashMap<>();
         reqData.put("desc", "免单提现");// 商品描述
-        reqData.put("amount", String.valueOf(totalFee*0.98)); // 金额
+        reqData.put("amount", String.valueOf(totalFee * 0.98)); // 金额
         reqData.put("openid", openId);
         reqData.put("partner_trade_no", tradeNo); // 商户订单号
         Map<String, String> resMap = mchPay2Wallet(reqData);
@@ -119,7 +119,7 @@ public class BillListController extends BaseController {
             System.err.println("微信返回的交易状态不正确（result_code=" + result_code + "）");
             return WebResultUtil.returnErrMsgResult("提现失败（result_code=" + result_code + "）");
         }
-        System.out.println("mchPay-res---"+ JSONObject.toJSONString(resMap).toString());
+        System.out.println("mchPay-res---" + JSONObject.toJSONString(resMap).toString());
         WeChatPayOrder payOrder = new WeChatPayOrder();
         payOrder.setShopBillId(id);
         payOrder.setTradeNo(tradeNo);
@@ -157,17 +157,21 @@ public class BillListController extends BaseController {
         String result_code = resMap.get("result_code");// 业务结果
         String return_code = resMap.get("return_code");// SUCCESS/FAIL
         if (!"SUCCESS".equals(return_code)) {
-            System.err.println("微信返回的交易状态不正确（result_code=" + result_code + "）");
-            return WebResultUtil.returnErrMsgResult("提现失败（result_code=" + result_code + "）");
+            System.err.println("微信返回的交易状态不正确（" + resMap.get("return_msg") + "," + resMap.get("err_code_des") + "）");
+            return WebResultUtil.returnErrMsgResult("提现失败");
         }
-        System.out.println("mchPay-res---"+ JSONObject.toJSONString(resMap).toString());
+        if (!"SUCCESS".equals(result_code)) {
+            System.err.println("微信返回的交易状态不正确（" + resMap.get("return_msg") + "," + resMap.get("err_code_des") + "）");
+            return WebResultUtil.returnErrMsgResult("提现失败（" + resMap.get("err_code_des") + "）");
+        }
+        System.out.println("mchPay-res---" + JSONObject.toJSONString(resMap).toString());
         WeChatPayOrder payOrder = new WeChatPayOrder();
         payOrder.setShopBillId(req.getShopBillId());
         payOrder.setTradeNo(tradeNo);
         payOrder.setWechatTradeNo(resMap.get("payment_no"));
         String paymentTime = resMap.get("payment_time");
         int cmmsAmt = Integer.parseInt(resMap.get("cmms_amt"));
-        System.out.println("手续费金额:"+cmmsAmt);
+        System.out.println("手续费金额:" + cmmsAmt);
         payOrder.setPayTimeEnd(StringUtils.isNotEmpty(paymentTime) ? DateUtil.parseYMDHMS(paymentTime) : new Date());
         payOrder.setWechatUserId(shopBillDto.getCustomWeChatUserId());
         payOrder.setOrderType(3);

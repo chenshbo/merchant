@@ -233,7 +233,6 @@
     FROM t_shop_bill
     WHERE shop_id = #{shopId}
     AND status != 0
-    AND sort_status = 0
     ORDER BY gmt_create ASC
   </select>
 

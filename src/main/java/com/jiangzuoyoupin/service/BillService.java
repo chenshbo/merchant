@@ -5,6 +5,7 @@ import com.jiangzuoyoupin.domain.WeChatPayOrder;
 import com.jiangzuoyoupin.domain.WeChatUser;
 import com.jiangzuoyoupin.dto.ShopBillDto;
 import com.jiangzuoyoupin.mapper.ShopBillMapper;
+import com.jiangzuoyoupin.mapper.WeChatPayOrderMapper;
 import com.jiangzuoyoupin.mapper.WeChatUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,9 @@ public class BillService {
     @Autowired
     private WeChatUserMapper weChatUserMapper;
 
+    @Autowired
+    private WeChatPayOrderMapper weChatPayOrderMapper;
+
     public String getMySchedule(Long shopId, Long weChatUserId) {
         ShopBill first = shopBillMapper.getFirst(shopId);
         if (first == null || !first.getCustomWeChatUserId().equals(weChatUserId)) {
@@ -47,6 +51,18 @@ public class BillService {
             if (billList.get(i).getCustomWeChatUserId().equals(weChatUserId)) {
                 billList.get(i).setRank(i + 1);
                 resList.add(billList.get(i));
+            }
+        }
+        // 未达标账单
+        List<ShopBillDto> noReachStandardBillList = billList.stream()
+                .filter(shopBillDto -> shopBillDto.getSortStatus().equals(0))
+                .collect(Collectors.toList());
+        // 循环设置未达标账单的排名
+        for (ShopBillDto resBill : resList) {
+            for (int i = 0; i < noReachStandardBillList.size(); i++) {
+                if (resBill.getId().equals(noReachStandardBillList.get(i).getId())) {
+                    resBill.setRank(i + 1);
+                }
             }
         }
         return resList;
@@ -75,8 +91,10 @@ public class BillService {
         param.setSortStatus(2); // 完成
         int count = shopBillMapper.updateByPrimaryKeySelective(param);
         if (count > 0) {
-            ShopBill shopBill = shopBillMapper.selectByPrimaryKey(payOrder.getShopBillId());
+            // 新增微信提现账单
+            weChatPayOrderMapper.insert(payOrder);
             // 扣除用户余额
+            ShopBill shopBill = shopBillMapper.selectByPrimaryKey(payOrder.getShopBillId());
             WeChatUser update = new WeChatUser();
             update.setId(payOrder.getWechatUserId());
             update.setBalance(-shopBill.getAmount());
