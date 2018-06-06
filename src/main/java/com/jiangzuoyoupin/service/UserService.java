@@ -263,4 +263,15 @@ public class UserService {
     public int saveWxUserInfo(WeChatUser user) {
         return weChatUserMapper.updateByPrimaryKeySelective(user);
     }
+
+    public boolean checkShopManager(Long shopId, Long weChatUserId) {
+        ShopManager param = new ShopManager();
+        param.setShopId(shopId);
+        param.setWechatUserId(weChatUserId);
+        ShopManager shopManager = shopManagerMapper.selectByParam(param);
+        if(shopManager != null){
+            return true;
+        }
+        return false;
+    }
 }

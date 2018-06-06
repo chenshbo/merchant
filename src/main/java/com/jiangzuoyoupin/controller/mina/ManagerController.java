@@ -169,6 +169,10 @@ public class ManagerController extends BaseController {
         if (fans == null) {
             return WebResultUtil.returnErrMsgResult("该客户还未注册，请注册再试");
         }
+        // 判断是否是该店铺的匠探
+        if(!userService.checkShopManager(req.getShopId(),weChatUser.getId())){
+            return WebResultUtil.returnErrMsgResult("你不是本店铺的匠探，不能录入幸福账单");
+        }
         ShopBill shopBill = new ShopBill();
         BeanUtils.copyProperties(req, shopBill);
         shopBill.setCreateWeChatUserId(weChatUser.getId());

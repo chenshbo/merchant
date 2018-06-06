@@ -21,4 +21,6 @@ public interface ShopManagerMapper {
     ShopManager selectByWeChatUserId(Long weChatUserId);
 
     List<ShopManager> selectManagerList(@Param("shopId") Long shopId);
+
+    ShopManager selectByParam(ShopManager param);
 }

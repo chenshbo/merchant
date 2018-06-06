@@ -105,5 +105,17 @@
     LEFT JOIN t_wechat_user ON t_shop_manager.wechat_user_id = t_wechat_user.id
     WHERE t_shop_manager.shop_id = #{shopId}
     ORDER BY t_shop_manager.gmt_create DESC
-  </select>        
+  </select>
+
+  <select id="selectByParam" parameterType="com.jiangzuoyoupin.domain.ShopManager" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List" />
+    FROM t_shop_manager
+    WHERE 1=1
+    <if test="shopId != null" >
+      AND shop_id = #{shopId,jdbcType=BIGINT}
+    </if>
+    <if test="wechatUserId != null" >
+      AND wechat_user_id = #{wechatUserId,jdbcType=BIGINT}
+    </if>
+  </select>
 </mapper>
