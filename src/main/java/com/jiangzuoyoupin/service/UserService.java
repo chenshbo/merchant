@@ -265,6 +265,13 @@ public class UserService {
     }
 
     public boolean checkShopManager(Long shopId, Long weChatUserId) {
+        Shop paramShop = new Shop();
+        paramShop.setId(shopId);
+        paramShop.setWechatUserId(weChatUserId);
+        Shop shop = shopMapper.selectByParam(paramShop);
+        if(shop != null){
+            return true;
+        }
         ShopManager param = new ShopManager();
         param.setShopId(shopId);
         param.setWechatUserId(weChatUserId);

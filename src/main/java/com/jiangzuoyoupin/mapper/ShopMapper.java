@@ -22,4 +22,6 @@ public interface ShopMapper {
     Shop selectByWeChatUserId(Long weChatUserId);
 
     List<Shop> selectAll();
+
+    Shop selectByParam(Shop paramShop);
 }
