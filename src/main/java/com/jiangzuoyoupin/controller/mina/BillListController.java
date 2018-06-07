@@ -143,7 +143,10 @@ public class BillListController extends BaseController {
         ShopBillDto shopBillDto = billService.getBillInfoById(req.getShopBillId());
         WeChatUser weChatUser = userService.getUserInfoById(req.getWeChatUserId());
         if(weChatUser != null && weChatUser.getBalance() < shopBillDto.getAmount()){
-            return WebResultUtil.returnErrMsgResult("匠子余额不足");
+            return WebResultUtil.returnErrMsgResult("提现失败，匠子余额不足");
+        }
+        if(NumberUtil.checkAmount(shopBillDto.getAmount())){
+            return WebResultUtil.returnErrMsgResult("提现失败，提现金额小于1.5");
         }
         String tradeNo = String.valueOf(idWorker.nextId());
 //        Long totalFee = shopBillDto.getAmount().longValue() * 98;

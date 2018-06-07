@@ -107,9 +107,15 @@ public class NumberUtil {
         return (long)(totalFee*100);
     }
 
+    // 提现这里扣除2%大于1.5那就2%，如果小于那就扣除1.5
     public static Long getWeChatFenAmount(Double totalFee){
         long fees = (long)(totalFee*withdrawFeesRadio);
-        return (long)(totalFee*100) - (fees >= withdrawFees ? fees : withdrawFees);
+        return (long)(totalFee*100 - (fees >= withdrawFees ? fees : withdrawFees));
+    }
+
+    // 如果提现金额小于1.5不给提现
+    public static boolean checkAmount(Double totalFee){
+        return totalFee * 100 < withdrawFees;
     }
 
 
