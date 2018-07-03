@@ -81,7 +81,7 @@ public class BaseController {
             System.out.println("mchPay2Wallet---"+JSONObject.toJSONString(reqData).toString());
             String url = "https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers";
             String respXml = wxpay.requestWithCert(url, reqData, wxPayConfig.getHttpConnectTimeoutMs(), wxPayConfig.getHttpReadTimeoutMs());
-            return wxpay.processResponseXml(respXml);
+            return WXPayUtil.xmlToMap(respXml);
         } catch (Exception e) {
             e.printStackTrace();
         }
