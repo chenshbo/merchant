@@ -119,7 +119,7 @@ public class BillListController extends BaseController {
         reqData.put("partner_trade_no", tradeNo); // 商户订单号
         // 添加到缓存
         if(CacheMap.get(id.toString()) != null){
-            return WebResultUtil.returnErrMsgResult("提现失败，交易正在处理中");
+            return WebResultUtil.returnErrMsgResult("提现失败，交易正在处理中，请稍后再试");
         }
         CacheMap.put(id.toString(),reqData);
         Map<String, String> resMap = mchPay2Wallet(reqData);
