@@ -124,16 +124,19 @@ public class BillListController extends BaseController {
         CacheMap.put(id.toString(),reqData);
         Map<String, String> resMap = mchPay2Wallet(reqData);
         if (resMap == null) {
+            CacheMap.del(id.toString());
             return WebResultUtil.returnErrMsgResult("提现失败");
         }
         String result_code = resMap.get("result_code");// 业务结果
         String return_code = resMap.get("return_code");// SUCCESS/FAIL
         if (!"SUCCESS".equals(return_code)) {
             System.err.println("微信返回的交易状态不正确（" + resMap.get("return_msg") + "," + resMap.get("err_code_des") + "）");
+            CacheMap.del(id.toString());
             return WebResultUtil.returnErrMsgResult("提现失败");
         }
         if (!"SUCCESS".equals(result_code)) {
             System.err.println("微信返回的交易状态不正确（" + resMap.get("return_msg") + "," + resMap.get("err_code_des") + "）");
+            CacheMap.del(id.toString());
             return WebResultUtil.returnErrMsgResult("提现失败（" + resMap.get("err_code_des") + "）");
         }
         System.out.println("withdrawCash2Wallet-res---" + JSONObject.toJSONString(resMap).toString());
@@ -148,6 +151,7 @@ public class BillListController extends BaseController {
         payOrder.setTotalFee(NumberUtil.getFenAmount(shopBillDto.getAmount()));
         int count = billService.withdrawCash(payOrder);
         if (count == 0) {
+            CacheMap.del(id.toString());
             return WebResultUtil.returnErrMsgResult("提现失败，更新账户余额错误");
         }
         // 提现成功，删除缓存中的key
