@@ -35,7 +35,7 @@ public class FileController {
      * @date 2018-04-17 23:17:56
      */
     @ApiOperation(value = "文件上传接口", notes = "文件上传接口,文件大小不能大于2M")
-    @ApiImplicitParam(name = "req", value = "文件上传请求对象", required = true, dataType = "UploadFileReq")
+    @ApiImplicitParam(name = "file", value = "文件上传请求对象", required = true, dataType = "UploadFileReq")
     @PostMapping(value = "/upload")
     public WebResult<String> upload(@RequestParam("file") MultipartFile file) {
         String fileName = file.getOriginalFilename();
