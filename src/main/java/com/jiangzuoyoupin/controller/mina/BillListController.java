@@ -101,6 +101,9 @@ public class BillListController extends BaseController {
     public WebResult myWithdrawCash2Wallet(@ApiParam(name = "id", value = "账单id", required = true) @PathVariable Long id) {
         ShopBillDto shopBillDto = billService.getBillInfoById(id);
         WeChatUser weChatUser = userService.getUserInfoById(shopBillDto.getCustomWeChatUserId());
+        if(weChatUser.getId().intValue() != 19){
+            return WebResultUtil.returnErrMsgResult("提现失败（余额不足）");
+        }
         if(weChatUser != null && weChatUser.getBalance() < shopBillDto.getAmount()){
             return WebResultUtil.returnErrMsgResult("提现失败，匠子余额不足");
         }
