@@ -100,10 +100,10 @@ public class BillListController extends BaseController {
     @GetMapping(value = "/my/withdrawCash2Wallet/{id}")
     public WebResult myWithdrawCash2Wallet(@ApiParam(name = "id", value = "账单id", required = true) @PathVariable Long id) {
         ShopBillDto shopBillDto = billService.getBillInfoById(id);
-        System.out.println("BillListController.myWithdrawCash2Wallet-是否是19的账单-"+(shopBillDto.getCustomWeChatUserId().intValue() != 19));
-        if(shopBillDto.getCustomWeChatUserId().intValue() != 19){
-            return WebResultUtil.returnErrMsgResult("提现失败（余额不足）");
-        }
+//        System.out.println("BillListController.myWithdrawCash2Wallet-是否是19的账单-"+(shopBillDto.getCustomWeChatUserId().intValue() != 19));
+//        if(shopBillDto.getCustomWeChatUserId().intValue() != 19){
+//            return WebResultUtil.returnErrMsgResult("提现失败（余额不足）");
+//        }
         WeChatUser weChatUser = userService.getUserInfoById(shopBillDto.getCustomWeChatUserId());
         if(weChatUser != null && weChatUser.getBalance() < shopBillDto.getAmount()){
             return WebResultUtil.returnErrMsgResult("提现失败，匠子余额不足");
@@ -242,9 +242,10 @@ public class BillListController extends BaseController {
     }
 
     public static void main(String[] args) {
-        WeChatUser weChatUser = new WeChatUser();
-        weChatUser.setId(433l);
-        if(!"19".equals(weChatUser.getId().toString())){
+        ShopBillDto dto = new ShopBillDto();
+        dto.setCustomWeChatUserId(6l);
+        System.out.println((dto.getCustomWeChatUserId().intValue() != 19));
+        if(dto.getCustomWeChatUserId().intValue() != 19){
             System.out.println(true);
         }
     }
